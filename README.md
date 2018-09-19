@@ -1,4 +1,4 @@
-A Furball is a small pet which is living in a website.
+A Furball is a small pet which lives in a website.
 
 It has big button-eyes and a thick and furry fur colored in rainbow colors.
 
