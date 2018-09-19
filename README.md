@@ -1,6 +1,6 @@
-A Furball is a small pet that is living in a website.
+A Furball is a small pet which lives in a website.
 
-It has big button eyes and a thick and furry fur colored in rainbow colors.
+It has big button-eyes and a thick and furry fur colored in rainbow colors.
 
 You have to feed your Furball every day. If you forget to feed it, it will die.
 You must play with your Furball. If you forget to play with your Furball, it is going to be sad.
