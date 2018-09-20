@@ -5,124 +5,64 @@
         <meta http-equiv="X-UA-Compatible" content="IE=edge">
         <title>Furball</title>
         <meta name="viewport" content="width=device-width, initial-scale=1">
-<!--         <link rel="stylesheet" type="text/css" media="screen" href="main.css" /> -->
-        <style>
-            :root {
-                --color-1: hsl(0, 0%, 40%);
-            }
-            * { margin: 0; }
-            body {
-                font-family: Arial, Helvetica, sans-serif;
-                font-size: 100%;
-                line-height: 1.3;
-                margin: 0;
-            }
-            .flex-container1 {
-                display: flex;
-                height: 100%;
-                width: 100%;
-                justify-content: center;
-                align-items: center;
-            }
-            .center {
-                position: fixed;
-                bottom: 50%;
-                right: 50%;
-
-/*                 position: absolute;
-                left: 0;
-                top: 50%;
-                width: 100%;
-                text-align: center; */
-            }
-            .cage {
-                display: inline-flex;
-                height: 200px;
-                width: 200px;
-                justify-content: center;
-                align-items: center;
-                background-color:greenyellow;
-                border: 4px solid brown;
-            }
-            .furball {
-                font-size: 2em;
-            }
-            .vitality { /* Condition/Basic Stats*/
-                position: fixed;
-                bottom: 40px;
-                left: 30px;
-            }
-            .vitality > div {
-                border: 2px solid orange;
-                padding: 10px;
-                margin: 5px 0;
-            }
-            .user {
-                position: fixed;
-                top: 40px;
-                right: 30px;
-            }
-            .user > div {
-                border: 2px solid darkblue;
-                padding: 10px;
-                margin: 5px 0;
-            }
-            .items {
-                position: fixed;
-                bottom: 40px;
-                right: 30px;
-            }
-            .items > div {
-                border: 2px solid red;
-                padding: 10px;
-                margin: 5px 0;
-            }
-            .health {
-                padding: 5px 0;
-                margin: 5px 0;
-                background-color: red;
-            }
-
-        </style>
-
-    </head>
-<body>
-    <!-- <h1>Furball</h1> -->
-
-    <div class="center">
-        <div class="cage">
-                <div class="furball">:-)</div>
-        </div>
-            
-    </div>
-
-    <div class="user">
-            <h3>User</h3>
-            <div>
-                <p>Points</p>
-                <p>Credits</p>
+        <link href="https://fonts.googleapis.com/css?family=Amatic+SC|Caveat|Coiny|Indie+Flower|Open+Sans|Poor+Story|Source+Sans+Pro" rel="stylesheet">
+        <link rel="stylesheet" type="text/css" media="screen" href="Furbal.css" />
+     </head>
+    <body>
+        <div class="max-size">
+            <h1>Furball</h1>
+            <div class="clearfix">
+                <div class="user">
+                        <h3>User</h3>
+                        <div>
+                            <p>Points: xxx</p>
+                            <p>Credits: xxx</p>
+                        </div>
+                </div>
+                <div class="items">
+                        <h3>Items</h3>
+                        <div>
+                            <p>Food:</p>
+                            <p>Toy:</p>
+                            <p>Special Items:</p>
+                        </div>
+                </div>
             </div>
-        </div>
-
-    <div class="vitality">
-        <h3>Furball</h3>
-        <div>
-            <p class="health">HEALTH</p>
-            <p>Hunger/Satiety/Starvation</p>
-            <p>Loneliness/Love</p>
-            <p>Entertainment</p>
-        </div>
-    </div>
-
-    <div class="items">
-            <h3>Items</h3>
-            <div>
-                <p>Food</p>
-                <p>Toy</p>
-                <p>Special Items</p>
+            <div class="clearfix">
+                <div class="cage">
+                    <div class="furball">:-)</div>
+                </div>
             </div>
+
+            <div class="vitality">
+                <h3>Furball</h3>
+                <div>
+                    <p class="health">HEALTH</p>
+                    <p>Hunger/Satiety/Starvation</p>
+                    <p>Loneliness/Love</p>
+                    <p>Entertainment</p>
+                </div>
+            </div>
+
+            <script src="./Furball_files/Furbal.js"></script>
         </div>
 
-    <script src="./Furball_files/Furbal.js"></script>
+    </body>
 
-</body></html>
+<!--
+My Google Fonts Selection:
+Amatic+SC|Caveat|Coiny|Indie+Flower|Open+Sans|Poor+Story|Source+Sans+Pro
+
+font-family: 'Amatic SC', cursive;
+font-family: 'Caveat', cursive;
+font-family: 'Coiny', cursive;
+font-family: 'Indie Flower', cursive;
+font-family: 'Open Sans', sans-serif;
+font-family: 'Poor Story', cursive;
+font-family: 'Source Sans Pro', sans-serif;
+
+My Google Fonts Comparison:
+https://htmlpreview.github.io/?https://github.com/jiavu/Google-Fonts-comparison/blob/master/Google-Fonts-comparison.html
+-->
+
+</html>
