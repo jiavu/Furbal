@@ -5,20 +5,18 @@
     margin: 0;
     /* width: 350px;               /* 350px */
     /* height: 600px;              /* 600px */
+    min-width: 320px;
     border: 1px solid black;
     text-align: center;
 }
 @media only screen and (orientation: portrait) {
     :root {
-        font: 5vh;
-        max-width: 768px;
-        min-width: 320px;
+        font-size: 3vh;
     }
 }
 @media only screen and (orientation: landscape) {
     :root {
-        font: 5vw;
-        max-width: 600px;
+        font-size: 5vw;
     }
 }
 
@@ -40,8 +38,8 @@ body {
 }
 
 h1 {
-    font: 2.2rem "Coiny", cursive;
-    margin: 3% 0 0;
+    font: 2rem "Coiny", cursive;
+    margin: 2% 0 0;
 }
 .clearfix::after {
     content: "";
@@ -51,48 +49,70 @@ h1 {
 .user {
     float: right;
     text-align: right;
-    margin: 0 6%;
+    margin: 0 5%;
     width: 30%;
 }
 .user > div {
     border: 2px solid darkblue;
-    padding: 5%;
+    outline: 2px dotted darkblue;
+    outline-offset: 2px;
+    padding: 3% 5%;
     margin: 1% 0;
     text-align: left;
 }
 .items {
     float: left;
     text-align: left;
-    margin: 0 6%;
+    margin: 0 5%;
     width: 40%;
 }
 .items > div {
     border: 2px solid red;
-    padding: 5%;
+    padding: 3% 5%;
     margin: 1% 0;
 }
+.cage-container {
+    margin: 5%;
+    display: flex;
+    justify-content: space-around;
+}
+.buttons {
+    display: inline-flex;
+    flex-direction: column;
+    justify-content: space-around;
+    margin: 20% 0;
+}
+button {
+    font: 1em "Poor Story", cursive;
+    display: block;
+    width: 100%;
+    padding: 10%;
+    background-color: darkviolet;
+    color: white;
+}
 .cage {
+    /*
     height: 10rem;
-    width: 10rem;
-    margin: 10%;
-    display: inline-block;
+    width: 10rem;    
     background-color:greenyellow;
-    border: 4px solid brown;
+    border: 4px solid darkgray;
+    */
+    display: inline-block;
 }
 .furball {
-    font-size: 2em;
+    width: 100%;
+    height: 100%;
 }
-.vitality { /* Condition/Basic Stats*/
+.conditions { /* Condition/Basic Stats*/
     float: left;
     text-align: left;
+    margin: 0 5%;
 }
-.vitality > div {
+.conditions > div {
     border: 2px solid orange;
-    padding: 10px;
-    margin: 5px 0;
+    padding: 3% 5%;
+    margin: 1% 0;
 }
 .health {
-    padding: 5px 0;
-    margin: 5px 0;
-    background-color: red;
+
 }
