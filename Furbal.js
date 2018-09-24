@@ -27,15 +27,17 @@ let lastRender = 0;
 let progress = 0;
 let v_timeElapsed = 0;
 let counter = 0;
-let interval = 1;
+let interval = 5;
 let pause = false;
 
 // Balancing decrease:
 let healthUpdate;
 const gameSpeed = 1; // deprecated. ^^ Delete later or find a solution
-const naturalDecreaseOfSatiation = 0.01;
-const satiationPower = 1;
+const naturalDecreaseOfSatiation = 0.4;
+const satiationPower = 0.01;
+const naturalDecreaseOfFun = 0.2;
 const funPower = 0.01;
+const naturalDecreaseofLove = 0.5;
 
 // Furball:
 const myFurball = {
@@ -43,7 +45,7 @@ const myFurball = {
     health : 100,
     satiation : 100,
     fun : 100,
-    care : 50
+    love : 50
 }
 
 //////////////////////////////////////////////////
@@ -69,27 +71,36 @@ function update(progress) {
         counter = 0;
 
         myFurball.satiation -= naturalDecreaseOfSatiation;
-        if (myFurball.satiation <= 0.01) myFurball.satiation = 0.01;
-        healthUpdate = (satiationPower/myFurball.satiation)// + funPower/myFurball.fun);
-        myFurball.health -= healthUpdate;
+        if (myFurball.satiation <= 0) myFurball.satiation = 0;
+        myFurball.fun -= naturalDecreaseOfFun;
+        if (myFurball.fun <= 0) myFurball.fun = 0;
+
+        // My own formula, makes not much sense. Or does it?
+        //healthUpdate = -(satiationPower/myFurball.satiation)// + funPower/myFurball.fun);
+        
+        // Newtons Law of Cooling:
+        healthUpdate = -satiationPower*(myFurball.health - myFurball.satiation);
+                
+        
+        myFurball.health += healthUpdate;
 
     }
-
-    if (myFurball.health <= 0) { myFurball.isDead = true }
+    if (myFurball.health >= 100) myFurball.health = 100;
+    if (myFurball.health <= 0.01) myFurball.isDead = true;
     //if (v_timeElapsed >= 10000) { myFurball.isDead = true } // Control values after a certain time. Delete later.
  };
 
 
 function draw() {
 
-    timeElapsed.innerHTML = "Time Elapsed: " + Math.round(v_timeElapsed) + "ms/loop";
-    loopSpeed.innerHTML = "Game Loop Speed: " + Math.round(progress) + "ms";
+    timeElapsed.innerHTML = "Time Elapsed: " + Math.round(v_timeElapsed) + "ms";
+    loopSpeed.innerHTML = "Game Loop Speed: " + Math.round(progress) + "ms/loop";
     interv.innerHTML = "Interval: " + interval;
 
     health.children[0].style.width = myFurball.health + "%";
     health.children[0].style.backgroundColor = "#" + colorMap[Math.round(myFurball.health-1)]; // Achtung, Index -1 gibt es nicht.
 
-    health.children[0].innerHTML = "Decrease per refresh: " + healthUpdate; // for controlling. Delete later
+    health.children[0].innerHTML = myFurball.health // for controlling. Delete later
 
     health.style.borderColor = "#" + colorMap[Math.round(myFurball.health-1)];
     satiation.children[0].style.width = myFurball.satiation + "%";
