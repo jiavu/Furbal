@@ -27,7 +27,7 @@ const secureness = document.getElementById("secureness");
 let lastRender = 0;
 let progress = 0;
 let v_timeElapsed = 0;
-const gameSpeed = 20;
+const gameSpeed = 1;
 /*
 Health decrease on different gameSpeed values:
 

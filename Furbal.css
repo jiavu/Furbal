@@ -2,21 +2,22 @@
 
 :root {
     font-family: "Poor Story", cursive; /* font: font-style font-variant font-weight font-size/line-height font-family|caption|icon|menu|message-box|small-caption|status-bar|initial|inherit;*/
+    font-size: 3vh;
     margin: 0;
-    /* width: 350px;               /* 350px */
-    /* height: 600px;              /* 600px */
     min-width: 320px;
     border: 1px solid black;
     text-align: center;
 }
+/*
 @media only screen and (orientation: portrait) {
     :root {
         font-size: 3vh;
     }
 }
+*/
 @media only screen and (orientation: landscape) {
     :root {
-        font-size: 1vw;
+        width: 64vh;
     }
 }
 
