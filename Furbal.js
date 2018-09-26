@@ -21,13 +21,23 @@ const satiation = document.getElementById("satiation");
 const fun = document.getElementById("fun");
 const secureness = document.getElementById("secureness");
 
+const feedBtn = document.getElementById("feedBtn");
+const playBtn = document.getElementById("playBtn");
+const petBtn = document.getElementById("petBtn");
+
+const points = document.getElementById("points");
+const credits = document.getElementById("credits");
+const food = document.getElementById("food");
+const toy = document.getElementById("toy");
+const specialItems = document.getElementById("specialItems");
+
 //////////////////////////////////////////////////
 
 // Gameloop paramenter:
 let lastRender = 0;
 let progress = 0;
 let v_timeElapsed = 0;
-const gameSpeed = 1;
+const gameSpeed = 2;
 /*
 Health decrease on different gameSpeed values:
 
@@ -56,6 +66,10 @@ const funPower = 0.0004;                    //
 const naturalDecreaseOfSecureness = 0.013;
 const securenessPower = 0.0003;             //
 
+const foodPower = 10;
+const playPower = 10;
+const petPower = 3;
+
 //const funToSat = 0.00007;   // the more fun, the higher satiation decrease. Use: funToSat+fun | DELETE, CHANGED!!! playButton => decreases satiation
 const healthToFun = 0.01;      // the less health, the higher fun decrease. Use: -(healthToFun/100)*health + healthToFun
 const healthToSec = 0.0115;
@@ -64,11 +78,22 @@ const healthToSec = 0.0115;
 
 // Furball:
 const myFurball = {
+    name : null,
     isDead : false,
     health : 100,
     satiation : 100,
     fun : 100,
     secureness : 100
+}
+
+// Player:
+const player = {
+    name : null,
+    points : 0,
+    credits : 0,
+    food : 10,
+    toy : 10,
+    specialItems : null
 }
 
 //////////////////////////////////////////////////
@@ -89,6 +114,33 @@ const gameOver = () => {
 const switchPause = () => {
     pause = !pause;
     (pause)? cancelAnimationFrame(reqAnimF) : reqAnimF = requestAnimationFrame(loop);
+}
+
+
+const feed = () => {
+    if (player.food >= foodPower) {
+        (myFurball.satiation < 0)?
+        myFurball.satiation = foodPower :
+        myFurball.satiation += foodPower;
+        //player.food -= foodPower;
+    }
+}
+
+
+const play = () => {
+    if (player.toy >= playPower) {
+        (myFurball.fun < 0)?
+        myFurball.fun = playPower :
+        myFurball.fun += playPower;
+        //player.toy -= playPower;
+    }
+}
+
+
+const pet = () => {
+    (myFurball.secureness < 0)?
+    myFurball.secureness = petPower :
+    myFurball.secureness += petPower;
 }
 
 
@@ -144,6 +196,13 @@ function draw() {
     secureness.children[0].style.backgroundColor = "#" + colorMap[Math.round(myFurball.secureness-1)];
     secureness.style.borderColor = "#" + colorMap[Math.round(myFurball.secureness-1)];
 
+    points.innerHTML = player.points;
+    credits.innerHTML = player.credits;
+    food.innerHTML = player.food;
+    toy.innerHTML = player.toy;
+    specialItems.innerHTML = player.specialItems;
+
+
 }
 
 
@@ -160,7 +219,10 @@ function loop(timestamp) {
 
 }
 
-
-pauseButton.addEventListener("mousedown", switchPause);
+// Event listener:
+pauseButton.addEventListener("click", switchPause);
+feedBtn.addEventListener("click", feed);
+playBtn.addEventListener("click", play);
+petBtn.addEventListener("click", pet);
 
 reqAnimF = requestAnimationFrame(loop);
