@@ -91,7 +91,7 @@ const player = {
     name : null,
     points : 0,
     credits : 0,
-    food : 10,
+    food : 1000,
     toy : 10,
     specialItems : null
 }
@@ -118,12 +118,26 @@ const switchPause = () => {
 
 
 const feed = () => {
+    let foodIncrease = (-foodPower/100*myFurball.satiation) + foodPower;
+    //if (0 < player.food < foodIncrease) {    // SHOULD BE THE SAME OR NOT?
+    if (player.food > 0 && player.food < foodIncrease) {
+        window.alert(`player.food: ${player.food} | foodIncrease: ${foodIncrease}`);
+        foodIncrease = (-player.food/100*myFurball.satiation) + player.food;
+    } else if (!player.food) {
+        foodIncrease = 0;
+    }
+
+    foodIncrease = Math.round(foodIncrease*100)/100;    // rounding seems to fail sometimes???
+    console.log(foodIncrease);
+    player.food -= foodIncrease;
+    myFurball.satiation += foodIncrease;
+/*
     if (player.food >= foodPower) {
         (myFurball.satiation < 0)?
         myFurball.satiation = foodPower :
         myFurball.satiation += foodPower;
-        //player.food -= foodPower;
-    }
+        player.food -= foodPower;
+    }*/
 }
 
 
@@ -152,7 +166,7 @@ function update(progress) {
     if (counter == interval) {
         counter = 0;
 
-        myFurball.satiation -= (naturalDecreaseOfSatiation /* + myFurball.fun*funToSat */) * gameSpeed;               // + character trait
+        myFurball.satiation -= naturalDecreaseOfSatiation * gameSpeed;                                                      // + character trait
         myFurball.fun -= (naturalDecreaseOfFun + -healthToFun/100*myFurball.health + healthToFun) * gameSpeed;              // + character trait
         myFurball.secureness -= (naturalDecreaseOfSecureness + -healthToSec/100*myFurball.health + healthToSec) * gameSpeed;// + character trait
 
