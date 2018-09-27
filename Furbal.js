@@ -66,7 +66,8 @@ const funPower = 0.0004;                    //
 const naturalDecreaseOfSecureness = 0.013;
 const securenessPower = 0.0003;             //
 
-const foodPower = 10;
+const foodPowerMax = 10;
+const foodPowerMin = 1;
 const playPower = 10;
 const petPower = 3;
 
@@ -91,7 +92,7 @@ const player = {
     name : null,
     points : 0,
     credits : 0,
-    food : 1000,
+    food : 10,
     toy : 10,
     specialItems : null
 }
@@ -118,11 +119,12 @@ const switchPause = () => {
 
 
 const feed = () => {
-    let foodIncrease = (-foodPower/100*myFurball.satiation) + foodPower;
-    //if (0 < player.food < foodIncrease) {    // SHOULD BE THE SAME OR NOT?
+    let foodIncrease = (-(foodPowerMax-foodPowerMin)/100*myFurball.satiation) + foodPowerMax;
+    //if (0 < player.food < foodIncrease) {    // SHOULD BE THE SAME OR NOT? It has a weird behavior. If foodIncrease > 1 but player.food is still > foodIncrease, condition is true for some reason.
     if (player.food > 0 && player.food < foodIncrease) {
-        window.alert(`player.food: ${player.food} | foodIncrease: ${foodIncrease}`);
-        foodIncrease = (-player.food/100*myFurball.satiation) + player.food;
+        window.alert(`player.food: ${player.food} | foodIncrease: ${foodIncrease}`);        // only a check, delete later
+        foodIncrease = player.food; // Why do I get negative amounts of food?
+        
     } else if (!player.food) {
         foodIncrease = 0;
     }
@@ -131,13 +133,6 @@ const feed = () => {
     console.log(foodIncrease);
     player.food -= foodIncrease;
     myFurball.satiation += foodIncrease;
-/*
-    if (player.food >= foodPower) {
-        (myFurball.satiation < 0)?
-        myFurball.satiation = foodPower :
-        myFurball.satiation += foodPower;
-        player.food -= foodPower;
-    }*/
 }
 
 
