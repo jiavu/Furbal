@@ -37,7 +37,7 @@ const specialItems = document.getElementById("specialItems");
 let lastRender = 0;
 let progress = 0;
 let v_timeElapsed = 0;
-const gameSpeed = 2;
+const gameSpeed = 1.7;
 /*
 Health decrease on different gameSpeed values:
 
@@ -54,26 +54,31 @@ Health decrease on different gameSpeed values:
 -19.74145722168376 8005ms gameSpeed 4
 */
 let counter = 0;            // counter and interval are not so
-let interval = 1;           // important anymore. Maybe delete
+let interval = 1;           // not important anymore. Maybe delete interval check.
 let pause = false;
 
 // Balancing powers of decrease/increase:
 let healthUpdate;
-const naturalDecreaseOfSatiation = 0.015;
-const satiationPower = 0.0015;               // character traits will influence the Power variables
+const naturalDecreaseOfSatiation = 0.015;       // 0.015, gameSpeed = 1, satiation empty after 111532ms (1.859 min; 1:51:532min)
+const satiationPower = 0.0015;               // = influence to health
 const naturalDecreaseOfFun = 0.0078;
-const funPower = 0.0004;                    //
+const funPower = 0.0004;                    // = influence to health
 const naturalDecreaseOfSecureness = 0.013;
-const securenessPower = 0.0003;             //
+const securenessPower = 0.0003;             // = influence to health
 
-const foodPowerMax = 10;
-const foodPowerMin = 1;
-const playPower = 10;
-const petPower = 3;
+const foodPowerMax = 10;    // if Furbals satiation is 0, Furbal will eat maximum.
+const foodPowerMin = 1;     // if Furbals satiation is 100, Furbal will eat minimum.
+const playPowerMax = 10;
+const playPowerMin = 1;
+const petPowerMax = 4;
+const petPowerMin = 1;
 
-//const funToSat = 0.00007;   // the more fun, the higher satiation decrease. Use: funToSat+fun | DELETE, CHANGED!!! playButton => decreases satiation
+
+const playToSat = 0.3;           // example: playToSat = 0.1; 10 toy consumed via play() will decrease satiation by 1. (PLAYING MAKES IT HUNGRY!)
 const healthToFun = 0.01;      // the less health, the higher fun decrease. Use: -(healthToFun/100)*health + healthToFun
-const healthToSec = 0.0115;
+const healthToSec = 0.0115;     // the less health, the higher secureness decrease.
+
+// Later: Character traits will influence the amounts of all power variables.
 
 //////////////////////////////////////////////////
 
@@ -81,7 +86,7 @@ const healthToSec = 0.0115;
 const myFurball = {
     name : null,
     isDead : false,
-    health : 100,
+    health : 1,
     satiation : 100,
     fun : 100,
     secureness : 100
@@ -92,8 +97,8 @@ const player = {
     name : null,
     points : 0,
     credits : 0,
-    food : 10,
-    toy : 10,
+    food : 5000,
+    toy : 5000,
     specialItems : null
 }
 
@@ -119,37 +124,52 @@ const switchPause = () => {
 
 
 const feed = () => {
-    let foodIncrease = (-(foodPowerMax-foodPowerMin)/100*myFurball.satiation) + foodPowerMax;
-    //if (0 < player.food < foodIncrease) {    // SHOULD BE THE SAME OR NOT? It has a weird behavior. If foodIncrease > 1 but player.food is still > foodIncrease, condition is true for some reason.
-    if (player.food > 0 && player.food < foodIncrease) {
-        window.alert(`player.food: ${player.food} | foodIncrease: ${foodIncrease}`);        // only a check, delete later
-        foodIncrease = player.food; // Why do I get negative amounts of food?
+    let satiationIncrease = (-(foodPowerMax-foodPowerMin)/100*myFurball.satiation) + foodPowerMax;
+    //if (0 < player.food < satiationIncrease) {    // SHOULD BE THE SAME OR NOT? It has a weird behavior. If satiationIncrease > 1 but player.food is still > satiationIncrease, condition is true for some reason.
+    if (player.food > 0 && player.food < satiationIncrease) {
+        //window.alert(`player.food: ${player.food} | satiationIncrease: ${satiationIncrease}`);        // only a check, delete later
+        satiationIncrease = player.food;
         
     } else if (!player.food) {
-        foodIncrease = 0;
+        satiationIncrease = 0;
     }
 
-    foodIncrease = Math.round(foodIncrease*100)/100;    // rounding seems to fail sometimes???
-    console.log(foodIncrease);
-    player.food -= foodIncrease;
-    myFurball.satiation += foodIncrease;
+    satiationIncrease = Math.round(satiationIncrease);
+    player.food -= satiationIncrease;
+    (myFurball.satiation < 0)?
+        myFurball.satiation = satiationIncrease :
+        myFurball.satiation += satiationIncrease;
+    
+    if (myFurball.satiation > 100) myFurball.satiation = 100;
 }
 
 
 const play = () => {
-    if (player.toy >= playPower) {
-        (myFurball.fun < 0)?
-        myFurball.fun = playPower :
-        myFurball.fun += playPower;
-        //player.toy -= playPower;
+    let funIncrease = (-(playPowerMax-playPowerMin)/100*myFurball.fun) + playPowerMax;
+    if (player.toy > 0 && player.toy < funIncrease) {
+        funIncrease = player.toy;
+    
+    } else if (!player.toy) {
+        funIncrease = 0;
     }
+
+    funIncrease = Math.round(funIncrease);
+    player.toy -= funIncrease;
+    (myFurball.fun < 0)?
+        myFurball.fun = funIncrease :
+        myFurball.fun += funIncrease;
+    if (myFurball.fun > 100) myFurball.fun = 100;
+
+    myFurball.satiation -= playToSat * funIncrease; // PLAYING MAKES FURBALL HUNGRY!
 }
 
 
 const pet = () => {
+    let securenessIncrease = (-(petPowerMax-petPowerMin)/100*myFurball.secureness) + petPowerMax;
     (myFurball.secureness < 0)?
-    myFurball.secureness = petPower :
-    myFurball.secureness += petPower;
+        myFurball.secureness = securenessIncrease :
+        myFurball.secureness += securenessIncrease;
+    if (myFurball.secureness > 100) myFurball.secureness = 100;
 }
 
 
@@ -164,10 +184,7 @@ function update(progress) {
         myFurball.satiation -= naturalDecreaseOfSatiation * gameSpeed;                                                      // + character trait
         myFurball.fun -= (naturalDecreaseOfFun + -healthToFun/100*myFurball.health + healthToFun) * gameSpeed;              // + character trait
         myFurball.secureness -= (naturalDecreaseOfSecureness + -healthToSec/100*myFurball.health + healthToSec) * gameSpeed;// + character trait
-
-        // My own formula, makes not much sense. Or does it?
-        //healthUpdate = -(satiationPower/myFurball.satiation)// + funPower/myFurball.fun);
-        
+      
         // Newtons Law of Cooling: u'(t) = -k(u(t)-a)
         healthUpdate = -satiationPower*(myFurball.health-myFurball.satiation)-funPower*(myFurball.health-myFurball.fun)-securenessPower*(myFurball.health-myFurball.secureness);
         //myFurball.health -= 0.01 * gameSpeed;// Test only, DELETE!!!!
@@ -177,6 +194,7 @@ function update(progress) {
     if (myFurball.health >= 100) myFurball.health = 100;
     if (myFurball.health <= 0) myFurball.isDead = true;
     //if (v_timeElapsed >= 8000) { myFurball.isDead = true } // Control values after a certain time. Delete later.
+    //if (myFurball.satiation <= 0) myFurball.isDead = true;  // time check. Delete later!
  };
 
 

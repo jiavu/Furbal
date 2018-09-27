@@ -1,0 +1,58 @@
+
+feed it:
+    "Yummy!"
+    "Is it food or..."
+    "* munch crunch chomp *"
+
+
+play with it:
+    "Oh, toys!"
+    "It's my dolly! Play with your own one!"
+    "Yippee!"
+
+pet it:
+    "I love you mama!"
+    "Rrrrrr!"
+    "Huuug!"
+
+=======================
+
+Health:
+    good
+        "Oh, happy day!"
+        "I am not feeling so well."
+        "I think it's over."
+    bad
+------------
+
+Satiation:
+    good
+        "I am good, thanks."
+
+        "Can I have cookie?"
+        "I am so hungry."
+        "My stomache hurts."
+        "Can I eat stones?"
+    bad
+------------
+
+Fun:
+    good
+
+        "Boring!!!"
+        "* YAWN *"
+        "* snooze *"
+        "Deadly boring."
+
+    bad
+------------
+
+Secureness:
+    good
+
+        "Where are you?"
+        "I am so lonley".
+        "I am so alone and sad. I don't want to eat."           !!!! DONT FORGET !!!
+        "I am so alone and sad. I don't want to eat or play."
+        "I am afraid all alone!"
+    bad
