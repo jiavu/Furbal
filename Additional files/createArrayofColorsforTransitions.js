@@ -65,14 +65,22 @@ function hex (c) {
   }
   
   // Exemplo de como usar
-  
+  /*
+  #FFFF19 yellow
+  #ffcc00 orange
+  #4EF84E green
+  #00ff00 lighter green
+  #0066ff blue
+  */
   var tmp1 = generateColor('#FF0000','#FF0000',20);      // 20 in red
-  console.log(tmp1);
+  
+  var tmp2 = generateColor('#0066ff','#FF0000',30);      // blue to red, 25 values  #0066ff blue
+  
+  var tmp3 = generateColor('#00ff00','#0066ff',50);      // green to yellow, 50 values  #00ff00 green
+  
 
-  var tmp2 = generateColor('#FFFF00','#FF0000',30);      // red to yellow, 30 values
-  console.log(tmp2);
-  var tmp3 = generateColor('#00FF00','#FFFF00',50);      // yellow to green, 50 values
-  console.log(tmp3);
+  console.log("Joined:")
+  console.log( tmp1.concat(tmp2, tmp3) );
 
 
   for (cor in tmp2) {
