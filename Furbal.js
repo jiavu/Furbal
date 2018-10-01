@@ -47,7 +47,7 @@ const specialItems = document.getElementById("specialItems");
 
 //////////////////////////////////////////////////
 
-// Gameloop paramenter:
+// Gameloop parameter:
 let lastRender = 0;
 let progress = 0;
 let v_timeElapsed = 0;
@@ -67,15 +67,15 @@ Health decrease on different gameSpeed values:
 -19.879081228891607 16002ms gameSpeed 2
 -19.74145722168376 8005ms gameSpeed 4
 */
-let counter = 0;            // counter and interval are not so
+let counter = 0;            // counter and interval are
 let interval = 1;           // not important anymore. Maybe delete interval check.
 let pause = false;
 
 // Balancing powers of decrease/increase:
 let healthUpdate;
 const naturalDecreaseOfSatiation = 0.015;
-// 0.015, gameSpeed = 1, satiation empty after 111532ms (1.859 min; 1:51:532min)
-// 0.015, gameSpeed = 0.01, satiation empty after ...
+// 0.015, gameSpeed = 1, satiation empty after 111532ms (1.859 min; 1:51:532 min)
+// 0.015, gameSpeed = 0.01, satiation empty after 11167557ms (186.12595 min)
 const satiationPower = 0.0015;               // = influence to health
 const naturalDecreaseOfFun = 0.0078;
 const funPower = 0.0004;                    // = influence to health
