@@ -35,6 +35,8 @@ const satiation = document.getElementById("satiation");
 const fun = document.getElementById("fun");
 const secureness = document.getElementById("secureness");
 
+const furballStatement = document.getElementById("furball-says");
+
 const feedBtn = document.getElementById("feedBtn");
 const playBtn = document.getElementById("playBtn");
 const petBtn = document.getElementById("petBtn");
@@ -106,7 +108,7 @@ const myFurball = {
     satiation : 100,
     fun : 100,
     secureness : 100
-}
+};
 
 // Player:
 const player = {
@@ -116,7 +118,27 @@ const player = {
     food : 5000,
     toy : 5000,
     specialItems : null
-}
+};
+
+/*
+Regarding: importing modules from file://
+The file:// protocol does not work with CORS - only a certain set of them work, such as http://, among others.
+
+Possibilities:
+1. Maybe set a http server on your local system and use http to your localhost to serve the files.
+2. Bypass CORS by disabling web-security.
+3. provide crossOrigin: null to OpenLayers OSM source:
+var newLayer = new ol.layer.Tile({
+source: new ol.source.OSM({
+    url: 'path/to/file.js',
+    crossOrigin: null
+    })
+});
+4. Save it in Github and change address in Furbal.html ?? :D
+
+*/
+import furbalStates from "./furbal_says"; // import module. Allow import from local file system in browser.
+let furballSaying;
 
 //////////////////////////////////////////////////
 //////////////////////////////////////////////////
@@ -189,23 +211,56 @@ const pet = () => {
 function update(progress) {
     ++counter;
 
-    // natural decrease and increase
+    // natural decrease and increase:
 
-    if (counter == interval) {
-        counter = 0;
+    myFurball.satiation -= naturalDecreaseOfSatiation * gameSpeed;                                                      // + character trait
+    myFurball.fun -= (naturalDecreaseOfFun + -healthToFun/100*myFurball.health + healthToFun) * gameSpeed;              // + character trait
+    myFurball.secureness -= (naturalDecreaseOfSecureness + -healthToSec/100*myFurball.health + healthToSec) * gameSpeed;// + character trait
+    
+    // Newtons Law of Cooling: u'(t) = -k(u(t)-a)
+    healthUpdate = -satiationPower*(myFurball.health-myFurball.satiation)-funPower*(myFurball.health-myFurball.fun)-securenessPower*(myFurball.health-myFurball.secureness);
+    //myFurball.health -= 0.01 * gameSpeed;// Test only, DELETE!!!!
+    myFurball.health += healthUpdate * gameSpeed;
 
-        myFurball.satiation -= naturalDecreaseOfSatiation * gameSpeed;                                                      // + character trait
-        myFurball.fun -= (naturalDecreaseOfFun + -healthToFun/100*myFurball.health + healthToFun) * gameSpeed;              // + character trait
-        myFurball.secureness -= (naturalDecreaseOfSecureness + -healthToSec/100*myFurball.health + healthToSec) * gameSpeed;// + character trait
-      
-        // Newtons Law of Cooling: u'(t) = -k(u(t)-a)
-        healthUpdate = -satiationPower*(myFurball.health-myFurball.satiation)-funPower*(myFurball.health-myFurball.fun)-securenessPower*(myFurball.health-myFurball.secureness);
-        //myFurball.health -= 0.01 * gameSpeed;// Test only, DELETE!!!!
-        myFurball.health += healthUpdate * gameSpeed;
-
-    }
     if (myFurball.health >= 100) myFurball.health = 100;
     if (myFurball.health <= 0) myFurball.isDead = true;
+
+    /*
+    Check all conditions to trigger Furbals statements here.
+    this function returns 1 phrase for html object "#furball-says".
+    */ 
+
+    //switch case:
+    let saysSatiation;
+    switch(myFurball.satiation) {
+        case 20:
+            saysSatiation = furbalSays.satiation[20];
+            break;
+        case 30:
+            saysSatiation = furbalSays.satiation[30];
+            break;
+        case 40:
+            saysSatiation = furbalSays.satiation[40];
+            break;
+        case 50:
+            saysSatiation = furbalSays.satiation[50];
+            break;
+        case 60:
+            saysSatiation = furbalSays.satiation[60];
+            break;
+        case 70:
+            saysSatiation = furbalSays.satiation[70];
+            break;
+        case 75:
+            saysSatiation = furbalSays.satiation[75];
+            break;
+        case 90:
+            saysSatiation = furbalSays.satiation[90];
+            break;
+    }
+    furballSaying = saysSatiation;
+
+
     //if (v_timeElapsed >= 8000) { myFurball.isDead = true } // Control values after a certain time. Delete later.
     //if (myFurball.satiation <= 0) myFurball.isDead = true;  // time check. Delete later!
  };
@@ -224,6 +279,8 @@ function draw() {
     // for controlling. Delete later:
     health.children[0].innerHTML = myFurball.health;
     //satiation.children[0].innerHTML = myFurball.satiation;
+
+    furballStatement.innerHTML = furballSaying;
 
     health.style.borderColor = "#" + colorMap[Math.round(myFurball.health-1)];
     satiation.children[0].style.width = myFurball.satiation + "%";

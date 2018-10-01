@@ -1,58 +1,84 @@
+// Trigger via switch cases?
+
+//////////////////////////////
+//////////////////////////////
+
+//High priority:
 
 feed it:
-    "Yummy!"
+    "Salad. Not again."     // almost full satiation    > 90%
+    "I am good, thanks."    // if already fed           80%
+    "Can I have a dessert?"
+    "Tastes good, thanks."
     "Is it food or..."
+    "Yummy!"
     "* munch crunch chomp *"
 
 
 play with it:
-    "Oh, toys!"
+    "I don't want to play anymore. You can have it."    // if satisfied, > 90%
+    "Yeay. Toys."                                       // if satisfied, 80%
+    "I already have three of them."                     // if satisfied, 70%
     "It's my dolly! Play with your own one!"
+    "Oh, toys!"
     "Yippee!"
 
 pet it:
-    "I love you mama!"
-    "Rrrrrr!"
+    "Leave me some space, okay?"                // if > 95%
+    "Come on, you're crushing me."              // if satisfied, 90%
+    // < 75%:
     "Huuug!"
+    "I love you mama!"
+    "You are the sunshine of my live."
+    "It's so good to have you".
+    "Rrrrrr!"
 
 =======================
 
-Health:
+Health:         // Highest priority
     good
-        "Oh, happy day!"
-        "I am not feeling so well."
-        "I think it's over."
+        "Oh, happy day!"                                        // 90%
+        "Could be better."                                      // 70%
+        "I am not feeling so well."                             // 50%
+        "Why do you let me die?"                                // 40%
+        "I declare that this is my last will and testament."    // 30%
+        "I am feeling so cold."                                 // 20%
+        "I think it's over."                                    // 10%
     bad
 ------------
 
+// Medium priority:
+
 Satiation:
     good
-        "I am good, thanks."
-
-        "Can I have cookie?"
-        "I am so hungry."
-        "My stomache hurts."
-        "Can I eat stones?"
+        "I'm so full."                  // 90%
+        "I could maybe eat something."  // 75%
+        "I want candy, now!"            // 70%
+        "Can I have cookie?"            // 60%
+        "I am so hungry."               // 50%
+        "Can I eat stones?"             // 40%
+        "My stomache hurts."            // 30%
+        "I am starving..."              // < 20%
     bad
 ------------
 
 Fun:
     good
-
-        "Boring!!!"
-        "* YAWN *"
-        "* snooze *"
-        "Deadly boring."
-
+        "Live is fun!"              // > 90 %
+        "Let's play something!"     // 75%
+        "Boring!!!"                 // 50%
+        "* YAWN *"                  // 40%
+        "* snooze *"                // 30%
+        "Deadly boring."            // < 20%
     bad
 ------------
 
 Secureness:
     good
-
-        "Where are you?"
-        "I am so lonley".
-        "I am so alone and sad. I don't want to eat."           !!!! DONT FORGET !!!
-        "I am so alone and sad. I don't want to eat or play."
-        "I am afraid all alone!"
+        "It's so good to have you."     // 75 -> 90%
+        "Where are you?"                // 60%
+        "I am so lonley".               // 50%
+        "I am afraid all alone!"        // 40%
+        "I am so alone and sad. I don't want to play."      // 30%  // !!!! DONT FORGET TO IMPLEMENT !!!
+        "I am so alone and sad. I don't want to eat or play." // 20%    // !!!! DONT FORGET TO IMPLEMENT !!!
     bad
