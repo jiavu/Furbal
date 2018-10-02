@@ -1,0 +1,20 @@
+/*
+Health decrease on different gameSpeed values:
+
+-2.4551341677638163  8012ms  gameSpeed 1
+-2.426407073306393  4007ms  gameSpeed 2
+-2.4214364966589557 2011ms   gameSpeed 4
+
+-7.531170623291359 16008ms gameSpeed 1
+-7.505613495337315 8015ms gameSpeed 2
+-7.502141006606919 4013ms gameSpeed 4
+
+-20.016419080736142 32006ms gameSpeed 1
+-19.879081228891607 16002ms gameSpeed 2
+-19.74145722168376 8005ms gameSpeed 4
+*/
+
+
+naturalDecreaseOfSatiation = 0.015;
+gameSpeed = 1, satiation empty after 111532ms (1.859 min; 1:51:532 min)
+gameSpeed = 0.01, satiation empty after 11167557ms (186.12595 min)

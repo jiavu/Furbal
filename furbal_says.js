@@ -1,4 +1,4 @@
-export const furbalStates = {
+const furbalStates = {
 
 // Trigger via switch cases?
 
@@ -98,3 +98,6 @@ export const furbalStates = {
     }
 
 };
+
+
+export default furbalStates;

@@ -25,8 +25,6 @@ const colorMap = colorMaps[4];
 const timeElapsed = document.getElementById("timeElapsed");
 const loopSpeed = document.getElementById("loopSpeed");
 const gSpeed = document.getElementById("gSpeed");
-const interv = document.getElementById("interv");
-const count = document.getElementById("count");
 const pauseButton = document.getElementById("pause");
 
 // Game elements:
@@ -54,30 +52,12 @@ let lastRender = 0;
 let progress = 0;
 let v_timeElapsed = 0;
 const gameSpeed = 1.7;
-/*
-Health decrease on different gameSpeed values:
-
--2.4551341677638163  8012ms  gameSpeed 1
--2.426407073306393  4007ms  gameSpeed 2
--2.4214364966589557 2011ms   gameSpeed 4
-
--7.531170623291359 16008ms gameSpeed 1
--7.505613495337315 8015ms gameSpeed 2
--7.502141006606919 4013ms gameSpeed 4
-
--20.016419080736142 32006ms gameSpeed 1
--19.879081228891607 16002ms gameSpeed 2
--19.74145722168376 8005ms gameSpeed 4
-*/
-let counter = 0;            // counter and interval are
-let interval = 1;           // not important anymore. Maybe delete interval check.
+let counter = 0;    // Counts the number of loops made since game was started.
 let pause = false;
 
 // Balancing powers of decrease/increase:
 let healthUpdate;
 const naturalDecreaseOfSatiation = 0.015;
-// 0.015, gameSpeed = 1, satiation empty after 111532ms (1.859 min; 1:51:532 min)
-// 0.015, gameSpeed = 0.01, satiation empty after 11167557ms (186.12595 min)
 const satiationPower = 0.0015;               // = influence to health
 const naturalDecreaseOfFun = 0.0078;
 const funPower = 0.0004;                    // = influence to health
@@ -126,6 +106,8 @@ The file:// protocol does not work with CORS - only a certain set of them work, 
 
 Possibilities:
 1. Maybe set a http server on your local system and use http to your localhost to serve the files.
+    Using Python(3): open cmd,
+    python -m http.server 8080 --bind 127.0.0.1
 2. Bypass CORS by disabling web-security.
 3. provide crossOrigin: null to OpenLayers OSM source:
 var newLayer = new ol.layer.Tile({
@@ -134,21 +116,31 @@ source: new ol.source.OSM({
     crossOrigin: null
     })
 });
-4. Save it in Github and change address in Furbal.html ?? :D
-
+4. Save it in Github and change address in Furbal.html ?? :D - Didn't work.
 */
-import furbalStates from "./furbal_says"; // import module. Allow import from local file system in browser.
-let furballSaying;
+
+
+//import furbalStates from "./furbal_says.js";
+//let furballSaying;
 
 //////////////////////////////////////////////////
 //////////////////////////////////////////////////
 // Functions:
 
 const gameOver = () => {
-    window.alert("Game Over!");
-    console.log("Health: ", myFurball.health-100);
-    console.log("/2: ", (myFurball.health-100)/2);
-    console.log("/4: ", (myFurball.health-100)/4);
+    const averageLoopSpeed = v_timeElapsed / counter;
+    
+    console.log("");
+    console.log("==============");
+    console.log("==============");
+    console.log("");
+    console.log("Game Speed: " + gameSpeed);
+    console.log("Avrge Loop Speed: " + averageLoopSpeed + "ms");
+    console.log("------")
+    console.log("Time Elapsed: ", v_timeElapsed + " ms");
+    console.log(" Hours: " + Math.floor(v_timeElapsed/3600000) + ":"
+        + Math.floor(v_timeElapsed/60000) + ":"
+        + Math.round(v_timeElapsed)/1000);
 };
 
 
@@ -230,36 +222,40 @@ function update(progress) {
     this function returns 1 phrase for html object "#furball-says".
     */ 
 
+    /*
     //switch case:
     let saysSatiation;
-    switch(myFurball.satiation) {
+    switch(Math.round(myFurball.satiation)) {
         case 20:
-            saysSatiation = furbalSays.satiation[20];
+            saysSatiation = furbalStates.satiation[20];
             break;
         case 30:
-            saysSatiation = furbalSays.satiation[30];
+            saysSatiation = furbalStates.satiation[30];
             break;
         case 40:
-            saysSatiation = furbalSays.satiation[40];
+            saysSatiation = furbalStates.satiation[40];
             break;
         case 50:
-            saysSatiation = furbalSays.satiation[50];
+            saysSatiation = furbalStates.satiation[50];
             break;
         case 60:
-            saysSatiation = furbalSays.satiation[60];
+            saysSatiation = furbalStates.satiation[60];
             break;
         case 70:
-            saysSatiation = furbalSays.satiation[70];
+            saysSatiation = furbalStates.satiation[70];
             break;
         case 75:
-            saysSatiation = furbalSays.satiation[75];
+            saysSatiation = furbalStates.satiation[75];
             break;
         case 90:
-            saysSatiation = furbalSays.satiation[90];
+            saysSatiation = furbalStates.satiation[90];
+            break;
+        default:
+            saysSatiation = "";
             break;
     }
     furballSaying = saysSatiation;
-
+    */
 
     //if (v_timeElapsed >= 8000) { myFurball.isDead = true } // Control values after a certain time. Delete later.
     //if (myFurball.satiation <= 0) myFurball.isDead = true;  // time check. Delete later!
@@ -271,16 +267,15 @@ function draw() {
     timeElapsed.innerHTML = "Time Elapsed: " + Math.round(v_timeElapsed) + "ms";
     loopSpeed.innerHTML = "Loop Speed: " + Math.round(progress) + "ms/loop";
     gSpeed.innerHTML = "Game Speed: " + gameSpeed;
-    interv.innerHTML = "Interval: " + interval;
 
     health.children[0].style.width = myFurball.health + "%";
     health.children[0].style.backgroundColor = "#" + colorMap[Math.round(myFurball.health-1)]; // Achtung, Index -1 gibt es nicht.
 
     // for controlling. Delete later:
-    health.children[0].innerHTML = myFurball.health;
+    //health.children[0].innerHTML = myFurball.health;
     //satiation.children[0].innerHTML = myFurball.satiation;
 
-    furballStatement.innerHTML = furballSaying;
+    //furballStatement.innerHTML = furballSaying;
 
     health.style.borderColor = "#" + colorMap[Math.round(myFurball.health-1)];
     satiation.children[0].style.width = myFurball.satiation + "%";
@@ -321,5 +316,6 @@ pauseButton.addEventListener("click", switchPause);
 feedBtn.addEventListener("click", feed);
 playBtn.addEventListener("click", play);
 petBtn.addEventListener("click", pet);
+
 
 reqAnimF = requestAnimationFrame(loop);
