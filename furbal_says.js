@@ -8,6 +8,7 @@ const furbalStates = {
 //High priority:
 
     toFeeding : {
+        95: "I'm so full.",                  // > 95%
         90: "Salad. Not again.",     // almost full satiation    > 90%
         80: "I am good, thanks.",    // if already fed           80% -> 90%
         1: "Can I have a dessert?",
@@ -60,14 +61,13 @@ const furbalStates = {
 
     satiation : {
         //good
-        90: "I'm so full.",                  // > 90%
-        75: "I could maybe eat something.",  // 70 - 75%
-        70: "I want candy, now!",            // 60 - 70%
-        60: "Can I have cookie?",            // 50 - 60%
-        50: "I am so hungry.",               // 40 - 50%
-        40: "Can I eat stones?",             // 30 - 40%
-        30: "My stomache hurts.",            // 20 - 30%
-        20: "I am starving...",              // < 20%
+        75: "I could maybe eat something.",  // 60 - 75%
+        60: "I want candy, now!",            // 50 - 60%
+        50: "Can I have cookie?",            // 40 - 50%
+        40: "I am so hungry.",               // 30 - 40%
+        30: "Can I eat stones?",             // 20 - 30%
+        20: "My stomache hurts.",            // 10 - 20%
+        10: "I am starving...",              // < 10%
         //bad
     },
 
