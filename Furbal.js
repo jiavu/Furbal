@@ -80,6 +80,8 @@ const playToSat = 0.3;           // example: playToSat = 0.1; 10 toy consumed vi
 const healthToFun = 0.01;      // the less health, the higher fun decrease. Use: -(healthToFun/100)*health + healthToFun
 const healthToSec = 0.0115;     // the less health, the higher secureness decrease.
 
+const secToFunThreshold = 0.25;   // in %. If security is 25% (or less), Furball won't play (and even lose fun by playing!).
+
 // Later: Character traits will influence the amounts of all power variables.
 
 //////////////////////////////////////////////////
@@ -156,11 +158,20 @@ const switchPause = () => {
 
 
 const feed = () => {
-    let satiationIncrease = (-(foodPowerMax-foodPowerMin)/100*myFurball.satiation) + foodPowerMax;
+    let satiationIncrease = ( (-(foodPowerMax-foodPowerMin)/100 *myFurball.satiation) + foodPowerMax ) * myFurball.secureness/100;   // the less secureness, the less myFurball will eat.
     
+    /*
+    ACHTUNG:
+    satiationIncrease wird negativ, wenn secureness negativ ist.
+    satiationIncrease darf niemals negativ sein.
+    Und, je weiter secureness von 0 entfernt, desto höher die Increase-Zahl!
+
+    Das muss beides noch irgendwie abgefangen werden.
+    */
+
+
     //if (0 < player.food < satiationIncrease) {    // SHOULD BE THE SAME OR NOT? It has a weird behavior. If satiationIncrease > 1 but player.food is still > satiationIncrease, condition is true for some reason.
     if (player.food > 0 && player.food < satiationIncrease) {
-        //window.alert(`player.food: ${player.food} | satiationIncrease: ${satiationIncrease}`);        // only a check, delete later
         satiationIncrease = player.food;
         
     } else if (!player.food) {
@@ -168,17 +179,21 @@ const feed = () => {
     }
 
     satiationIncrease = Math.round(satiationIncrease);
-    player.food -= satiationIncrease;
     (myFurball.satiation < 0)?
         myFurball.satiation = satiationIncrease :
         myFurball.satiation += satiationIncrease;
     
+    player.food -= satiationIncrease;    
     if (myFurball.satiation > 100) myFurball.satiation = 100;
+    if (!satiationIncrease) {
+        furballSaying = furbalStates.secureness.noEat;  // BAUSTELLE! bestimmten Kommentaren müssen Prioritäten zugewiesen werden.
+        console.log(furbalStates.secureness.noEat); // delete later
+    }
 }
 
 
 const play = () => {
-    let funIncrease = (-(playPowerMax-playPowerMin)/100*myFurball.fun) + playPowerMax;
+    let funIncrease = ( (-(playPowerMax-playPowerMin)/100 *myFurball.fun) + playPowerMax ) * (myFurball.secureness/100 -secToFunThreshold);   // the less secureness, the less myFurball will play.
     
     if (player.toy > 0 && player.toy < funIncrease) {
         funIncrease = player.toy;
@@ -188,19 +203,24 @@ const play = () => {
     }
 
     funIncrease = Math.round(funIncrease);
-    player.toy -= funIncrease;
     (myFurball.fun < 0)?
         myFurball.fun = funIncrease :
         myFurball.fun += funIncrease;
+    
+    if (funIncrease < 0) funIncrease *= -1;
+    player.toy -= funIncrease;
     if (myFurball.fun > 100) myFurball.fun = 100;
-
+    if (funIncrease <= 0) {
+        furballSaying = furbalStates.secureness.noPlay;         // BAUSTELLE! bestimmten Kommentaren müssen Prioritäten zugewiesen werden.
+        console.log(furbalStates.secureness.noPlay);    // delete later
+    }
     myFurball.satiation -= playToSat * funIncrease; // PLAYING MAKES FURBALL HUNGRY!
 }
 
 
 const pet = () => {
     //let securenessIncrease = (-(petPowerMax-petPowerMin)/100*myFurball.secureness) + petPowerMax; // the less secureness, the more increase.
-    let securenessIncrease = ((petPowerMax-petPowerMin)/100*myFurball.secureness) + petPowerMin; // the less secureness, the less increase. LOST CONFIDENCE!
+    let securenessIncrease = ((petPowerMax-petPowerMin)/100 *myFurball.secureness) + petPowerMin; // the less secureness, the less increase. LOST CONFIDENCE!
     
     (myFurball.secureness < 0)?
         myFurball.secureness = securenessIncrease :

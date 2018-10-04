@@ -61,12 +61,12 @@ const furbalStates = {
 
     satiation : {
         //good
-        75: "I could maybe eat something.",  // 60 - 75%
-        60: "I want candy, now!",            // 50 - 60%
-        50: "Can I have cookie?",            // 40 - 50%
-        40: "I am so hungry.",               // 30 - 40%
-        30: "Can I eat stones?",             // 20 - 30%
-        20: "My stomache hurts.",            // 10 - 20%
+        75: "I could maybe eat something.",  // 60 -> 75%
+        60: "I want candy, now!",            // 50 -> 60%
+        50: "Can I have cookie?",            // 40 -> 50%
+        40: "I am so hungry.",               // 30 -> 40%
+        30: "Can I eat stones?",             // 20 -> 30%
+        20: "My stomache hurts.",            // 10 -> 20%
         10: "I am starving...",              // < 10%
         //bad
     },
@@ -76,10 +76,10 @@ const furbalStates = {
     fun : {
         //good
         90: "Live is fun!",              // > 90 %
-        75: "Let's play something!",     // 50 - 75%
-        50: "Boring!!!",                 // 40 - 50%
-        40: "* YAWN *",                  // 30 - 40%
-        30: "* snooze *",                // 20 - 30%
+        75: "Let's play something!",     // 50 -> 75%
+        50: "Boring!!!",                 // 40 -> 50%
+        40: "* YAWN *",                  // 30 -> 40%
+        30: "* snooze *",                // 20 -> 30%
         20: "Deadly boring."            // < 20%
         //bad
     },
@@ -89,11 +89,11 @@ const furbalStates = {
     secureness : {
         //good
         75: "It's so good to have you.",     // 75 -> 90%
-        60: "Where are you?",                // 50 - 60%
-        50: "I am so lonley.",               // 40 - 50%
-        40: "I am afraid all alone!",        // 30 - 40%
-        30: "I am so alone and sad. I don't want to play.",      // 20 - 30%  // !!!! DONT FORGET TO IMPLEMENT !!!
-        20: "I am so alone and sad. I don't want to eat or play." // < 20%    // !!!! DONT FORGET TO IMPLEMENT !!!
+        60: "Where are you?",                // 50 -> 60%
+        50: "I am so lonley.",               // 40 -> 50%
+        40: "I am afraid all alone!",        // 30 -> 40%
+        noPlay: "I am so alone and sad. I don't want to play.",      // 20 -> 30%  // !!!! DONT FORGET TO IMPLEMENT !!!*
+        noEat: "I am so alone and sad. I don't want to eat or play." // < 20%    // !!!! DONT FORGET TO IMPLEMENT !!!*
         //bad
     }
 
@@ -101,3 +101,11 @@ const furbalStates = {
 
 
 export default furbalStates;
+
+/*
+*Jeweils in die feed() und die play()-Funktion:
+if (funIncrease <= 0) furballSaying = furbalStates.secureness.noPlay;
+if (!satiationIncrease) furballSaying = furbalStates.secureness.noEat;
+Mit hoher Priorität!
+
+*/
