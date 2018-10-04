@@ -8,9 +8,9 @@ const furbalStates = {
 //High priority:
 
     toFeeding : {
-        95: "I'm so full.",                  // > 95%
-        90: "Salad. Not again.",     // almost full satiation    > 90%
-        80: "I am good, thanks.",    // if already fed           80% -> 90%
+        95: "Salad. Not again.",     // > 95%
+        90: "I'm so full.",          // almost full satiation    > 90%
+        85: "I am good, thanks.",    // if already fed           80% -> 90%
         1: "Can I have a dessert?",
         2: "Tastes good, thanks.",
         3: "Is it food or...",
@@ -92,6 +92,8 @@ const furbalStates = {
         60: "Where are you?",                // 50 -> 60%
         50: "I am so lonley.",               // 40 -> 50%
         40: "I am afraid all alone!",        // 30 -> 40%
+        
+        // !!! HIGHEST PRIORITY, HIGHER THAN HEALTH:
         noPlay: "I am so alone and sad. I don't want to play.",      // 20 -> 30%  // !!!! DONT FORGET TO IMPLEMENT !!!*
         noEat: "I am so alone and sad. I don't want to eat or play." // < 20%    // !!!! DONT FORGET TO IMPLEMENT !!!*
         //bad

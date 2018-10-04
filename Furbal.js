@@ -35,6 +35,7 @@ const fun = document.getElementById("fun");
 const secureness = document.getElementById("secureness");
 
 const furballStatement = document.getElementById("furball-says");
+const furballName = document.getElementById("furball-name");
 
 const feedBtn = document.getElementById("feedBtn");
 const playBtn = document.getElementById("playBtn");
@@ -53,10 +54,12 @@ const specialItems = document.getElementById("specialItems");
 // Gameloop parameter:
 let lastRender = 0;
 let progress = 0;
-let v_timeElapsed = 0;
-const gameSpeed = 1.7;
+let v_timeElapsed;
+const gameSpeed = 2;
 let counter = 0;    // Counts the number of loops made since game was started.
 let pause = false;
+const cooldown = 3000;
+let timeElapsedTemp = 0;
 
 
 // Balancing powers of decrease/increase:
@@ -78,7 +81,7 @@ const petPowerMin = 1;
 
 const playToSat = 0.3;           // example: playToSat = 0.1; 10 toy consumed via play() will decrease satiation by 1. (PLAYING MAKES IT HUNGRY!)
 const healthToFun = 0.01;      // the less health, the higher fun decrease. Use: -(healthToFun/100)*health + healthToFun
-const healthToSec = 0.0115;     // the less health, the higher secureness decrease.
+const healthToSec = 0.0110;     // the less health, the higher secureness decrease.
 
 const secToFunThreshold = 0.25;   // in %. If security is 25% (or less), Furball won't play (and even lose fun by playing!).
 
@@ -89,9 +92,9 @@ const secToFunThreshold = 0.25;   // in %. If security is 25% (or less), Furball
 
 // Furball:
 const myFurball = {
-    name : null,
+    name : "My Furball",
     isDead : false,
-    health : 1,
+    health : 100,
     satiation : 100,
     fun : 100,
     secureness : 100
@@ -129,13 +132,26 @@ source: new ol.source.OSM({
 
 import furbalStates from "./furbal_says.js";
 let furballSaying;
+let saysFeed = false;
+let saysPlay = false;
+let saysPet = false;
+let saysSatiation;
+let saysFun;
+let saysSecureness;
 
 //////////////////////////////////////////////////
 //////////////////////////////////////////////////
 // Functions:
 
 const gameOver = () => {
+    furballStatement.innerHTML = "I'm dead.";
+
     const averageLoopSpeed = v_timeElapsed / counter;
+    const hours = Math.floor(v_timeElapsed/3600000);
+    const minutes = Math.floor(v_timeElapsed/60000 %60);
+    const secondsMs = Math.round(v_timeElapsed)/1000 %60;
+    const seconds = Math.floor(secondsMs);
+    
     
     console.log("");
     console.log("==============");
@@ -145,9 +161,13 @@ const gameOver = () => {
     console.log("Avrge Loop Speed: " + averageLoopSpeed + "ms");
     console.log("------")
     console.log("Time Elapsed: ", v_timeElapsed + " ms");
-    console.log("" + Math.floor(v_timeElapsed/3600000) + " hours, "
-        + Math.floor(v_timeElapsed/60000) + " minutes, "
-        + Math.round(v_timeElapsed)/1000 + " seconds.");
+    console.log( hours + " hours, "
+        + minutes + " minutes, "
+        + secondsMs + " seconds.");
+    window.alert(myFurball.name + " survived " +
+    hours + " hours, "
+    + minutes + " minutes and "
+    + seconds + " seconds.");
 };
 
 
@@ -158,19 +178,13 @@ const switchPause = () => {
 
 
 const feed = () => {
-    let satiationIncrease = ( (-(foodPowerMax-foodPowerMin)/100 *myFurball.satiation) + foodPowerMax ) * myFurball.secureness/100;   // the less secureness, the less myFurball will eat.
-    
-    /*
-    ACHTUNG:
-    satiationIncrease wird negativ, wenn secureness negativ ist.
-    satiationIncrease darf niemals negativ sein.
-    Und, je weiter secureness von 0 entfernt, desto höher die Increase-Zahl!
+    let satiationIncrease;
+    (myFurball.secureness < 0)?
+        satiationIncrease = 0 :
+        satiationIncrease = ( (-(foodPowerMax-foodPowerMin)/100 *myFurball.satiation) + foodPowerMax ) * myFurball.secureness/100;
+        // the less secureness, the less myFurball will eat.
 
-    Das muss beides noch irgendwie abgefangen werden.
-    */
-
-
-    //if (0 < player.food < satiationIncrease) {    // SHOULD BE THE SAME OR NOT? It has a weird behavior. If satiationIncrease > 1 but player.food is still > satiationIncrease, condition is true for some reason.
+    //if (0 < player.food < satiationIncrease) {    // Weird behavior. Doesn't work as intended.
     if (player.food > 0 && player.food < satiationIncrease) {
         satiationIncrease = player.food;
         
@@ -185,10 +199,38 @@ const feed = () => {
     
     player.food -= satiationIncrease;    
     if (myFurball.satiation > 100) myFurball.satiation = 100;
+
+    /*
+    let r = Math.floor(Math.random()*5),
+    saysFeed =
+        (!satiationIncrease)?
+            furbalStates.secureness.noEat :  // BAUSTELLE! bestimmten Kommentaren müssen Prioritäten zugewiesen werden.
+            (myFurball.satiation >= 95)?
+                furbalStates.toFeeding[95] :
+                (myFurball.satiation >= 90)?
+                    furbalStates.toFeeding[90] :
+                    (myFurball.satiation >= 80)?
+                        furbalStates.toFeeding[80] :
+                        (!saysFeed)? (
+                            console.log("Check"),
+                            furbalStates.toFeeding[r] ) :
+                            saysFeed;
+    // doesn't work as intended :/
+    */
+
     if (!satiationIncrease) {
-        furballSaying = furbalStates.secureness.noEat;  // BAUSTELLE! bestimmten Kommentaren müssen Prioritäten zugewiesen werden.
-        console.log(furbalStates.secureness.noEat); // delete later
+        saysFeed = furbalStates.secureness.noEat;
+    } else if (myFurball.satiation >= 95) {
+        saysFeed = furbalStates.toFeeding[95];
+    } else if (myFurball.satiation >= 90) {
+        saysFeed = furbalStates.toFeeding[90];
+    } else if (myFurball.satiation >= 85) {
+        saysFeed = furbalStates.toFeeding[85];
+    } else if (!saysFeed) {
+        let r = Math.floor(Math.random()*5);
+        saysFeed = furbalStates.toFeeding[r+1];
     }
+
 }
 
 
@@ -211,8 +253,7 @@ const play = () => {
     player.toy -= funIncrease;
     if (myFurball.fun > 100) myFurball.fun = 100;
     if (funIncrease <= 0) {
-        furballSaying = furbalStates.secureness.noPlay;         // BAUSTELLE! bestimmten Kommentaren müssen Prioritäten zugewiesen werden.
-        console.log(furbalStates.secureness.noPlay);    // delete later
+        saysPlay = furbalStates.secureness.noPlay;         // BAUSTELLE! bestimmten Kommentaren müssen Prioritäten zugewiesen werden.
     }
     myFurball.satiation -= playToSat * funIncrease; // PLAYING MAKES FURBALL HUNGRY!
 }
@@ -231,6 +272,8 @@ const pet = () => {
 
 function update(progress) {
 
+    
+
     // natural decrease and increase:
 
     myFurball.satiation -= naturalDecreaseOfSatiation * gameSpeed;                                                      // + character trait
@@ -248,10 +291,18 @@ function update(progress) {
     /*
     Check all conditions to trigger Furbals statements here.
     this function returns 1 phrase for html object "#furball-says".
-    */ 
+    */
 
-    //switch case:
-    let saysSatiation = "";
+    if (saysFeed) {
+        timeElapsedTemp += progress;
+        furballSaying = saysFeed;
+        if (timeElapsedTemp >= cooldown) {
+            saysFeed = false;
+            timeElapsedTemp = 0;
+        }
+    } else { furballSaying = ""; }
+
+    /*
     switch(Math.round(myFurball.satiation)) {
         case 10:
             saysSatiation = furbalStates.satiation[10];
@@ -276,6 +327,7 @@ function update(progress) {
             break;
     }
     furballSaying = saysSatiation;
+    */
 
     //if (v_timeElapsed >= 8000) { myFurball.isDead = true } // Control values after a certain time. Delete later.
     //if (myFurball.satiation <= 0) myFurball.isDead = true;  // time check. Delete later!
@@ -294,6 +346,7 @@ function draw() {
     // for controlling. Delete later:
     //health.children[0].innerHTML = myFurball.health;
     //satiation.children[0].innerHTML = myFurball.satiation;
+    //secureness.children[0].innerHTML = myFurball.secureness;
 
     furballStatement.innerHTML = furballSaying;
 
@@ -323,8 +376,8 @@ function loop(timestamp) {
     progress = timestamp - lastRender;
     v_timeElapsed += progress;
 
-    update(progress); // Alle Werte neu berechnen, pro bestimmte Zeit konstant decrease.
-    draw(); // Die Balken neu zeichnen.
+    update(progress);
+    draw();
 
     lastRender = timestamp;
     (myFurball.isDead)? gameOver() : reqAnimF = requestAnimationFrame(loop);
@@ -337,5 +390,8 @@ feedBtn.addEventListener("click", feed);
 playBtn.addEventListener("click", play);
 petBtn.addEventListener("click", pet);
 
+
+furballName.innerHTML = myFurball.name;
+v_timeElapsed = 0;
 
 reqAnimF = requestAnimationFrame(loop);
