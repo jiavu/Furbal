@@ -40,7 +40,7 @@ body {
 .monitor {
     position: fixed;
     right: 5%;
-    top: 32%;
+    top: 23%;
     width: 35%;
     color: red;
     font: 0.45rem sans-serif;
@@ -169,7 +169,7 @@ button {
 .my-credits {
     font-size: 0.48rem;
     color: lightgrey;
-    margin: 50% 0 2%;
+    margin: 10% 0 2%;
 }
 a {
     text-decoration: none;

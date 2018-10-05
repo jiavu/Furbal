@@ -27,7 +27,8 @@ const timeElapsed = document.getElementById("timeElapsed");
 const loopSpeed = document.getElementById("loopSpeed");
 const gSpeed = document.getElementById("gSpeed");
 const pauseButton = document.getElementById("pause");
-const other = document.getElementById("other");
+const other1 = document.getElementById("other1");
+const other2 = document.getElementById("other2");
 
 // Game elements:
 const health = document.getElementById("health");
@@ -53,10 +54,11 @@ const specialItems = document.getElementById("specialItems");
 
 
 // Gameloop parameter:
+const gameSpeed = 1;
+
 let lastRender = 0;
 let progress = 0;
 let v_timeElapsed;
-const gameSpeed = 2;
 let counter = 0;    // Counts the number of loops made since game was started.
 let pause = false;
 const cooldown = 2500;
@@ -131,9 +133,10 @@ source: new ol.source.OSM({
 
 */
 //If all files are saved to and accessed via request to server I can use:
-import furbalStates from "./furbal_says.js";
+//import furbalStates from "./furbal_says.js";
 //Otherwise paste object here and don't forget to remove type="module":
-//const furbalStates = {...};
+const furbalStates={toFeeding:{95:"Salad. Not again.",90:"I'm so full.",85:"I am good, thanks.",1:"Can I have a dessert?",2:"Tastes good, thanks.",3:"Is it food or...",4:"Yummy!",5:"* munch crunch chomp *"},toPlaying:{95: "I don't want to play anymore. You can have it.",90:"Yeay. Toys. :/",85:"I already had a lot of them.",1:"It's my dolly! Play with your own one!",2:"Oh, toys!",3:"Yippee!",4:"Catch me! Haha, catch me!!!"},toPetting:{95:"Leave me some space, okay?",85:"Come on, you're crushing me.",1:"Huuug!",2:"I love you mama!",3:"You are the sunshine of my live.",4:"It's so good to have you.",5:"Rrrrrrrr!"},health:{90:"Oh, happy day!",70:"Could be better.",50:"I am not feeling so well.",40:"Why do you let me die?",30:"I declare that this is my last will and testament.",20:"I am feeling so cold.",10:"I think it's over.",0:"I'm dead."},satiation:{75:"I could maybe eat something.",60:"I want candy, now!",50:"Can I have cookie?",40:"I am so hungry.",30:"Can I eat stones?",20:"My stomache hurts.",10:"I am starving...",},fun:{90:"Live is fun!",75:"Let's play something!",50:"Boring!!!",40:"* YAWN *",30:"* snooze *",20:"Deadly boring."},secureness:{75:"It's so good to have you.",60: "Where are you?",50:"I am so lonley.",40:"I am afraid all alone!",noPlay:"I am so alone and sad. I don't want to play.",noEat:"I am so alone and sad. I don't want to eat."}};
+
 let furballSaying = "";
 let saysFeed = false;
 let saysPlay = false;
@@ -242,12 +245,17 @@ const play = () => {
         if (funIncrease < 0) {
 
         }
-    }*/
+    } oder
     (myFurball.fun < 0)?                        // ! wenn funIncrease < 0, dann myFurball.fun -= funIncrease
         (funIncrease < 0 && myFurball.secureness < 0)?
             myFurball.fun += funIncrease
         :   myFurball.fun = funIncrease
         :   myFurball.fun += funIncrease;
+    */
+    // Wenn funIncrease wieder positiv ist (myFurball.secureness/100 -secToFunThreshold) > 0 und fun < 0, dann myFurball.fun = funIncrease.
+    (myFurball.fun < 0 && myFurball.secureness/100 -secToFunThreshold > 0)?
+        myFurball.fun = funIncrease :
+        myFurball.fun += funIncrease;
 
 
     if (funIncrease <= 0) {
@@ -365,7 +373,7 @@ function update(progress) {
     */
 
     //Test: DELETE / DEACTIVATE !!!
-    myFurball.satiation = 100;
+    //myFurball.satiation = 100;
     //myFurball.fun = 100;
     //myFurball.secureness = 100;
     //myFurball.health = 1;
@@ -379,7 +387,8 @@ function draw() {
     timeElapsed.innerHTML = "Time Elapsed: " + Math.round(v_timeElapsed) + "ms";
     loopSpeed.innerHTML = "Loop Speed: " + Math.round(progress) + "ms/loop";
     gSpeed.innerHTML = "Game Speed: " + gameSpeed;
-    other.innerHTML = "Other: " + myFurball.fun;
+    other1.innerHTML = "Other1: " + myFurball.fun;
+    other2.innerHTML = "Other2: " + myFurball.secureness;
 
     health.children[0].style.width = myFurball.health + "%";
     health.children[0].style.backgroundColor = "#" + colorMap[Math.round(myFurball.health-1)]; // Achtung, Index -1 gibt es nicht.
