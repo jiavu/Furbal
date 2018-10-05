@@ -19,9 +19,9 @@ const furbalStates = {
     },
 
     toPlaying : {
-        90: "I don't want to play anymore. You can have it.",    // if satisfied, > 90%
-        80: "Yeay. Toys.",                                       // if satisfied, 80% -> 90%
-        70: "I already have three of them.",                     // if satisfied, 70% -> 80%
+        95: "I don't want to play anymore. You can have it.",    // if satisfied, > 90%
+        90: "Yeay. Toys. :/",                                       // if satisfied, 80% -> 90%
+        85: "I already had a lot of them.",                     // if satisfied, 70% -> 80%
         1: "It's my dolly! Play with your own one!",
         2: "Oh, toys!",
         3: "Yippee!",
@@ -94,8 +94,8 @@ const furbalStates = {
         40: "I am afraid all alone!",        // 30 -> 40%
         
         // !!! HIGHEST PRIORITY, HIGHER THAN HEALTH:
-        noPlay: "I am so alone and sad. I don't want to play.",      // 20 -> 30%  // !!!! DONT FORGET TO IMPLEMENT !!!*
-        noEat: "I am so alone and sad. I don't want to eat or play." // < 20%    // !!!! DONT FORGET TO IMPLEMENT !!!*
+        noPlay: "I am so alone and sad. I don't want to play.",             // 20 -> 30%  // !!!! DONT FORGET TO IMPLEMENT !!!*
+        noEat: "I am so alone and sad. I don't want to eat." /*or play.*/ // < 20%    // !!!! DONT FORGET TO IMPLEMENT !!!*
         //bad
     }
 

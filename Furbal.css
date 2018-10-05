@@ -5,7 +5,7 @@
     font-size: 3vh;
     margin: 0;
     min-width: 320px;
-    border: 1px solid black;
+    border: 1px dashed black;
     text-align: center;
 }
 /*
@@ -47,6 +47,7 @@ body {
     text-align: left;
     border: 1px solid red;
     padding: 0 0.2em;
+    background-color: lightgrey;
 }
 h1 {
     font: 1.7rem "Coiny", cursive;
@@ -164,4 +165,13 @@ button {
 .condition-bar > div {
     height: 100%;
     border-radius: 0.2em;
+}
+.my-credits {
+    font-size: 0.48rem;
+    color: lightgrey;
+    margin: 50% 0 2%;
+}
+a {
+    text-decoration: none;
+    color: grey;
 }

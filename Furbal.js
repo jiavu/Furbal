@@ -27,6 +27,7 @@ const timeElapsed = document.getElementById("timeElapsed");
 const loopSpeed = document.getElementById("loopSpeed");
 const gSpeed = document.getElementById("gSpeed");
 const pauseButton = document.getElementById("pause");
+const other = document.getElementById("other");
 
 // Game elements:
 const health = document.getElementById("health");
@@ -58,7 +59,7 @@ let v_timeElapsed;
 const gameSpeed = 2;
 let counter = 0;    // Counts the number of loops made since game was started.
 let pause = false;
-const cooldown = 3000;
+const cooldown = 2500;
 let timeElapsedTemp = 0;
 
 
@@ -83,7 +84,7 @@ const playToSat = 0.3;           // example: playToSat = 0.1; 10 toy consumed vi
 const healthToFun = 0.01;      // the less health, the higher fun decrease. Use: -(healthToFun/100)*health + healthToFun
 const healthToSec = 0.0110;     // the less health, the higher secureness decrease.
 
-const secToFunThreshold = 0.25;   // in %. If security is 25% (or less), Furball won't play (and even lose fun by playing!).
+const secToFunThreshold = 0.12;   // in %. If security is 25% (or less), Furball won't play (and even lose fun by playing!).
 
 // Later: Character traits will influence the amounts of all power variables.
 
@@ -94,10 +95,10 @@ const secToFunThreshold = 0.25;   // in %. If security is 25% (or less), Furball
 const myFurball = {
     name : "My Furball",
     isDead : false,
-    health : 100,
-    satiation : 100,
-    fun : 100,
-    secureness : 100
+    health : 50,
+    satiation : 50,
+    fun : 50,
+    secureness : 50
 };
 
 // Player:
@@ -127,11 +128,13 @@ source: new ol.source.OSM({
     })
 });
 4. Save it in Github and change address in Furbal.html ?? :D - Didn't work.
+
 */
-
-
+//If all files are saved to and accessed via request to server I can use:
 import furbalStates from "./furbal_says.js";
-let furballSaying;
+//Otherwise paste object here and don't forget to remove type="module":
+//const furbalStates = {...};
+let furballSaying = "";
 let saysFeed = false;
 let saysPlay = false;
 let saysPet = false;
@@ -196,27 +199,7 @@ const feed = () => {
     (myFurball.satiation < 0)?
         myFurball.satiation = satiationIncrease :
         myFurball.satiation += satiationIncrease;
-    
-    player.food -= satiationIncrease;    
-    if (myFurball.satiation > 100) myFurball.satiation = 100;
 
-    /*
-    let r = Math.floor(Math.random()*5),
-    saysFeed =
-        (!satiationIncrease)?
-            furbalStates.secureness.noEat :  // BAUSTELLE! bestimmten Kommentaren müssen Prioritäten zugewiesen werden.
-            (myFurball.satiation >= 95)?
-                furbalStates.toFeeding[95] :
-                (myFurball.satiation >= 90)?
-                    furbalStates.toFeeding[90] :
-                    (myFurball.satiation >= 80)?
-                        furbalStates.toFeeding[80] :
-                        (!saysFeed)? (
-                            console.log("Check"),
-                            furbalStates.toFeeding[r] ) :
-                            saysFeed;
-    // doesn't work as intended :/
-    */
 
     if (!satiationIncrease) {
         saysFeed = furbalStates.secureness.noEat;
@@ -227,9 +210,17 @@ const feed = () => {
     } else if (myFurball.satiation >= 85) {
         saysFeed = furbalStates.toFeeding[85];
     } else if (!saysFeed) {
+        timeElapsedTemp = 0;
         let r = Math.floor(Math.random()*5);
+        saysPlay = false;
+        saysPet = false;
         saysFeed = furbalStates.toFeeding[r+1];
     }
+    furballSaying = saysFeed;
+
+
+    player.food -= satiationIncrease;    
+    if (myFurball.satiation > 100) myFurball.satiation = 100;
 
 }
 
@@ -245,17 +236,44 @@ const play = () => {
     }
 
     funIncrease = Math.round(funIncrease);
-    (myFurball.fun < 0)?
-        myFurball.fun = funIncrease :
-        myFurball.fun += funIncrease;
-    
+
+    /*
+    if (myFurball.fun < 0) {
+        if (funIncrease < 0) {
+
+        }
+    }*/
+    (myFurball.fun < 0)?                        // ! wenn funIncrease < 0, dann myFurball.fun -= funIncrease
+        (funIncrease < 0 && myFurball.secureness < 0)?
+            myFurball.fun += funIncrease
+        :   myFurball.fun = funIncrease
+        :   myFurball.fun += funIncrease;
+
+
+    if (funIncrease <= 0) {
+        saysPlay = furbalStates.secureness.noPlay;
+    } else if (myFurball.fun >= 95) {
+        saysPlay = furbalStates.toPlaying[95];
+    } else if (myFurball.fun >= 90) {
+        saysPlay = furbalStates.toPlaying[90];
+    } else if (myFurball.fun >= 85) {
+        saysPlay = furbalStates.toPlaying[85];
+    } else if (!saysPlay) {
+        timeElapsedTemp = 0;
+        let r = Math.floor(Math.random()*4);
+        saysFeed = false;
+        saysPet = false;
+        saysPlay = furbalStates.toPlaying[r+1];
+    }
+    furballSaying = saysPlay;
+
+
     if (funIncrease < 0) funIncrease *= -1;
     player.toy -= funIncrease;
     if (myFurball.fun > 100) myFurball.fun = 100;
-    if (funIncrease <= 0) {
-        saysPlay = furbalStates.secureness.noPlay;         // BAUSTELLE! bestimmten Kommentaren müssen Prioritäten zugewiesen werden.
-    }
+
     myFurball.satiation -= playToSat * funIncrease; // PLAYING MAKES FURBALL HUNGRY!
+
 }
 
 
@@ -267,6 +285,21 @@ const pet = () => {
         myFurball.secureness = securenessIncrease :
         myFurball.secureness += securenessIncrease;
     if (myFurball.secureness > 100) myFurball.secureness = 100;
+
+
+    if (myFurball.secureness >= 95) {
+        saysPet = furbalStates.toPetting[95];
+    } else if (myFurball.secureness >= 85) {
+        saysPet = furbalStates.toPetting[85];
+    } else if (!saysPet) {
+        timeElapsedTemp = 0;
+        let r = Math.floor(Math.random()*5);
+        saysPlay = false;
+        saysFeed = false;
+        saysPet = furbalStates.toPetting[r+1];
+    }
+    furballSaying = saysPet;
+
 }
 
 
@@ -293,14 +326,16 @@ function update(progress) {
     this function returns 1 phrase for html object "#furball-says".
     */
 
-    if (saysFeed) {
+    if (furballSaying) {
         timeElapsedTemp += progress;
-        furballSaying = saysFeed;
         if (timeElapsedTemp >= cooldown) {
+            furballSaying = "";
             saysFeed = false;
+            saysPlay = false;
+            saysPet = false;
             timeElapsedTemp = 0;
         }
-    } else { furballSaying = ""; }
+    }
 
     /*
     switch(Math.round(myFurball.satiation)) {
@@ -329,6 +364,11 @@ function update(progress) {
     furballSaying = saysSatiation;
     */
 
+    //Test: DELETE / DEACTIVATE !!!
+    myFurball.satiation = 100;
+    //myFurball.fun = 100;
+    //myFurball.secureness = 100;
+    //myFurball.health = 1;
     //if (v_timeElapsed >= 8000) { myFurball.isDead = true } // Control values after a certain time. Delete later.
     //if (myFurball.satiation <= 0) myFurball.isDead = true;  // time check. Delete later!
  };
@@ -339,6 +379,7 @@ function draw() {
     timeElapsed.innerHTML = "Time Elapsed: " + Math.round(v_timeElapsed) + "ms";
     loopSpeed.innerHTML = "Loop Speed: " + Math.round(progress) + "ms/loop";
     gSpeed.innerHTML = "Game Speed: " + gameSpeed;
+    other.innerHTML = "Other: " + myFurball.fun;
 
     health.children[0].style.width = myFurball.health + "%";
     health.children[0].style.backgroundColor = "#" + colorMap[Math.round(myFurball.health-1)]; // Achtung, Index -1 gibt es nicht.
