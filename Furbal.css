@@ -39,7 +39,7 @@ body {
 }
 .monitor {
     position: fixed;
-    right: 5%;
+    left: 5%;
     top: 23%;
     width: 35%;
     color: red;
@@ -92,6 +92,7 @@ h3 {
     margin: 0 5%;
     display: flex;
     justify-content: space-around;
+    flex-direction: row-reverse
     /*border: 1px solid grey;*/
 }
 .buttons {
@@ -140,6 +141,11 @@ button {
     margin: 1% 0;
     font-size: 0.7rem;
 }
+.conditions > div > div {
+    animation-name: fade;
+    animation-duration: 2s;
+    animation-direction: alternate;
+}
 .health {
     font-size: 1rem;
     margin-bottom: 5.5%;
@@ -174,4 +180,8 @@ button {
 a {
     text-decoration: none;
     color: grey;
+}
+@keyframes fade {
+    from {opacity: 0}
+    to {opacity: 1}
 }

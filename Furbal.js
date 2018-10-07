@@ -401,15 +401,15 @@ function draw() {
     furballStatement.innerHTML = furballSaying;
 
     health.style.borderColor = "#" + colorMap[Math.round(myFurball.health-1)];
-    satiation.children[0].style.width = myFurball.satiation + "%";
-    satiation.children[0].style.backgroundColor = "#" + colorMap[Math.round(myFurball.satiation-1)];
-    satiation.style.borderColor = "#" + colorMap[Math.round(myFurball.satiation-1)];
-    fun.children[0].style.width = myFurball.fun + "%";
-    fun.children[0].style.backgroundColor = "#" + colorMap[Math.round(myFurball.fun-1)];
-    fun.style.borderColor = "#" + colorMap[Math.round(myFurball.fun-1)];
-    secureness.children[0].style.width = myFurball.secureness + "%";
-    secureness.children[0].style.backgroundColor = "#" + colorMap[Math.round(myFurball.secureness-1)];
-    secureness.style.borderColor = "#" + colorMap[Math.round(myFurball.secureness-1)];
+    satiation.children[0].children[0].style.width = myFurball.satiation + "%";
+    satiation.children[0].children[0].style.backgroundColor = "#" + colorMap[Math.round(myFurball.satiation-1)];
+    satiation.children[0].style.borderColor = "#" + colorMap[Math.round(myFurball.satiation-1)];
+    fun.children[0].children[0].style.width = myFurball.fun + "%";
+    fun.children[0].children[0].style.backgroundColor = "#" + colorMap[Math.round(myFurball.fun-1)];
+    fun.children[0].style.borderColor = "#" + colorMap[Math.round(myFurball.fun-1)];
+    secureness.children[0].children[0].style.width = myFurball.secureness + "%";
+    secureness.children[0].children[0].style.backgroundColor = "#" + colorMap[Math.round(myFurball.secureness-1)];
+    secureness.children[0].style.borderColor = "#" + colorMap[Math.round(myFurball.secureness-1)];
 
     points.innerHTML = player.points;
     credits.innerHTML = player.credits;
