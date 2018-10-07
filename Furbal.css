@@ -7,6 +7,7 @@
     min-width: 320px;
     border: 1px dashed black;
     text-align: center;
+    height: 100%;
 }
 /*
 @media only screen and (orientation: portrait) {
@@ -36,11 +37,12 @@ html {
 }
 body {
     font-size: 0.9rem;
+    animation: fade 1s ease 0s 1 normal;
 }
 .monitor {
     position: fixed;
-    left: 5%;
-    top: 23%;
+    right: 5%;
+    top: 0;   /*23%*/
     width: 35%;
     color: red;
     font: 0.45rem sans-serif;
@@ -141,11 +143,15 @@ button {
     margin: 1% 0;
     font-size: 0.7rem;
 }
-.conditions > div > div {
+/*
+#satiation, #fun, #secureness {
     animation-name: fade;
-    animation-duration: 2s;
-    animation-direction: alternate;
-}
+    animation-duration: 1s;
+    animation-direction: reverse;
+    animation-delay: 2000ms;
+    animation-fill-mode: forwards;
+}*/
+
 .health {
     font-size: 1rem;
     margin-bottom: 5.5%;
@@ -181,7 +187,19 @@ a {
     text-decoration: none;
     color: grey;
 }
+/* evtl: fixed footer */
+footer {
+    position: fixed;
+    width: 100%;
+    bottom: 0;
+}
+
 @keyframes fade {
-    from {opacity: 0}
+    from {
+        opacity: 0;
+        /* evtl:
+        display: none;
+        */
+    }
     to {opacity: 1}
 }

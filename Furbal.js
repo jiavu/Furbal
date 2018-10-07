@@ -29,6 +29,7 @@ const gSpeed = document.getElementById("gSpeed");
 const pauseButton = document.getElementById("pause");
 const other1 = document.getElementById("other1");
 const other2 = document.getElementById("other2");
+const other3 = document.getElementById("other3");
 
 // Game elements:
 const health = document.getElementById("health");
@@ -54,7 +55,7 @@ const specialItems = document.getElementById("specialItems");
 
 
 // Gameloop parameter:
-const gameSpeed = 1;
+const gameSpeed = 2;
 
 let lastRender = 0;
 let progress = 0;
@@ -97,10 +98,10 @@ const secToFunThreshold = 0.12;   // in %. If security is 25% (or less), Furball
 const myFurball = {
     name : "My Furball",
     isDead : false,
-    health : 50,
-    satiation : 50,
-    fun : 50,
-    secureness : 50
+    health : 100,
+    satiation : 100,
+    fun : 100,
+    secureness : 100
 };
 
 // Player:
@@ -116,22 +117,10 @@ const player = {
 /*
 Regarding: importing modules from file://
 The file:// protocol does not work with CORS - only a certain set of them work, such as http://, among others.
+-> Set a http server on your local system and use http to your localhost to serve the files.
+    python -m http.server 8080 --bind 127.0.0.1 //python3
+or Bypass CORS by disabling web-security. */
 
-Possibilities:
-1. Maybe set a http server on your local system and use http to your localhost to serve the files.
-    Using Python(3): open cmd,
-    python -m http.server 8080 --bind 127.0.0.1
-2. Bypass CORS by disabling web-security.
-3. provide crossOrigin: null to OpenLayers OSM source:
-var newLayer = new ol.layer.Tile({
-source: new ol.source.OSM({
-    url: 'path/to/file.js',
-    crossOrigin: null
-    })
-});
-4. Save it in Github and change address in Furbal.html ?? :D - Didn't work.
-
-*/
 //If all files are saved to and accessed via request to server I can use:
 //import furbalStates from "./furbal_says.js";
 //Otherwise paste object here and don't forget to remove type="module":
@@ -145,12 +134,21 @@ let saysSatiation;
 let saysFun;
 let saysSecureness;
 
+// For drawing / CSS /jQuery:
+let satShown = true;
+let funShown = true;
+let secShown = true;
+let countSatShown = 0;
+let countFunShown = 0;
+let countSecShown = 0;
+
 //////////////////////////////////////////////////
 //////////////////////////////////////////////////
 // Functions:
 
 const gameOver = () => {
     furballStatement.innerHTML = "I'm dead.";
+    $(function(){$("#satiation,#fun,#secureness").fadeIn(200); });
 
     const averageLoopSpeed = v_timeElapsed / counter;
     const hours = Math.floor(v_timeElapsed/3600000);
@@ -199,10 +197,9 @@ const feed = () => {
     }
 
     satiationIncrease = Math.round(satiationIncrease);
-    (myFurball.satiation < 0)?
+    (myFurball.satiation < 0 && myFurball.secureness/100 > 0)?
         myFurball.satiation = satiationIncrease :
         myFurball.satiation += satiationIncrease;
-
 
     if (!satiationIncrease) {
         saysFeed = furbalStates.secureness.noEat;
@@ -220,9 +217,17 @@ const feed = () => {
         saysFeed = furbalStates.toFeeding[r+1];
     }
     furballSaying = saysFeed;
+    countSatShown = 0;
+    satShown = true;
 
+    // same as $(document).ready(function(){/*jQuery method*/});
+    if (saysFeed) {
+        feedShown = true;
+        $(function(){$("#satiation").fadeIn(300)});       // default: 400ms
+    }
 
     player.food -= satiationIncrease;    
+
     if (myFurball.satiation > 100) myFurball.satiation = 100;
 
 }
@@ -240,22 +245,11 @@ const play = () => {
 
     funIncrease = Math.round(funIncrease);
 
-    /*
-    if (myFurball.fun < 0) {
-        if (funIncrease < 0) {
-
-        }
-    } oder
-    (myFurball.fun < 0)?                        // ! wenn funIncrease < 0, dann myFurball.fun -= funIncrease
-        (funIncrease < 0 && myFurball.secureness < 0)?
-            myFurball.fun += funIncrease
-        :   myFurball.fun = funIncrease
-        :   myFurball.fun += funIncrease;
-    */
     // Wenn funIncrease wieder positiv ist (myFurball.secureness/100 -secToFunThreshold) > 0 und fun < 0, dann myFurball.fun = funIncrease.
     (myFurball.fun < 0 && myFurball.secureness/100 -secToFunThreshold > 0)?
         myFurball.fun = funIncrease :
-        myFurball.fun += funIncrease;
+        myFurball.fun += funIncrease; // I asume funIncrease can be negative so myFurball.fun decreases.
+        //It does decrease, but why is funIncrease positive when I check it ???
 
 
     if (funIncrease <= 0) {
@@ -274,13 +268,31 @@ const play = () => {
         saysPlay = furbalStates.toPlaying[r+1];
     }
     furballSaying = saysPlay;
+    countFunShown = 0;
+    countSatiationShown = 0;
+    funShown = true;
+    satShown = true;
 
+    if (saysPlay) $(function(){ $("#fun").fadeIn(300, ()=> {
+        if (funIncrease > 0) {          // weird. this condition is always true although funIncrease is negative. ERROR OF CALLBACK FUNCTION !!!
+            $("#satiation").fadeIn(300);
+            console.log("1. funIncrease > 0: " + funIncrease);
+        }
+    }); });
 
-    if (funIncrease < 0) funIncrease *= -1;
+    if (funIncrease > 0) {
+        myFurball.satiation -= playToSat * funIncrease; // PLAYING MAKES FURBALL HUNGRY!
+        console.log("2. funIncrease > 0: "+funIncrease);
+        console.log()
+    }
+    
+    if (funIncrease < 0) {
+        console.log("3. funIncrease < 0: " + funIncrease);
+        funIncrease *= -1;
+    }
     player.toy -= funIncrease;
-    if (myFurball.fun > 100) myFurball.fun = 100;
 
-    myFurball.satiation -= playToSat * funIncrease; // PLAYING MAKES FURBALL HUNGRY!
+    if (myFurball.fun > 100) myFurball.fun = 100;
 
 }
 
@@ -307,13 +319,14 @@ const pet = () => {
         saysPet = furbalStates.toPetting[r+1];
     }
     furballSaying = saysPet;
+    countSecShown = 0;
+    secShown = true;
 
+    if (saysPet) $(function(){ $("#secureness").fadeIn(300); });
 }
 
 
 function update(progress) {
-
-    
 
     // natural decrease and increase:
 
@@ -376,7 +389,7 @@ function update(progress) {
     //myFurball.satiation = 100;
     //myFurball.fun = 100;
     //myFurball.secureness = 100;
-    //myFurball.health = 1;
+    myFurball.health = 100;
     //if (v_timeElapsed >= 8000) { myFurball.isDead = true } // Control values after a certain time. Delete later.
     //if (myFurball.satiation <= 0) myFurball.isDead = true;  // time check. Delete later!
  };
@@ -387,8 +400,16 @@ function draw() {
     timeElapsed.innerHTML = "Time Elapsed: " + Math.round(v_timeElapsed) + "ms";
     loopSpeed.innerHTML = "Loop Speed: " + Math.round(progress) + "ms/loop";
     gSpeed.innerHTML = "Game Speed: " + gameSpeed;
-    other1.innerHTML = "Other1: " + myFurball.fun;
-    other2.innerHTML = "Other2: " + myFurball.secureness;
+    other1.innerHTML = "Other1: " + myFurball.satiation;
+    other2.innerHTML = "Other2: " + myFurball.fun;
+    other3.innerHTML = "Other3: " + myFurball.secureness;
+
+    points.innerHTML = player.points;
+    credits.innerHTML = player.credits;
+    food.innerHTML = player.food;
+    toy.innerHTML = player.toy;
+    specialItems.innerHTML = player.specialItems;
+
 
     health.children[0].style.width = myFurball.health + "%";
     health.children[0].style.backgroundColor = "#" + colorMap[Math.round(myFurball.health-1)]; // Achtung, Index -1 gibt es nicht.
@@ -401,21 +422,40 @@ function draw() {
     furballStatement.innerHTML = furballSaying;
 
     health.style.borderColor = "#" + colorMap[Math.round(myFurball.health-1)];
-    satiation.children[0].children[0].style.width = myFurball.satiation + "%";
-    satiation.children[0].children[0].style.backgroundColor = "#" + colorMap[Math.round(myFurball.satiation-1)];
-    satiation.children[0].style.borderColor = "#" + colorMap[Math.round(myFurball.satiation-1)];
-    fun.children[0].children[0].style.width = myFurball.fun + "%";
-    fun.children[0].children[0].style.backgroundColor = "#" + colorMap[Math.round(myFurball.fun-1)];
-    fun.children[0].style.borderColor = "#" + colorMap[Math.round(myFurball.fun-1)];
-    secureness.children[0].children[0].style.width = myFurball.secureness + "%";
-    secureness.children[0].children[0].style.backgroundColor = "#" + colorMap[Math.round(myFurball.secureness-1)];
-    secureness.children[0].style.borderColor = "#" + colorMap[Math.round(myFurball.secureness-1)];
+    satiation.children[0].style.width = myFurball.satiation + "%";
+    satiation.children[0].style.backgroundColor = "#" + colorMap[Math.round(myFurball.satiation-1)];
+    satiation.style.borderColor = "#" + colorMap[Math.round(myFurball.satiation-1)];
+    fun.children[0].style.width = myFurball.fun + "%";
+    fun.children[0].style.backgroundColor = "#" + colorMap[Math.round(myFurball.fun-1)];
+    fun.style.borderColor = "#" + colorMap[Math.round(myFurball.fun-1)];
+    secureness.children[0].style.width = myFurball.secureness + "%";
+    secureness.children[0].style.backgroundColor = "#" + colorMap[Math.round(myFurball.secureness-1)];
+    secureness.style.borderColor = "#" + colorMap[Math.round(myFurball.secureness-1)];
 
-    points.innerHTML = player.points;
-    credits.innerHTML = player.credits;
-    food.innerHTML = player.food;
-    toy.innerHTML = player.toy;
-    specialItems.innerHTML = player.specialItems;
+    if (satShown) {
+        countSatShown += progress;
+        if (countSatShown > 1500) {
+            $(function(){ $("#satiation").fadeOut(1000); });
+            satShown = false;
+            countSatShown = 0;
+        }
+    }
+    if (funShown) {
+        countFunShown += progress;
+        if (countFunShown > 1500) {
+            $(function(){ $("#fun").fadeOut(1000); });
+            funShown = false;
+            countFunShown = 0;
+        }
+    }
+    if (secShown) {
+        countSecShown += progress;
+        if (countSecShown > 1500) {
+            $(function(){ $("#secureness").fadeOut(1000); });
+            secShown = false;
+            countSecShown = 0;
+        }
+    }
 
 
 }
