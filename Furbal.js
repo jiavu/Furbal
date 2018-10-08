@@ -98,10 +98,10 @@ const secToFunThreshold = 0.12;   // in %. If security is 25% (or less), Furball
 const myFurball = {
     name : "My Furball",
     isDead : false,
-    health : 100,
-    satiation : 100,
-    fun : 100,
-    secureness : 100
+    health : 60,
+    satiation : 60,
+    fun : 50,
+    secureness : 50
 };
 
 // Player:
@@ -245,12 +245,10 @@ const play = () => {
 
     funIncrease = Math.round(funIncrease);
 
-    // Wenn funIncrease wieder positiv ist (myFurball.secureness/100 -secToFunThreshold) > 0 und fun < 0, dann myFurball.fun = funIncrease.
     (myFurball.fun < 0 && myFurball.secureness/100 -secToFunThreshold > 0)?
         myFurball.fun = funIncrease :
         myFurball.fun += funIncrease; // I asume funIncrease can be negative so myFurball.fun decreases.
         //It does decrease, but why is funIncrease positive when I check it ???
-
 
     if (funIncrease <= 0) {
         saysPlay = furbalStates.secureness.noPlay;
@@ -273,12 +271,16 @@ const play = () => {
     funShown = true;
     satShown = true;
 
-    if (saysPlay) $(function(){ $("#fun").fadeIn(300, ()=> {
-        if (funIncrease > 0) {          // weird. this condition is always true although funIncrease is negative. ERROR OF CALLBACK FUNCTION !!!
-            $("#satiation").fadeIn(300);
-            console.log("1. funIncrease > 0: " + funIncrease);
-        }
-    }); });
+    if (saysPlay) { $(function() {
+        $("#fun").fadeIn(300 /*, function() {
+            if (funIncrease > 0) {          // weird. this condition is always true although funIncrease is negative.
+                $("#satiation").fadeIn(300);
+                console.log("1. funIncrease > 0: " + funIncrease);
+            }
+        }*/);
+    });}
+    if (saysPlay && funIncrease > 0) $("#satiation").fadeIn(300);
+
 
     if (funIncrease > 0) {
         myFurball.satiation -= playToSat * funIncrease; // PLAYING MAKES FURBALL HUNGRY!
@@ -389,7 +391,7 @@ function update(progress) {
     //myFurball.satiation = 100;
     //myFurball.fun = 100;
     //myFurball.secureness = 100;
-    myFurball.health = 100;
+    //myFurball.health = 100;
     //if (v_timeElapsed >= 8000) { myFurball.isDead = true } // Control values after a certain time. Delete later.
     //if (myFurball.satiation <= 0) myFurball.isDead = true;  // time check. Delete later!
  };
@@ -473,6 +475,7 @@ function loop(timestamp) {
     (myFurball.isDead)? gameOver() : reqAnimF = requestAnimationFrame(loop);
 
 }
+
 
 // Event listener:
 pauseButton.addEventListener("click", switchPause);
