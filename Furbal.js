@@ -226,6 +226,8 @@ const feed = () => {
         $(function(){$("#satiation").fadeIn(300)});       // default: 400ms
     }
 
+    if (myFurball.secureness <= 0 ) $(function(){$("#secureness").fadeIn(300)});
+
     player.food -= satiationIncrease;    
 
     if (myFurball.satiation > 100) myFurball.satiation = 100;
@@ -271,27 +273,25 @@ const play = () => {
     funShown = true;
     satShown = true;
 
+    let a = funIncrease > 0? true : false;
+    
     if (saysPlay) { $(function() {
-        $("#fun").fadeIn(300 /*, function() {
-            if (funIncrease > 0) {          // weird. this condition is always true although funIncrease is negative.
+        $("#fun").fadeIn(300, () => {
+            if (a) {
                 $("#satiation").fadeIn(300);
-                console.log("1. funIncrease > 0: " + funIncrease);
             }
-        }*/);
+        });
     });}
-    if (saysPlay && funIncrease > 0) $("#satiation").fadeIn(300);
 
+    if (myFurball.secureness/100-secToFunThreshold <= 0 ) {
+        console.log("Check sec");
+        $(function(){$("#secureness").fadeIn(300)});
+    }
 
     if (funIncrease > 0) {
         myFurball.satiation -= playToSat * funIncrease; // PLAYING MAKES FURBALL HUNGRY!
-        console.log("2. funIncrease > 0: "+funIncrease);
-        console.log()
-    }
+    } else if (funIncrease < 0) { funIncrease *= -1; }
     
-    if (funIncrease < 0) {
-        console.log("3. funIncrease < 0: " + funIncrease);
-        funIncrease *= -1;
-    }
     player.toy -= funIncrease;
 
     if (myFurball.fun > 100) myFurball.fun = 100;
