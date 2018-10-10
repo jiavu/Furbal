@@ -55,7 +55,7 @@ const specialItems = document.getElementById("specialItems");
 
 
 // Gameloop parameter:
-const gameSpeed = 2;
+const gameSpeed = 1.5;
 
 let lastRender = 0;
 let progress = 0;
@@ -109,8 +109,8 @@ const player = {
     name : null,
     points : 0,
     credits : 0,
-    food : 5000,
-    toy : 5000,
+    food : 1000,
+    toy : 1000,
     specialItems : null
 };
 
@@ -201,32 +201,35 @@ const feed = () => {
         myFurball.satiation = satiationIncrease :
         myFurball.satiation += satiationIncrease;
 
-    if (!satiationIncrease) {
-        saysFeed = furbalStates.secureness.noEat;
-    } else if (myFurball.satiation >= 95) {
-        saysFeed = furbalStates.toFeeding[95];
-    } else if (myFurball.satiation >= 90) {
-        saysFeed = furbalStates.toFeeding[90];
-    } else if (myFurball.satiation >= 85) {
-        saysFeed = furbalStates.toFeeding[85];
-    } else if (!saysFeed) {
-        timeElapsedTemp = 0;
-        let r = Math.floor(Math.random()*5);
-        saysPlay = false;
-        saysPet = false;
-        saysFeed = furbalStates.toFeeding[r+1];
-    }
-    furballSaying = saysFeed;
-    countSatShown = 0;
-    satShown = true;
+    if (player.food) {
 
-    // same as $(document).ready(function(){/*jQuery method*/});
-    if (saysFeed) {
-        feedShown = true;
-        $(function(){$("#satiation").fadeIn(300)});       // default: 400ms
+        if (!satiationIncrease) {
+            saysFeed = furbalStates.secureness.noEat;
+        } else if (myFurball.satiation >= 95) {
+            saysFeed = furbalStates.toFeeding[95];
+        } else if (myFurball.satiation >= 90) {
+            saysFeed = furbalStates.toFeeding[90];
+        } else if (myFurball.satiation >= 85) {
+            saysFeed = furbalStates.toFeeding[85];
+        } else if (!saysFeed) {
+            timeElapsedTemp = 0;
+            let r = Math.floor(Math.random()*5);
+            saysPlay = false;
+            saysPet = false;
+            saysFeed = furbalStates.toFeeding[r+1];
+        }
+        furballSaying = saysFeed;
+        countSatShown = 0;
+        satShown = true;
+    
+        // same as $(document).ready(function(){/*jQuery method*/});
+        if (saysFeed) {
+            feedShown = true;
+            $(function(){$("#satiation").fadeIn(300)});       // default: 400ms
+        }
+    
+        if (myFurball.secureness <= 0 ) $(function(){$("#secureness").fadeIn(300)});
     }
-
-    if (myFurball.secureness <= 0 ) $(function(){$("#secureness").fadeIn(300)});
 
     player.food -= satiationIncrease;    
 
@@ -252,41 +255,47 @@ const play = () => {
         myFurball.fun += funIncrease; // I asume funIncrease can be negative so myFurball.fun decreases.
         //It does decrease, but why is funIncrease positive when I check it ???
 
-    if (funIncrease <= 0) {
-        saysPlay = furbalStates.secureness.noPlay;
-    } else if (myFurball.fun >= 95) {
-        saysPlay = furbalStates.toPlaying[95];
-    } else if (myFurball.fun >= 90) {
-        saysPlay = furbalStates.toPlaying[90];
-    } else if (myFurball.fun >= 85) {
-        saysPlay = furbalStates.toPlaying[85];
-    } else if (!saysPlay) {
-        timeElapsedTemp = 0;
-        let r = Math.floor(Math.random()*4);
-        saysFeed = false;
-        saysPet = false;
-        saysPlay = furbalStates.toPlaying[r+1];
-    }
-    furballSaying = saysPlay;
-    countFunShown = 0;
-    countSatiationShown = 0;
-    funShown = true;
-    satShown = true;
+    if (player.toy) {
 
-    let a = funIncrease > 0? true : false;
+        if (funIncrease <= 0) {
+            saysPlay = furbalStates.secureness.noPlay;
+        } else if (myFurball.fun >= 95) {
+            saysPlay = furbalStates.toPlaying[95];
+        } else if (myFurball.fun >= 90) {
+            saysPlay = furbalStates.toPlaying[90];
+        } else if (myFurball.fun >= 85) {
+            saysPlay = furbalStates.toPlaying[85];
+        } else if (!saysPlay) {
+            timeElapsedTemp = 0;
+            let r = Math.floor(Math.random()*4);
+            saysFeed = false;
+            saysPet = false;
+            saysPlay = furbalStates.toPlaying[r+1];
+        }
+        furballSaying = saysPlay;
+        countFunShown = 0;
+        countSatiationShown = 0;
+        countSecShown = 0;          // check if necessary
+        funShown = true;
+        satShown = true;
     
-    if (saysPlay) { $(function() {
-        $("#fun").fadeIn(300, () => {
-            if (a) {
-                $("#satiation").fadeIn(300);
-            }
-        });
-    });}
-
-    if (myFurball.secureness/100-secToFunThreshold <= 0 ) {
-        console.log("Check sec");
-        $(function(){$("#secureness").fadeIn(300)});
+        let a = funIncrease > 0? true : false;
+        
+        if (saysPlay) { $(function() {
+            $("#fun").fadeIn(300, () => {
+                if (a) {
+                    $("#satiation").fadeIn(300);
+                }
+            });
+        });}
+    
+        if (myFurball.secureness/100-secToFunThreshold <= 0 ) {     // doesn't work yet. Secureness should be faded in.
+            console.log("Check sec");
+            secShown = true;
+            $(function(){$("#secureness").fadeIn(300)});
+        }
     }
+    
 
     if (funIncrease > 0) {
         myFurball.satiation -= playToSat * funIncrease; // PLAYING MAKES FURBALL HUNGRY!
@@ -411,6 +420,14 @@ function draw() {
     food.innerHTML = player.food;
     toy.innerHTML = player.toy;
     specialItems.innerHTML = player.specialItems;
+
+    if (!player.food) {
+        feedBtn.disabled = true;
+    } else { feedBtn.disabled = false; }
+
+    if (!player.toy) {
+        playBtn.disabled = true;
+    } else { playBtn.disabled = false; }
 
 
     health.children[0].style.width = myFurball.health + "%";

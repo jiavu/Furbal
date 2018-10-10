@@ -9,6 +9,8 @@
     text-align: center;
     height: 100%;
 }
+
+
 /*
 @media only screen and (orientation: portrait) {
     :root {
@@ -29,7 +31,18 @@
 */
 
 html {
+    /* COLOR VARS: */
     --color-1: hsl(0, 0%, 40%);
+    --red: red;     /* var(--varName, fallbackColor) */
+    --dark1: black;
+    --dark2: #666;
+    --dark3: #888;
+    --dark4: #999;
+    --light: white;
+    --green1: hsl(150, 100%, 25%);
+    --green2: hsl(150, 100%, 40%);
+    --green3: hsl(150, 100%, 60%);
+    --green4: hsl(151, 100%, 80%);
 }
 * {
     margin: 0;
@@ -106,12 +119,36 @@ h3 {
 button {
     font: 1em "Poor Story", cursive;
     display: block;
-    width: 100%;
+    width: 2.7em;
+    height: 2.7em;
     padding: 10%;
-    background-color: darkviolet;
+    border: none;
     color: white;
-    border-radius: 10px;
+    border-radius: 50%;        /* or 10px */
+    background-image: linear-gradient(to bottom right, var(--green2), var(--green1));
+    color: var(--light, white);
+    cursor: pointer;
+    transition-duration: 0.2s;
+    text-decoration: none;
+    border: 1px solid var(--dark2);
+    box-shadow: 0 9px var(--dark4);
 }
+button:hover {
+    background-image: linear-gradient(to bottom right, var(--green3), var(--green1));
+}
+button:disabled {
+    background-image: linear-gradient(to bottom right, var(--light), var(--dark4));
+    color: var(--red);
+    box-shadow: 0 5px var(--dark2);
+    transform: translateY(4px);
+}
+button:active {
+    background-image: linear-gradient(to bottom right, var(--green4), var(--green2));
+    box-shadow: 0 4px var(--dark2);
+    transform: translateY(4px);
+}
+button:focus { outline: none;}
+
 .cage {
     /*
     height: 10rem;
