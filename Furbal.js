@@ -76,11 +76,11 @@ const naturalDecreaseOfSecureness = 0.013;
 const securenessPower = 0.0003;             // = influence to health
 
 const foodPowerMax = 10;    // if Furbals satiation is 0, Furbal will eat maximum.
-const foodPowerMin = 1;     // if Furbals satiation is 100, Furbal will eat minimum.
+const foodPowerMin = 2;     // if Furbals satiation is 100, Furbal will eat minimum.
 const playPowerMax = 10;
-const playPowerMin = 1;
+const playPowerMin = 2;
 const petPowerMax = 3;
-const petPowerMin = 1;
+const petPowerMin = 2;
 
 
 const playToSat = 0.3;           // example: playToSat = 0.1; 10 toy consumed via play() will decrease satiation by 1. (PLAYING MAKES IT HUNGRY!)
@@ -201,10 +201,16 @@ const feed = () => {
         myFurball.satiation = satiationIncrease :
         myFurball.satiation += satiationIncrease;
 
+    furballStatement.style.color = "var(--black)";        
+    
     if (player.food) {
 
         if (!satiationIncrease) {
             saysFeed = furbalStates.secureness.noEat;
+            countSecShown = 0;
+            secShown = true;
+            $( () => $("#secureness").fadeIn(300) );
+            furballStatement.style.color = "var(--red)";
         } else if (myFurball.satiation >= 95) {
             saysFeed = furbalStates.toFeeding[95];
         } else if (myFurball.satiation >= 90) {
@@ -227,8 +233,6 @@ const feed = () => {
             feedShown = true;
             $(function(){$("#satiation").fadeIn(300)});       // default: 400ms
         }
-    
-        if (myFurball.secureness <= 0 ) $(function(){$("#secureness").fadeIn(300)});
     }
 
     player.food -= satiationIncrease;    
@@ -255,10 +259,16 @@ const play = () => {
         myFurball.fun += funIncrease; // I asume funIncrease can be negative so myFurball.fun decreases.
         //It does decrease, but why is funIncrease positive when I check it ???
 
+    furballStatement.style.color = "var(--black)";
+
     if (player.toy) {
 
         if (funIncrease <= 0) {
             saysPlay = furbalStates.secureness.noPlay;
+            countSecShown = 0;
+            secShown = true;
+            $( () => $("#secureness").fadeIn(300) );
+            furballStatement.style.color = "var(--red)";
         } else if (myFurball.fun >= 95) {
             saysPlay = furbalStates.toPlaying[95];
         } else if (myFurball.fun >= 90) {
@@ -272,31 +282,24 @@ const play = () => {
             saysPet = false;
             saysPlay = furbalStates.toPlaying[r+1];
         }
+
         furballSaying = saysPlay;
         countFunShown = 0;
-        countSatiationShown = 0;
-        countSecShown = 0;          // check if necessary
         funShown = true;
-        satShown = true;
     
         let a = funIncrease > 0? true : false;
         
         if (saysPlay) { $(function() {
             $("#fun").fadeIn(300, () => {
                 if (a) {
+                    // countSatShown = 0;
+                    satShown = true;
                     $("#satiation").fadeIn(300);
                 }
             });
         });}
-    
-        if (myFurball.secureness/100-secToFunThreshold <= 0 ) {     // doesn't work yet. Secureness should be faded in.
-            console.log("Check sec");
-            secShown = true;
-            $(function(){$("#secureness").fadeIn(300)});
-        }
     }
     
-
     if (funIncrease > 0) {
         myFurball.satiation -= playToSat * funIncrease; // PLAYING MAKES FURBALL HUNGRY!
     } else if (funIncrease < 0) { funIncrease *= -1; }
@@ -317,6 +320,7 @@ const pet = () => {
         myFurball.secureness += securenessIncrease;
     if (myFurball.secureness > 100) myFurball.secureness = 100;
 
+    furballStatement.style.color = "var(--black)";
 
     if (myFurball.secureness >= 95) {
         saysPet = furbalStates.toPetting[95];

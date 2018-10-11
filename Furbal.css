@@ -32,9 +32,9 @@
 
 html {
     /* COLOR VARS: */
-    --color-1: hsl(0, 0%, 40%);
-    --red: red;     /* var(--varName, fallbackColor) */
-    --dark1: black;
+    --red: red;
+    --black: black;
+    --dark1: #333;
     --dark2: #666;
     --dark3: #888;
     --dark4: #999;
@@ -43,6 +43,8 @@ html {
     --green2: hsl(150, 100%, 40%);
     --green3: hsl(150, 100%, 60%);
     --green4: hsl(151, 100%, 80%);
+    --colorA1: orange;
+    --colorB1: darkblue;
 }
 * {
     margin: 0;
@@ -83,8 +85,8 @@ h3 {
     width: 30%;
 }
 .user > div {
-    border: 2px solid darkblue;
-    outline: 2px dotted darkblue;
+    border: 2px solid var(--colorB1);
+    outline: 2px dotted var(--colorB1);
     outline-offset: 2px;
     padding: 3% 5%;
     margin: 1% 0;
@@ -98,7 +100,7 @@ h3 {
     width: 40%;
 }
 .items > div {
-    border: 2px solid orange;
+    border: 2px solid var(--colorA1);
     border-radius: 8px;
     padding: 3% 5%;
     margin: 1% 0;
