@@ -130,6 +130,7 @@ let furballSaying = "";
 let saysFeed = false;
 let saysPlay = false;
 let saysPet = false;
+let saysHealth;
 let saysSatiation;
 let saysFun;
 let saysSecureness;
@@ -343,6 +344,56 @@ const pet = () => {
 
 function update(progress) {
 
+    function warningSystem() {
+        /*
+        - Check all conditions here to update Furbals statements.
+        - Check priorities of Furball-statemens and perhaps update FurbalSaying.
+        - Check all conditions to fade in condition bars if critical.
+        
+        
+        Priority for Furball-statements:
+        Highest
+            1. feed() or play() -> secureness too low,
+            2. if health is critical,
+            3. if satiation or fun are critical,
+            4. feed(), play() and pet() statements,
+            5. Arriving Thresholds of conditions while decreasing.
+        Lowest.
+
+        Maybe set booleans (global) if a condition is true and check
+        them here to decide if furbalSaying should be updated?
+
+        */
+    
+        /* VIA SWITCHES?
+
+        switch(Math.round(myFurball.satiation)) {
+            case 10:
+                saysSatiation = furbalStates.satiation[10];
+                break;
+            case 20:
+                saysSatiation = furbalStates.satiation[20];
+                break;
+            case 30:
+                saysSatiation = furbalStates.satiation[30];
+                break;
+            case 40:
+                saysSatiation = furbalStates.satiation[40];
+                break;
+            case 50:
+                saysSatiation = furbalStates.satiation[50];
+                break;
+            case 60:
+                saysSatiation = furbalStates.satiation[60];
+                break;
+            case 75:
+                saysSatiation = furbalStates.satiation[75];
+                break;
+        }
+        furballSaying = saysSatiation;
+        */
+    }
+    
     // natural decrease and increase:
 
     myFurball.satiation -= naturalDecreaseOfSatiation * gameSpeed;                                                      // + character trait
@@ -357,48 +408,21 @@ function update(progress) {
     if (myFurball.health >= 100) myFurball.health = 100;
     if (myFurball.health <= 0) myFurball.isDead = true;
 
-    /*
-    Check all conditions to trigger Furbals statements here.
-    this function returns 1 phrase for html object "#furball-says".
-    */
+    warningSystem();
 
     if (furballSaying) {
         timeElapsedTemp += progress;
         if (timeElapsedTemp >= cooldown) {
             furballSaying = "";
-            saysFeed = false;
-            saysPlay = false;
-            saysPet = false;
+            saysFeed, saysPlay, saysPet = false;
+            saysHealth = false;
+            saysSatiation, saysFun, saysSecureness = false;
+
             timeElapsedTemp = 0;
         }
     }
 
-    /*
-    switch(Math.round(myFurball.satiation)) {
-        case 10:
-            saysSatiation = furbalStates.satiation[10];
-            break;
-        case 20:
-            saysSatiation = furbalStates.satiation[20];
-            break;
-        case 30:
-            saysSatiation = furbalStates.satiation[30];
-            break;
-        case 40:
-            saysSatiation = furbalStates.satiation[40];
-            break;
-        case 50:
-            saysSatiation = furbalStates.satiation[50];
-            break;
-        case 60:
-            saysSatiation = furbalStates.satiation[60];
-            break;
-        case 75:
-            saysSatiation = furbalStates.satiation[75];
-            break;
-    }
-    furballSaying = saysSatiation;
-    */
+
 
     //Test: DELETE / DEACTIVATE !!!
     //myFurball.satiation = 100;
