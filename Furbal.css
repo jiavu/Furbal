@@ -67,7 +67,7 @@ body {
     background-color: lightgrey;
 }
 h1 {
-    font: 1.7rem "Coiny", cursive;
+    font: 1.5rem "Coiny", cursive;
     margin: 2% 0 0;
 }
 h3 {
@@ -130,10 +130,10 @@ button {
     background-image: linear-gradient(to bottom right, var(--green2), var(--green1));
     color: var(--light, white);
     cursor: pointer;
-    transition-duration: 0.2s;
+    transition-duration: 0.15s;
     text-decoration: none;
     border: 1px solid var(--dark2);
-    box-shadow: 0 9px var(--dark4);
+    box-shadow: 0 0.3em var(--dark4);
 }
 button:hover {
     background-image: linear-gradient(to bottom right, var(--green3), var(--green1));
@@ -141,13 +141,13 @@ button:hover {
 button:disabled {
     background-image: linear-gradient(to bottom right, var(--light), var(--dark4));
     color: var(--red);
-    box-shadow: 0 5px var(--dark2);
-    transform: translateY(4px);
+    box-shadow: 0 0.1em var(--dark2);
+    transform: translateY(0.2em);
 }
 button:active {
     background-image: linear-gradient(to bottom right, var(--green4), var(--green2));
-    box-shadow: 0 4px var(--dark2);
-    transform: translateY(4px);
+    box-shadow: 0 0.1em var(--dark2);
+    transform: translateY(0.2em);
 }
 button:focus { outline: none;}
 

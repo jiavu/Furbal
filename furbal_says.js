@@ -46,12 +46,12 @@ const furbalStates = {
     health : {         // Highest priority
         //good
         90: "Oh, happy day!",                                        // > 90%
-        70: "Could be better.",                                      // 50 -> 70%
-        50: "I am not feeling so well.",                             // 40 -> 50%
-        40: "Why do you let me die?",                                // 30 -> 40%
-        30: "I declare that this is my last will and testament.",    // 20 -> 30%
-        20: "I am feeling so cold.",                                 // 10 -> 20%
-        10: "I think it's over.",                                    // < 10%
+        50: "Could be better.",                                      // 40 -> 50%
+        40: "I am not feeling so well.",                             // 30 -> 40%
+        30: "Why do you let me die?",                                // 20 -> 30%
+        20: "I declare that this is my last will and testament.",    // 10 -> 20%
+        10: "I am feeling so cold.",                                 // 5 -> 10%
+        5: "I think it's over.",                                    // < 5%
         0: "I'm dead."
         //bad
     },
@@ -66,8 +66,8 @@ const furbalStates = {
         50: "Can I have cookie?",            // 40 -> 50%
         40: "I am so hungry.",               // 30 -> 40%
         30: "Can I eat stones?",             // 20 -> 30%
-        20: "My stomache hurts.",            // 10 -> 20%
-        10: "I am starving...",              // < 10%
+        20: "I am starving...",             // 10 -> 20%
+        10: "My stomache hurts.",           // < 10%
         //bad
     },
 
