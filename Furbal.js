@@ -57,13 +57,14 @@ const specialItems = document.getElementById("specialItems");
 
 
 // Gameloop parameter:
-const gameSpeed = 0.8;
+const gameSpeed = 1;
 
 let lastRender = 0;
 let progress = 0;
 let v_timeElapsed;
 let counter = 0;    // Counts the number of loops made since game was started.
 let pause = false;
+let pauseTime;
 
 
 // Balancing powers of decrease/increase:
@@ -143,14 +144,32 @@ let prioAction = false;
 let satShown = true;            // so conditions won't be displayed for ever.
 let funShown = true;
 let secShown = true;
+const cooldownCond = 1500;
 let countSatShown = 0;
 let countFunShown = 0;
 let countSecShown = 0;
+let jumpSat = false;
+let jumpFun = false;
+let jumpSec = false;
+const cooldownJump = 1000;
+let countSatJump = 0;
+let countFunJump = 0;
+let countSecJump = 0;
 
-const cooldown = 2000;
+
+
+const cooldownStatement = 2000;      // Cooldown for Furball's statements. Update statement only after cooldown time.
 let timeElapsedTemp = 0;
 const fadeInTime = 200;
 const fadeOutTime = 800;
+const fadeEasing = "linear";    // default: "swing"
+
+const bringOut = (element) => {
+    // (selector).animate({styles},speed,easing,callback)
+    element.animate({fontSize: "1.3em"}, "fast");
+    element.animate({fontSize: "1em"}, "fast");
+}
+
 
 //////////////////////////////////////////////////
 //////////////////////////////////////////////////
@@ -178,6 +197,8 @@ const gameOver = () => {
     console.log( hours + " hours, "
         + minutes + " minutes, "
         + secondsMs + " seconds.");
+
+    // Replace: make an info window.
     window.alert(myFurball.name + " survived " +
     hours + " hours, "
     + minutes + " minutes and "
@@ -187,8 +208,12 @@ const gameOver = () => {
 
 const switchPause = () => {
     pause = !pause;
-    (pause)? cancelAnimationFrame(reqAnimF) : reqAnimF = requestAnimationFrame(loop);
+        
+    (pause)? console.log("=========PAUSE=========") : reqAnimF = requestAnimationFrame(loop);
+    //(pause)? cancelAnimationFrame(reqAnimF) : reqAnimF = requestAnimationFrame(loop);     // remove
+// When continuing game after pause: seems to entail longer looptimes sometimes. But it doesn't occur every time.
 }
+
 
 
 const feed = () => {
@@ -212,8 +237,8 @@ const feed = () => {
 
     // Reset colors of html elements (warning system):
     furballStatement.style.color = "var(--black)";
-    if (myFurball.satiation > 40) satiation.style.color = "var(--black)"; // evtl. else: red hinzufügen,
-    // da die callback functions aus fadeOut() noch sehr spät schwarz färben.
+    if (myFurball.satiation > 40) { satiation.style.color = "var(--black)"; }
+    else { satiation.style.color = "var(--red)"; }
 
 
     // Get Furballs statements about food and warn if necessary:
@@ -257,8 +282,11 @@ const feed = () => {
         satShown = true;
 
         // same as $(document).ready(function(){/*jQuery method*/});
-        $(function(){$("#satiation").fadeIn(fadeInTime)});       // default: 400ms
-
+        $(function(){
+            $("#satiation").fadeIn(fadeInTime);            // default: 400ms
+            if (satiationIncrease > 0 && jumpSat) { bringOut($("#satiation")); }
+        });
+        
     }
 
 
@@ -287,8 +315,8 @@ const play = () => {
 
     // Reset colors of html elements (warning system):
     furballStatement.style.color = "var(--black)";
-    if (myFurball.fun > 20) fun.style.color = "var(--black)"; // evtl. else: red hinzufügen,
-    // da die callback functions aus fadeOut() noch sehr spät schwarz färben.
+    if (myFurball.fun > 30) { fun.style.color = "var(--black)"; }
+    else { fun.style.color = "var(--red)"; }
 
 
     // Get Furballs statements about toys and checking if a warning is necessary:
@@ -371,8 +399,8 @@ const pet = () => {
 
     // Reset colors of html elements (warning system):
     furballStatement.style.color = "var(--black)";
-    if (myFurball.secureness > 40) secureness.style.color = "var(--black)"; // evtl. else: red hinzufügen,
-    // da die callback functions aus fadeOut() noch sehr spät schwarz färben.
+    if (myFurball.secureness > 40) { secureness.style.color = "var(--black)"; }
+    else { secureness.style.color = "var(--red)"; }
 
 
     // reset prio:
@@ -430,10 +458,7 @@ function update(progress) {
 
         // Reset:
         healthHeading.style.color = "var(--black)";
-
-
         if (!secCritical && !prioAction) {
-            //secureness.style.color = "var(--black)";
             furballStatement.style.color = "var(--black)";
         }
 
@@ -470,10 +495,16 @@ function update(progress) {
                 saysSatiation = furbalStates.satiation[50];
                 break;
             default:                                            // critical, priority 4:
-                if (myFurball.satiation <= 10) { saysSatiation = furbalStates.satiation[10]; }
-                else if ( myFurball.satiation <= 20) { saysSatiation = furbalStates.satiation[20]; }
-                else if ( myFurball.satiation <= 30) { saysSatiation = furbalStates.satiation[30]; }
-                else if ( myFurball.satiation <= 40) { saysSatiation = furbalStates.satiation[40]; }
+                if (myFurball.satiation <= 40) {
+                    satiation.style.color = "var(--red)";
+                    $(function() { $("#satiation").fadeIn(fadeInTime); });
+                    
+                    if (myFurball.satiation <= 10) { saysSatiation = furbalStates.satiation[10]; }
+                    else if ( myFurball.satiation <= 20) { saysSatiation = furbalStates.satiation[20]; }
+                    else if ( myFurball.satiation <= 30) { saysSatiation = furbalStates.satiation[30]; }
+                    else if ( myFurball.satiation <= 40) { saysSatiation = furbalStates.satiation[40]; }
+                }
+                
         }
 
         //// Fun thresholds
@@ -486,11 +517,15 @@ function update(progress) {
                 break;
             case 40:
                 saysFun = furbalStates.fun[40];
-            case 30:
-                saysFun = furbalStates.fun[30];
-                break;
             default:                                            // critical, priority 4:
-                if (myFurball.fun <= 20) { saysFun = furbalStates.fun[20]; }
+                if (myFurball.fun <= 30) {
+                    fun.style.color = "var(--red)";
+                    $(function() { $("#fun").fadeIn(fadeInTime); });
+
+                    if (myFurball.fun <= 20) { saysFun = furbalStates.fun[20]; }
+                    else if (myFurball.fun <= 30) { saysFun = furbalStates.fun[30]; }
+                }
+
 
                 // Furball happy, priority 7:
                 else if (myFurball.fun >= 90) { saysFun = furbalStates.fun[90]; }
@@ -505,15 +540,20 @@ function update(progress) {
                 saysSecureness = furbalStates.secureness[50];
                 break;
             default:                                            // critical, priority 4:
-                if (myFurball.secureness <= 40) { saysSecureness = furbalStates.secureness[40]; }
+                if (myFurball.secureness <= 40) {
+                    secureness.style.color = "var(--red)";
+                    $(function() { $("#secureness").fadeIn(fadeInTime); });
+
+                    saysSecureness = furbalStates.secureness[40];
+                }
 
                 // Furball feels save, priority 8:
                 else if (myFurball.secureness >= 85) { saysSecureness = furbalStates.secureness[85]; }
         }
 
-        ////
-        ////
 
+        ////                              ////
+        ////        PRIORITIZAZION        ////
         // Which statement to fire? Prio check:
 
         if (!secCritical) {
@@ -523,22 +563,19 @@ function update(progress) {
                 healthHeading.style.color = "var(--red)";
                 furballStatement.style.color = "var(--red)";
             } else if (!prioAction) {
-                if (saysHealth && myFurball.health < 90) { furballSaying = saysHealth }
+                if (saysHealth && myFurball.health < 90 && healthUpdate <= 0) { furballSaying = saysHealth }
                 
                 else if (myFurball.satiation <= 40) {                // satiation critical
                     furballSaying = saysSatiation;
                     timeElapsedTemp = 0;
-                    satiation.style.color = "var(--red)";
                     furballStatement.style.color = "var(--red)";
-                } else if (myFurball.fun <= 20) {               // fun critical
+                } else if (myFurball.fun <= 30) {               // fun critical
                     furballSaying = saysFun;
                     timeElapsedTemp = 0;
-                    fun.style.color = "var(--red)";
                     furballStatement.style.color = "var(--red)";
                 } else if (myFurball.secureness <=40) {         // secureness critical
                     furballSaying = saysSecureness;
                     timeElapsedTemp = 0;
-                    secureness.style.color = "var(--red)";
                     furballStatement.style.color = "var(--red)";
                 
                 // Reaching thresholds of conditions:
@@ -562,16 +599,15 @@ function update(progress) {
     }
         
     
-    //////////////////////////////////
-    //////////////////////////////////
+    /////////////////////////////////////////////////////////
+    /////////////////////////////////////////////////////////
 
     // Natural decrease and increase of Furballs conditions:
     myFurball.satiation -= naturalDecreaseOfSatiation * gameSpeed;                                                      // + character trait
     myFurball.fun -= (naturalDecreaseOfFun + -healthToFun/100*myFurball.health + healthToFun) * gameSpeed;              // + character trait
     myFurball.secureness -= (naturalDecreaseOfSecureness + -healthToSec/100*myFurball.health + healthToSec) * gameSpeed;// + character trait
     
-    /* Update Furballs health:
-        Newtons Law of Cooling: u'(t) = -k(u(t)-a) */
+    /* Update Furballs health: Newtons Law of Cooling: u'(t) = -k(u(t)-a) */
     healthUpdate = -satiationPower*(myFurball.health-myFurball.satiation)-funPower*(myFurball.health-myFurball.fun)-securenessPower*(myFurball.health-myFurball.secureness);
     myFurball.health += healthUpdate * gameSpeed;
 
@@ -584,7 +620,7 @@ function update(progress) {
 
     if (furballSaying) {
         timeElapsedTemp += progress;
-        if (timeElapsedTemp >= cooldown) {
+        if (timeElapsedTemp >= cooldownStatement) {
             furballSaying = "";
             saysFeed = false; saysPlay = false; saysPet = false;
             saysHealth = "";
@@ -603,7 +639,7 @@ function update(progress) {
     //myFurball.health = 100;
     //if (v_timeElapsed >= 8000) { myFurball.isDead = true } // Control values after a certain time. Delete later.
     //if (myFurball.satiation <= 0) myFurball.isDead = true;  // time check. Delete later!
- };
+}
 
 
 function draw() {
@@ -632,7 +668,7 @@ function draw() {
 
 
     health.children[0].style.width = myFurball.health + "%";
-    health.children[0].style.backgroundColor = "#" + colorMap[Math.round(myFurball.health-1)]; // Achtung, Index -1 gibt es nicht.
+    health.children[0].style.backgroundColor = "#" + colorMap[Math.round(myFurball.health-1)]; // There is no index -1
     health.style.borderColor = "#" + colorMap[Math.round(myFurball.health-1)];
 
     furballStatement.innerHTML = furballSaying;
@@ -648,45 +684,65 @@ function draw() {
     //secureness.style.borderColor = "#" + colorMap[Math.round(myFurball.secureness-1)];
 
     if (satShown) {
-        countSatShown += progress;      // is colorizing black again necessary?
-        if (countSatShown > 1500) {
-            $(function(){ $("#satiation").fadeOut(fadeOutTime, ()=> satiation.style.color = "var(--black)"); });
+        countSatShown += progress;
+        if (countSatShown > cooldownCond) {
+            $(function(){ $("#satiation").fadeOut(fadeOutTime, fadeEasing); });
             satShown = false;
             countSatShown = 0;
+            countSatJump = 0;
         }
     }
     if (funShown) {
         countFunShown += progress;
-        if (countFunShown > 1500) {
-            $(function(){ $("#fun").fadeOut(fadeOutTime, ()=> fun.style.color = "var(--black)"); });
+        if (countFunShown > cooldownCond) {
+            $(function(){ $("#fun").fadeOut(fadeOutTime, fadeEasing); });
             funShown = false;
             countFunShown = 0;
+            countFunJump = 0;
         }
     }
     if (secShown) {
         countSecShown += progress;
-        if (countSecShown > 1500) {
-            $(function(){ $("#secureness").fadeOut(fadeOutTime, ()=> secureness.style.color = "var(--black)"); });
+        if (countSecShown > cooldownCond) {
+            $(function(){ $("#secureness").fadeOut(fadeOutTime, fadeEasing); });
             secShown = false;
             countSecShown = 0;
+            countSecJump = 0;
         }
     }
+
+
 
 
 }
 
 
 function loop(timestamp) {
-    ++counter;
+    
+    if (pauseTime) {
+        lastRender += timestamp - pauseTime;
+        pauseTime = undefined;
+    } 
+    
     progress = timestamp - lastRender;
+    //if (progress > 30) console.log("!!!-------------!!!");        // For debugging. Issue: Sometimes loop times are longer.
+    //console.log(progress);
     v_timeElapsed += progress;
 
     update(progress);
     draw();
 
-    lastRender = timestamp;
-    (myFurball.isDead)? gameOver() : reqAnimF = requestAnimationFrame(loop);
+    ++counter;
 
+    myFurball.isDead? gameOver()
+        : pause? (
+            pauseTime = timestamp,
+            cancelAnimationFrame(reqAnimF)
+        ) : (
+            lastRender = timestamp,
+            reqAnimF = requestAnimationFrame(loop)
+        );
+        
 }
 
 
