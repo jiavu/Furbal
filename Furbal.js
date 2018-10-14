@@ -27,11 +27,13 @@ const timeElapsed = document.getElementById("timeElapsed");
 const loopSpeed = document.getElementById("loopSpeed");
 const gSpeed = document.getElementById("gSpeed");
 const pauseButton = document.getElementById("pause");
+const other0 = document.getElementById("other0");
 const other1 = document.getElementById("other1");
 const other2 = document.getElementById("other2");
 const other3 = document.getElementById("other3");
 
 // Game elements:
+const healthHeading = document.getElementsByClassName("health")[0];
 const health = document.getElementById("health");
 const satiation = document.getElementById("satiation");
 const fun = document.getElementById("fun");
@@ -55,7 +57,7 @@ const specialItems = document.getElementById("specialItems");
 
 
 // Gameloop parameter:
-const gameSpeed = 1.5;
+const gameSpeed = 0.8;
 
 let lastRender = 0;
 let progress = 0;
@@ -97,9 +99,9 @@ const myFurball = {
     name : "My Furball",
     isDead : false,
     health : 100,
-    satiation : 60,
-    fun : 50,
-    secureness : 50
+    satiation : 50,
+    fun : 80,
+    secureness : 40
 };
 
 // Player:
@@ -122,7 +124,7 @@ or Bypass CORS by disabling web-security. */
 //If all files are saved to and accessed via request to server I can use:
 //import furbalStates from "./furbal_says.js";
 //Otherwise paste object here and don't forget to remove type="module":
-const furbalStates={toFeeding:{95:"Salad. Not again.",90:"I'm so full.",85:"I am good, thanks.",1:"Can I have a dessert?",2:"Tastes good, thanks.",3:"Is it food or...",4:"Yummy!",5:"* munch crunch chomp *"},toPlaying:{95: "I don't want to play anymore. You can have it.",90:"Yeay. Toys. :/",85:"I already had a lot of them.",1:"It's my dolly! Play with your own one!",2:"Oh, toys!",3:"Yippee!",4:"Catch me! Haha, catch me!!!"},toPetting:{95:"Leave me some space, okay?",85:"Come on, you're crushing me.",1:"Huuug!",2:"I love you mama!",3:"You are the sunshine of my live.",4:"It's so good to have you.",5:"Rrrrrrrr!"},health:{90:"Oh, happy day!",70:"Could be better.",50:"I am not feeling so well.",40:"Why do you let me die?",30:"I declare that this is my last will and testament.",20:"I am feeling so cold.",10:"I think it's over.",0:"I'm dead."},satiation:{75:"I could maybe eat something.",60:"I want candy, now!",50:"Can I have cookie?",40:"I am so hungry.",30:"Can I eat stones?",20:"My stomache hurts.",10:"I am starving...",},fun:{90:"Live is fun!",75:"Let's play something!",50:"Boring!!!",40:"* YAWN *",30:"* snooze *",20:"Deadly boring."},secureness:{75:"It's so good to have you.",60: "Where are you?",50:"I am so lonley.",40:"I am afraid all alone!",noPlay:"I am so alone and sad. I don't want to play.",noEat:"I am so alone and sad. I don't want to eat."}};
+const furbalStates = {toFeeding:{95:"Salad. Not again.",90:"I'm so full.",85:"I am good, thanks.",1:"Can I have a dessert?",2:"Tastes good, thanks.",3:"Is it food or...",4:"Yummy!",5:"* munch crunch chomp *"},toPlaying:{95:"I don't want to play anymore. You can have it.",90:"Yeay. Toys. :/",85:"I already had a lot of them.",1:"It's my dolly! Play with your own one!",2:"Oh, toys!",3:"Yippee!",4:"Catch me! Haha, catch me!!!"},toPetting:{95:"Leave me some space, okay?",85:"Come on, you're squeezing me.",1:"Huuug!",2:"I love you mama!",3:"You are the sunshine of my live.",4:"It's so good to have you.",5:"Rrrrrrrr!"},health:{90:"Oh, happy day!",50:"Could be better.",40:"I am not feeling so well.",30:"Why do you let me die?",20:"I declare that this is my last will and testament.",10:"I am feeling so cold.",5:"I think it's over.",0:"I'm dead."},satiation:{75:"I could maybe eat something.",60:"I want candy, now!",50:"Can I have cookie?",40:"I am so hungry.",30:"Can I eat stones?",20:"I am starving...",10:"My stomache hurts.",},fun:{90:"Live is fun!",75:"Let's play something!",50:"Boring!!!",40:"* YAWN *",30:"* snooze *",20:"Deadly boring."},secureness:{85:"It's so good to have you.",60:"Where are you?",50:"I am so lonley.",40:"I am afraid all alone!",noPlay:"I am so alone and sad. I don't want to play.",noEat:"I am so alone and sad. I don't want to eat."}};
 
 let furballSaying = "";
 let saysFeed = false;       // for statement cooldowns so statements won't be displayed for ever.
@@ -133,8 +135,7 @@ let saysSatiation;
 let saysFun;
 let saysSecureness;
 
-let prioHealth;     // prioritize Furball's statments (warningSystem).
-let prioSec = false;
+let secCritical = false;        // prioritize Furball's statments (warningSystem).
 let prioAction = false;
 
 
@@ -211,23 +212,26 @@ const feed = () => {
 
     // Reset colors of html elements (warning system):
     furballStatement.style.color = "var(--black)";
-    satiation.style.color = "var(--black)";
+    if (myFurball.satiation > 40) satiation.style.color = "var(--black)"; // evtl. else: red hinzufügen,
+    // da die callback functions aus fadeOut() noch sehr spät schwarz färben.
 
-    // Get Furballs statements about food and warn is necessary:
+
+    // Get Furballs statements about food and warn if necessary:
     if (player.food) {
 
         // reset prio:
-        prioSec = false;
+        secCritical = false;
         prioAction = true;
 
-        if (!satiationIncrease) {       // Because secureness is critical.
-            prioSec = true;
+        if (!satiationIncrease) {       // Because secureness is critical, no satiationIncrease.
+            secCritical = true;
             saysFeed = furbalStates.secureness.noEat;
             countSecShown = 0;
             secShown = true;
             secureness.style.color = "var(--red)";
             $( () => $("#secureness").fadeIn(fadeInTime) );
             furballStatement.style.color = "var(--red)";
+
         } else if (myFurball.satiation >= 95) {
             saysFeed = furbalStates.toFeeding[95];
         } else if (myFurball.satiation >= 90) {
@@ -242,10 +246,11 @@ const feed = () => {
             saysFeed = furbalStates.toFeeding[r+1];
         }
 
-        if (!prioHealth) {
+        if (myFurball.health > 20) {
             furballSaying = saysFeed;
-        } else if (prioSec) { furballSaying = saysFeed }
+        } else if (secCritical) { furballSaying = saysFeed }
         
+
         // Fade in html element (Furballs satiation):
 
         countSatShown = 0;
@@ -255,6 +260,7 @@ const feed = () => {
         $(function(){$("#satiation").fadeIn(fadeInTime)});       // default: 400ms
 
     }
+
 
     // Update players food box:
     player.food -= satiationIncrease;    
@@ -281,17 +287,19 @@ const play = () => {
 
     // Reset colors of html elements (warning system):
     furballStatement.style.color = "var(--black)";
-    fun.style.color = "var(--black)";
+    if (myFurball.fun > 20) fun.style.color = "var(--black)"; // evtl. else: red hinzufügen,
+    // da die callback functions aus fadeOut() noch sehr spät schwarz färben.
+
 
     // Get Furballs statements about toys and checking if a warning is necessary:
     if (player.toy) {
 
         // reset prio:
-        prioSec = false;
+        secCritical = false;
         prioAction = true;
 
-        if (funIncrease <= 0) {     // Because secureness is critical.
-            prioSec = true;
+        if (funIncrease <= 0) {     // Because secureness is critical, no fun increase.
+            secCritical = true;
             saysPlay = furbalStates.secureness.noPlay;
             furballStatement.style.color = "var(--red)";
             countSecShown = 0;
@@ -313,9 +321,10 @@ const play = () => {
             saysPlay = furbalStates.toPlaying[r+1];
         }
 
-        if (!prioHealth) {
+        if (myFurball.health > 20) {
             furballSaying = saysPlay;
-        } else if (prioSec) { furballSaying = saysPlay }
+        } else if (secCritical) { furballSaying = saysPlay }
+
 
         // Fade in html elements (Furballs conditions):
         
@@ -362,8 +371,12 @@ const pet = () => {
 
     // Reset colors of html elements (warning system):
     furballStatement.style.color = "var(--black)";
-    secureness.style.color = "var(--black)";
+    if (myFurball.secureness > 40) secureness.style.color = "var(--black)"; // evtl. else: red hinzufügen,
+    // da die callback functions aus fadeOut() noch sehr spät schwarz färben.
 
+
+    // reset prio:
+    secCritical = false;
     prioAction = true;
 
     // Get Furballs statements about petting:
@@ -378,7 +391,8 @@ const pet = () => {
         saysFeed = false;
         saysPet = furbalStates.toPetting[r+1];
     }
-    if (!prioHealth) furballSaying = saysPet;
+    if (myFurball.health > 20) furballSaying = saysPet;
+
 
     // Fade in html element (Furballs secureness):
 
@@ -402,9 +416,11 @@ function update(progress) {
         Highest
             1. feed() or play() -> secureness too low,
             2. if health is critical,
-            3. if satiation or fun are critical,
-            4. feed(), play() and pet() statements,
+            3. feed(), play() and pet() statements,
+            4. if satiation, fun or secureness are critical,
             5. Arriving Thresholds of conditions while decreasing.
+            6. Furball is healthy (> 90),
+            7. Furball is happy (fun > 90),
         Lowest.
 
         Maybe set booleans (global) if a condition is true and check
@@ -412,77 +428,149 @@ function update(progress) {
 
         */
 
-        //// Satiation thresholds
-        
-        if (myFurball.satiation <= 10) {saysSatiation = furbalStates.satiation[10];}
-        else if (myFurball.satiation <= 20) {    // critical, priority 3
-            saysSatiation = furbalStates.satiation[20];
+        // Reset:
+        healthHeading.style.color = "var(--black)";
+
+
+        if (!secCritical && !prioAction) {
+            //secureness.style.color = "var(--black)";
+            furballStatement.style.color = "var(--black)";
         }
-        else if (myFurball.satiation <= 30) {saysSatiation = furbalStates.satiation[30];}
-        else if (myFurball.satiation <= 40) {saysSatiation = furbalStates.satiation[40];}
-        else if (myFurball.satiation <= 50) {saysSatiation = furbalStates.satiation[50];}
-        else if (myFurball.satiation <= 60) {saysSatiation = furbalStates.satiation[60];}
-        else if (myFurball.satiation <= 75) {saysSatiation = furbalStates.satiation[75];}
-
-        //// Fun thresholds
-
-        if (myFurball.fun <= 20) {      // critical, priority 3
-        saysFun = furbalStates.fun[20];
-        }
-        else if (myFurball.fun <= 30) {saysFun = furbalStates.fun[30];}
-        else if (myFurball.fun <= 40) {saysFun = furbalStates.fun[40];}
-        else if (myFurball.fun <= 50) {saysFun = furbalStates.fun[50];}
-        else if (myFurball.fun <= 75) {saysFun = furbalStates.fun[75];}
-        else if (myFurball.fun >= 90) {saysFun = furbalStates.fun[90];}
-
-        //// Secureness thresholds
-
-        if (myFurball.secureness <= 40) {   // critical, priority 3
-            saysSecureness = furbalStates.secureness[40];
-        }
-        else if (myFurball.secureness <= 50) {saysSecureness = furbalStates.secureness[50];}
-        else if (myFurball.secureness <= 60) {saysSecureness = furbalStates.secureness[60];}
-        else if (myFurball.secureness <= 75) {saysSecureness = furbalStates.secureness[75];}
 
         ////    Health thresholds
-       
-        prioHealth = false;
+        switch (Math.round(myFurball.health)) {
+            case 50:
+                saysHealth = furbalStates.health[50];
+                break;
+            case 40:
+                saysHealth = furbalStates.health[40];
+                break;
+            case 30:
+                saysHealth = furbalStates.health[30];
+                break;
+            default:                            //critical, priority 2:
+                if (myFurball.health <= 0) { saysHealth = furbalStates.health[0]; }
+                else if (myFurball.health <= 5) { saysHealth = furbalStates.health[5]; }
+                else if (myFurball.health <= 10) { saysHealth = furbalStates.health[10]; }
+                else if (myFurball.health <= 20) { saysHealth = furbalStates.health[20]; }
 
-        if (myFurball.health <= 0) {    // (dead, priority 1)
-            saysHealth = furbalStates.health[0];
-            prioHealth = true;
+                // Furball healthy, priority 6:
+                else if (myFurball.health >= 90) {saysHealth = furbalStates.health[90];}
         }
-        else if (myFurball.health <= 5) {    //critical, priority 2
-            saysHealth = furbalStates.health[5];
-            prioHealth = true;
+
+        //// Satiation thresholds
+        switch (Math.round(myFurball.satiation)) {
+            case 75:
+                saysSatiation = furbalStates.satiation[75];
+                break;
+            case 60:
+                saysSatiation = furbalStates.satiation[60];
+                break;
+            case 50:
+                saysSatiation = furbalStates.satiation[50];
+                break;
+            default:                                            // critical, priority 4:
+                if (myFurball.satiation <= 10) { saysSatiation = furbalStates.satiation[10]; }
+                else if ( myFurball.satiation <= 20) { saysSatiation = furbalStates.satiation[20]; }
+                else if ( myFurball.satiation <= 30) { saysSatiation = furbalStates.satiation[30]; }
+                else if ( myFurball.satiation <= 40) { saysSatiation = furbalStates.satiation[40]; }
         }
-        else if (myFurball.health <= 10) {   //critical, priority 2
-            saysHealth = furbalStates.health[10];
-            prioHealth = true;
+
+        //// Fun thresholds
+        switch (Math.round(myFurball.fun)) {
+            case 75:
+                saysFun = furbalStates.fun[75];
+                break;
+            case 50:
+                saysFun = furbalStates.fun[50];
+                break;
+            case 40:
+                saysFun = furbalStates.fun[40];
+            case 30:
+                saysFun = furbalStates.fun[30];
+                break;
+            default:                                            // critical, priority 4:
+                if (myFurball.fun <= 20) { saysFun = furbalStates.fun[20]; }
+
+                // Furball happy, priority 7:
+                else if (myFurball.fun >= 90) { saysFun = furbalStates.fun[90]; }
         }
-        else if (myFurball.health <= 20) { //critical, priority 2
-            saysHealth = furbalStates.health[20];
-            prioHealth = true;
+
+        //// Secureness thresholds
+        switch (Math.round(myFurball.secureness)) {
+            case 60:
+                saysSecureness = furbalStates.secureness[60];
+                break;
+            case 50:
+                saysSecureness = furbalStates.secureness[50];
+                break;
+            default:                                            // critical, priority 4:
+                if (myFurball.secureness <= 40) { saysSecureness = furbalStates.secureness[40]; }
+
+                // Furball feels save, priority 8:
+                else if (myFurball.secureness >= 85) { saysSecureness = furbalStates.secureness[85]; }
         }
-        else if (myFurball.health <= 30) {saysHealth = furbalStates.health[30];}
-        else if (myFurball.health <= 40) {saysHealth = furbalStates.health[40];}
-        else if (myFurball.health <= 50) {saysHealth = furbalStates.health[50];}
-        else if (myFurball.health >= 90) {saysHealth = furbalStates.health[90];}
-    }
-    if (!prioSec) {
-        if (prioHealth) {
-            furballSaying = saysHealth;
-        } else if (!prioAction) { furballSaying = saysHealth }
+
+        ////
+        ////
+
+        // Which statement to fire? Prio check:
+
+        if (!secCritical) {
+            if (myFurball.health <= 20) {                       // health critical
+                furballSaying = saysHealth;
+                timeElapsedTemp = 0;
+                healthHeading.style.color = "var(--red)";
+                furballStatement.style.color = "var(--red)";
+            } else if (!prioAction) {
+                if (saysHealth && myFurball.health < 90) { furballSaying = saysHealth }
+                
+                else if (myFurball.satiation <= 40) {                // satiation critical
+                    furballSaying = saysSatiation;
+                    timeElapsedTemp = 0;
+                    satiation.style.color = "var(--red)";
+                    furballStatement.style.color = "var(--red)";
+                } else if (myFurball.fun <= 20) {               // fun critical
+                    furballSaying = saysFun;
+                    timeElapsedTemp = 0;
+                    fun.style.color = "var(--red)";
+                    furballStatement.style.color = "var(--red)";
+                } else if (myFurball.secureness <=40) {         // secureness critical
+                    furballSaying = saysSecureness;
+                    timeElapsedTemp = 0;
+                    secureness.style.color = "var(--red)";
+                    furballStatement.style.color = "var(--red)";
+                
+                // Reaching thresholds of conditions:
+                } else if (saysSatiation) { furballSaying = saysSatiation }
+                else if (saysFun && myFurball.fun < 90) { furballSaying = saysFun }
+                else if (saysSecureness && myFurball.secureness < 85) { furballSaying = saysSecureness }
+                
+                // Lowest priority: Furball is well:
+                else if (myFurball.health >= 90) {
+                    furballSaying = saysHealth;
+                    timeElapsedTemp = 0;
+                } else if (myFurball.fun >= 90) {
+                    furballSaying = saysFun;
+                    timeElapsedTemp = 0;
+                } else if (myFurball.secureness >= 85) {
+                    furballSaying = saysSecureness;
+                    timeElapsedTemp = 0;
+                } else { myFurballSaying = "" }
+            }
+        }
     }
         
     
     //////////////////////////////////
-    // Natural decrease and increase:
+    //////////////////////////////////
+
+    // Natural decrease and increase of Furballs conditions:
     myFurball.satiation -= naturalDecreaseOfSatiation * gameSpeed;                                                      // + character trait
     myFurball.fun -= (naturalDecreaseOfFun + -healthToFun/100*myFurball.health + healthToFun) * gameSpeed;              // + character trait
     myFurball.secureness -= (naturalDecreaseOfSecureness + -healthToSec/100*myFurball.health + healthToSec) * gameSpeed;// + character trait
     
-    /* Update health:
+    /* Update Furballs health:
         Newtons Law of Cooling: u'(t) = -k(u(t)-a) */
     healthUpdate = -satiationPower*(myFurball.health-myFurball.satiation)-funPower*(myFurball.health-myFurball.fun)-securenessPower*(myFurball.health-myFurball.secureness);
     myFurball.health += healthUpdate * gameSpeed;
@@ -492,15 +580,17 @@ function update(progress) {
 
     warningSystem();
 
+    // Let a Furball's statement stay for a while until updating again:
+
     if (furballSaying) {
         timeElapsedTemp += progress;
         if (timeElapsedTemp >= cooldown) {
             furballSaying = "";
-            saysFeed, saysPlay, saysPet = false;
-            saysHealth = false;
-            saysSatiation, saysFun, saysSecureness = false;
+            saysFeed = false; saysPlay = false; saysPet = false;
+            saysHealth = "";
+            saysSatiation = ""; saysFun = ""; saysSecureness = "";
 
-            prioAction, prioSec = false;
+            prioAction = false; secCritical = false;
 
             timeElapsedTemp = 0;
         }
@@ -518,9 +608,10 @@ function update(progress) {
 
 function draw() {
 
-    timeElapsed.innerHTML = "Time Elapsed: " + Math.round(v_timeElapsed) + "ms";
+    timeElapsed.innerHTML = "Time elapsed: " + Math.round(v_timeElapsed) + "ms";
     loopSpeed.innerHTML = "Loop Speed: " + Math.round(progress) + "ms/loop";
     gSpeed.innerHTML = "Game Speed: " + gameSpeed;
+    other0.innerHTML = "Other0: " + myFurball.health;
     other1.innerHTML = "Other1: " + myFurball.satiation;
     other2.innerHTML = "Other2: " + myFurball.fun;
     other3.innerHTML = "Other3: " + myFurball.secureness;
@@ -542,15 +633,10 @@ function draw() {
 
     health.children[0].style.width = myFurball.health + "%";
     health.children[0].style.backgroundColor = "#" + colorMap[Math.round(myFurball.health-1)]; // Achtung, Index -1 gibt es nicht.
-
-    // for controlling. Delete later:
-    //health.children[0].innerHTML = myFurball.health;
-    //satiation.children[0].innerHTML = myFurball.satiation;
-    //secureness.children[0].innerHTML = myFurball.secureness;
+    health.style.borderColor = "#" + colorMap[Math.round(myFurball.health-1)];
 
     furballStatement.innerHTML = furballSaying;
 
-    health.style.borderColor = "#" + colorMap[Math.round(myFurball.health-1)];
     satiation.children[0].style.width = myFurball.satiation + "%";
     satiation.children[0].style.backgroundColor = "#" + colorMap[Math.round(myFurball.satiation-1)];
     //satiation.style.borderColor = "#" + colorMap[Math.round(myFurball.satiation-1)];
@@ -564,7 +650,7 @@ function draw() {
     if (satShown) {
         countSatShown += progress;      // is colorizing black again necessary?
         if (countSatShown > 1500) {
-            $(function(){ $("#satiation").fadeOut(fadeOutTime); });
+            $(function(){ $("#satiation").fadeOut(fadeOutTime, ()=> satiation.style.color = "var(--black)"); });
             satShown = false;
             countSatShown = 0;
         }
@@ -572,7 +658,7 @@ function draw() {
     if (funShown) {
         countFunShown += progress;
         if (countFunShown > 1500) {
-            $(function(){ $("#fun").fadeOut(fadeOutTime); });
+            $(function(){ $("#fun").fadeOut(fadeOutTime, ()=> fun.style.color = "var(--black)"); });
             funShown = false;
             countFunShown = 0;
         }
@@ -580,7 +666,7 @@ function draw() {
     if (secShown) {
         countSecShown += progress;
         if (countSecShown > 1500) {
-            $(function(){ $("#secureness").fadeOut(fadeOutTime); });
+            $(function(){ $("#secureness").fadeOut(fadeOutTime, ()=> secureness.style.color = "var(--black)"); });
             secShown = false;
             countSecShown = 0;
         }
@@ -611,7 +697,7 @@ playBtn.addEventListener("click", play);
 petBtn.addEventListener("click", pet);
 
 
-furballName.innerHTML = myFurball.name;
+furballName.innerHTML = myFurball.name + ":";
 v_timeElapsed = 0;
 
 reqAnimF = requestAnimationFrame(loop);

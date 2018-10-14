@@ -30,7 +30,7 @@ const furbalStates = {
 
     toPetting : {
         95: "Leave me some space, okay?",                // if > 95%
-        85: "Come on, you're crushing me.",              // if satisfied, 85 - 95%
+        85: "Come on, you're squeezing me.",              // if satisfied, 85 - 95%
         // < 75%:
         1: "Huuug!",
         2: "I love you mama!",
@@ -88,14 +88,14 @@ const furbalStates = {
 
     secureness : {
         //good
-        75: "It's so good to have you.",     // 75 -> 90%
+        85: "It's so good to have you.",     // > 85%       // (doppelt, gibt es schon bei pet)
         60: "Where are you?",                // 50 -> 60%
         50: "I am so lonley.",               // 40 -> 50%
         40: "I am afraid all alone!",        // 30 -> 40%
         
         // !!! HIGHEST PRIORITY, HIGHER THAN HEALTH:
-        noPlay: "I am so alone and sad. I don't want to play.",             // 20 -> 30%  // !!!! DONT FORGET TO IMPLEMENT !!!*
-        noEat: "I am so alone and sad. I don't want to eat." /*or play.*/ // < 20%    // !!!! DONT FORGET TO IMPLEMENT !!!*
+        noPlay: "I am so alone and sad. I don't want to play.",
+        noEat: "I am so alone and sad. I don't want to eat."
         //bad
     }
 
