@@ -76,7 +76,7 @@ const funPower = 0.0009;                    // = influence to health
 const naturalDecreaseOfSecureness = 0.013;
 const securenessPower = 0.0003;             // = influence to health
 
-const foodPowerMax = 10;    // if Furbals satiation is 0, Furbal will eat maximum.
+const foodPowerMax = 2;    // if Furbals satiation is 0, Furbal will eat maximum.
 const foodPowerMin = 2;     // if Furbals satiation is 100, Furbal will eat minimum.
 const playPowerMax = 10;
 const playPowerMin = 2;
@@ -100,7 +100,7 @@ const myFurball = {
     name : "My Furball",
     isDead : false,
     health : 100,
-    satiation : 50,
+    satiation : 45,
     fun : 80,
     secureness : 40
 };
@@ -148,10 +148,13 @@ const cooldownCond = 1500;
 let countSatShown = 0;
 let countFunShown = 0;
 let countSecShown = 0;
-let jumpSat = false;
-let jumpFun = false;
-let jumpSec = false;
-const cooldownJump = 1000;
+
+let satFlash = true;
+
+let allowSatJump = true;
+let allowFunJump = true;
+let allowSecJump = true;
+const cooldownJump = 500;
 let countSatJump = 0;
 let countFunJump = 0;
 let countSecJump = 0;
@@ -166,8 +169,13 @@ const fadeEasing = "linear";    // default: "swing"
 
 const bringOut = (element) => {
     // (selector).animate({styles},speed,easing,callback)
-    element.animate({fontSize: "1.3em"}, "fast");
+    element.animate({fontSize: "1.4em"}, "fast");
     element.animate({fontSize: "1em"}, "fast");
+}
+
+const flash = (element) => {
+    element.animate({opacity: "0"}, fadeOutTime, fadeEasing);
+    element.animate({opacity: "1"}, fadeOutTime, fadeEasing);
 }
 
 
@@ -210,7 +218,6 @@ const switchPause = () => {
     pause = !pause;
         
     (pause)? console.log("=========PAUSE=========") : reqAnimF = requestAnimationFrame(loop);
-    //(pause)? cancelAnimationFrame(reqAnimF) : reqAnimF = requestAnimationFrame(loop);     // remove
 // When continuing game after pause: seems to entail longer looptimes sometimes. But it doesn't occur every time.
 }
 
@@ -284,7 +291,10 @@ const feed = () => {
         // same as $(document).ready(function(){/*jQuery method*/});
         $(function(){
             $("#satiation").fadeIn(fadeInTime);            // default: 400ms
-            if (satiationIncrease > 0 && jumpSat) { bringOut($("#satiation")); }
+            if (satiationIncrease > 0 && allowSatJump) {
+                bringOut($("#satiation"));
+                allowSatJump = false;
+            }
         });
         
     }
@@ -367,7 +377,6 @@ const play = () => {
             if (b) fun.style.color = "var(--red)";
             $("#fun").fadeIn(fadeInTime, () => {
                 if (a) {
-                    // countSatShown = 0;
                     satShown = true;
                     $("#satiation").fadeIn(fadeInTime);
                 }
@@ -439,7 +448,6 @@ function update(progress) {
         - Check priorities of Furball-statemens and perhaps update FurbalSaying.
         - Check all conditions to fade in condition bars if critical.
         
-        
         Priority for Furball-statements:
         Highest
             1. feed() or play() -> secureness too low,
@@ -497,7 +505,24 @@ function update(progress) {
             default:                                            // critical, priority 4:
                 if (myFurball.satiation <= 40) {
                     satiation.style.color = "var(--red)";
-                    $(function() { $("#satiation").fadeIn(fadeInTime); });
+                    satShown = true;
+                    countSatShown = 0;
+                    
+                    $(function() {
+                        $("#satiation").fadeIn(fadeOutTime, fadeEasing);
+                        
+                        if (satFlash) $(function() {        // Baustelle... Anscheinend gehen zwei Animationen gleichzeitig
+                            satFlash = false;               // auf ein Element nicht. Und: Endlos-Blinken.
+                            flash($("#satiation"));
+                        });
+
+                        /* if (allowSatJump) {                   // jumps 2x :/ Should jump only 1x.
+                            allowSatJump = false;
+                            bringOut($("#satiation"));
+                            console.log("allowSatJump: " + allowSatJump);
+                        } */
+                    });
+                    
                     
                     if (myFurball.satiation <= 10) { saysSatiation = furbalStates.satiation[10]; }
                     else if ( myFurball.satiation <= 20) { saysSatiation = furbalStates.satiation[20]; }
@@ -520,7 +545,7 @@ function update(progress) {
             default:                                            // critical, priority 4:
                 if (myFurball.fun <= 30) {
                     fun.style.color = "var(--red)";
-                    $(function() { $("#fun").fadeIn(fadeInTime); });
+                    $(function() { $("#fun").fadeIn(fadeOutTime, fadeEasing); });
 
                     if (myFurball.fun <= 20) { saysFun = furbalStates.fun[20]; }
                     else if (myFurball.fun <= 30) { saysFun = furbalStates.fun[30]; }
@@ -542,7 +567,7 @@ function update(progress) {
             default:                                            // critical, priority 4:
                 if (myFurball.secureness <= 40) {
                     secureness.style.color = "var(--red)";
-                    $(function() { $("#secureness").fadeIn(fadeInTime); });
+                    $(function() { $("#secureness").fadeIn(fadeOutTime, fadeEasing); });
 
                     saysSecureness = furbalStates.secureness[40];
                 }
@@ -634,8 +659,8 @@ function update(progress) {
 
     //Test: DELETE / DEACTIVATE !!!
     //myFurball.satiation = 100;
-    //myFurball.fun = 100;
-    //myFurball.secureness = 100;
+    myFurball.fun = 100;
+    myFurball.secureness = 100;
     //myFurball.health = 100;
     //if (v_timeElapsed >= 8000) { myFurball.isDead = true } // Control values after a certain time. Delete later.
     //if (myFurball.satiation <= 0) myFurball.isDead = true;  // time check. Delete later!
@@ -658,6 +683,8 @@ function draw() {
     toy.innerHTML = player.toy;
     specialItems.innerHTML = player.specialItems;
 
+    // Disable Buttons:
+
     if (!player.food) {
         feedBtn.disabled = true;
     } else { feedBtn.disabled = false; }
@@ -666,6 +693,7 @@ function draw() {
         playBtn.disabled = true;
     } else { playBtn.disabled = false; }
 
+    // draw condition bars and write Furballs statements
 
     health.children[0].style.width = myFurball.health + "%";
     health.children[0].style.backgroundColor = "#" + colorMap[Math.round(myFurball.health-1)]; // There is no index -1
@@ -683,36 +711,61 @@ function draw() {
     secureness.children[0].style.backgroundColor = "#" + colorMap[Math.round(myFurball.secureness-1)];
     //secureness.style.borderColor = "#" + colorMap[Math.round(myFurball.secureness-1)];
 
+
+    // Fade out condition bars:
     if (satShown) {
         countSatShown += progress;
-        if (countSatShown > cooldownCond) {
-            $(function(){ $("#satiation").fadeOut(fadeOutTime, fadeEasing); });
-            satShown = false;
-            countSatShown = 0;
-            countSatJump = 0;
+        if (countSatShown >= cooldownCond) {
+                $(function(){ $("#satiation").fadeOut(fadeOutTime, fadeEasing); });
+                satShown = false;
+                /* allowSatJump = true; */
+                countSatShown = 0;
+                /* countSatJump = 0; */
         }
     }
     if (funShown) {
         countFunShown += progress;
-        if (countFunShown > cooldownCond) {
+        if (countFunShown >= cooldownCond) {
             $(function(){ $("#fun").fadeOut(fadeOutTime, fadeEasing); });
             funShown = false;
+            /* allowFunJump = true; */
             countFunShown = 0;
-            countFunJump = 0;
+            /* countFunJump = 0; */
         }
     }
     if (secShown) {
         countSecShown += progress;
-        if (countSecShown > cooldownCond) {
+        if (countSecShown >= cooldownCond) {
             $(function(){ $("#secureness").fadeOut(fadeOutTime, fadeEasing); });
             secShown = false;
+            /* allowSecJump = true; */
             countSecShown = 0;
-            countSecJump = 0;
+            /* countSecJump = 0; */
         }
     }
 
-
-
+    // Limit jumping:
+    if (!allowSatJump) {
+        countSatJump += progress;
+        if (countSatJump >= cooldownJump) {
+            allowSatJump = true;
+            countSatJump = 0;
+        }
+    }
+    if (!allowFunJump) {
+        countFunJump += progress;
+        if (countFunJump >= cooldownJump) {
+            allowFunJump = true;
+            countFunJump = 0;
+        }
+    }
+    if (!allowSecJump) {
+        countSecJump += progress;
+        if (countSecJump >= cooldownJump) {
+            allowSecJump = true;
+            countSecJump = 0;
+        }
+    }
 
 }
 

@@ -153,7 +153,7 @@ button {
     transition-duration: 0.15s;
     text-decoration: none;
     border: 1px solid var(--dark2);
-    box-shadow: 0 0.3em var(--dark4);
+    box-shadow: 0 0.3em var(--dark3);
 }
 button:hover {
     background-image: linear-gradient(to bottom right, var(--green3), var(--green1));
