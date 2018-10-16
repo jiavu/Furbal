@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html>
+
+<!-- HOW TO FIRE 2 ANIMATIONS ON 1 ELEMENT AT THE SAME TIME -->
+
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>Jump'n'Flash</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <style>
+        .center {
+            width: 100%;
+            text-align: center;
+        }
+        button {
+            margin: 0 0 50px;
+        }
+        #fadeInAndOut {
+            margin: auto;
+            width: 100px;
+            height: 100px;
+            background-color: black;
+        }
+    </style>
+</head>
+<body>
+    <div class="center">
+        <h1 id="state"></h1>
+        <button type="button" id="button">Flash on/off</button>
+        <div id="fadeInAndOut"></div>
+        <button type="button" id="jump" onclick="letJump1(block)">Jump</button>
+    </div>
+
+    <script>
+        // (selector).animate({styles},speed,easing,callback)
+
+        let requestAnimationFrame = window.requestAnimationFrame || window.mozRequestAnimationFrame || window.webkitRequestAnimationFrame || windows.msRequestAnimationFrame;
+        let cancelAnimationFrame = window.cancelAnimationFrame || window.mozCancelAnimationFrame;
+        let reqAnimF;
+
+        let progress = 0;
+        let lastRender = 0;
+        let play = false;
+        let animationOn = false;
+
+        let blockFlash = true;
+        
+        const button = document.getElementById("button");
+        const state = document.getElementById("state");
+        const jump = document.getElementById("jump");
+        const block = $("#fadeInAndOut");
+
+        const flashAnimation1 = (element, flash) => {
+            this.bol = flash;
+
+            if (flash) {
+                this.bol = false;
+                $(function() {
+                    element.animate( {opacity: 0}, "fast", "linear" );
+                    element.animate( {opacity: 1}, "fast", "linear", ()=> this.bol = true);
+                });
+            };
+            return this.bol;        // still false. I don't find a solution.
+        };
+
+        const flashAnimation2 = (element) => { $(function() {
+                element.animate( {opacity: 0}, {
+                    duration: "fast",
+                    easing: "linear"
+                }, element.animate( {opacity: 1}, {
+                    duration: "fast",
+                    easing: "linear",
+                    queue: false
+                }));
+        })};
+
+        const flashAnimation3 = (element) => { $(function() {
+            element.animate( {opacity: 0}, "fast", "linear" )
+            .animate( {opacity: 1}, "fast", "linear", ()=> element.clearQueue() );
+            })
+        }
+
+        const clearQueue = (element) => {
+            $(function() { element.clearQueue(); })
+        }
+
+        // Jumping during flashing: no queue
+        const letJump1 = (element) => { $(function() {
+            element.animate( {width: "+=50", height: "+=20"}, {
+                duration: "fast",
+                queue: false,
+                always: () => {
+                    element.animate( {width: "-=50", height: "-=20"}, {
+                        duration: "fast",
+                        queue: false                        
+                    });
+                }
+                }
+            );
+            
+        })};
+
+        // Flashing paused during jumping: jumping queued
+        const letJump2 = (element) => { $(function() {
+            element.animate( {width: "+=50", height: "+=20"}, "fast");  // or chain both actions
+            element.animate( {width: "-=20", height: "-=20"}, "fast");
+        })}
+
+
+        const changeStatus = () => animationOn = !animationOn;
+
+        //////////////////////////////////////////////////////////
+        //////////////////////////////////////////////////////////
+
+        function update() {}
+
+        function draw() {
+            state.innerHTML = animationOn;
+
+            if (animationOn) {
+                //flashAnimation1(block);
+                //blockFlash = flashAnimation3(block, blockFlash);
+                flashAnimation3(block);
+            } /* else { clearQueue(block); } */
+        }
+
+
+        function loop(timestamp) {
+            progress = timestamp - lastRender;
+            update(progress);
+            draw();
+
+            lastRender = timestamp;
+            reqAnimF = requestAnimationFrame(loop);
+        }
+
+
+        button.addEventListener("click", changeStatus);
+        //jump.addEventListener("click", letJump1(block)); // button is dead for some reason
+        
+
+        reqAnimF = requestAnimationFrame(loop);
+
+
+//////////////////////////////////////
+
+let outside = true;
+
+const change = (rec) => {
+
+    let a = rec;
+	if (a) {
+        a = false;
+		() => { a = true }
+	}
+	return a;
+};
+
+outside = change(outside);
+console.log(outside);       // False, but I want it to be true.
+
+
+    </script>
+</body>
+</html>

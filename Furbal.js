@@ -1,4 +1,3 @@
-// Alrighty, let's start! :)
 
 let requestAnimationFrame = window.requestAnimationFrame || window.mozRequestAnimationFrame || window.webkitRequestAnimationFrame || windows.msRequestAnimationFrame;
 let cancelAnimationFrame = window.cancelAnimationFrame || window.mozCancelAnimationFrame;
@@ -76,12 +75,12 @@ const funPower = 0.0009;                    // = influence to health
 const naturalDecreaseOfSecureness = 0.013;
 const securenessPower = 0.0003;             // = influence to health
 
-const foodPowerMax = 2;    // if Furbals satiation is 0, Furbal will eat maximum.
-const foodPowerMin = 2;     // if Furbals satiation is 100, Furbal will eat minimum.
+const foodPowerMax = 10;    // if Furbals satiation is 0, Furbal will eat maximum.
+const foodPowerMin = 1;     // if Furbals satiation is 100, Furbal will eat minimum.
 const playPowerMax = 10;
-const playPowerMin = 2;
+const playPowerMin = 1;
 const petPowerMax = 3;
-const petPowerMin = 2;
+const petPowerMin = 1;
 
 
 const playToSat = 0.3;           // example: playToSat = 0.1; 10 toy consumed via play() will decrease satiation by 1. (PLAYING MAKES IT HUNGRY!)
@@ -112,7 +111,7 @@ const player = {
     credits : 0,
     food : 1000,
     toy : 1000,
-    specialItems : null
+    specialItems : null     // another object { carrot: 0, lemon: 1, strawberry: 2}
 };
 
 /*
@@ -140,7 +139,8 @@ let secCritical = false;        // prioritize Furball's statments (warningSystem
 let prioAction = false;
 
 
-// For drawing / CSS /jQuery:
+// For displaying elements and jQuery animations:
+
 let satShown = true;            // so conditions won't be displayed for ever.
 let funShown = true;
 let secShown = true;
@@ -149,7 +149,13 @@ let countSatShown = 0;
 let countFunShown = 0;
 let countSecShown = 0;
 
-let satFlash = true;
+const fadeInTime = 200;
+const fadeOutTime = 800;
+const fadeEasing = "linear";    // default: "swing"
+
+//let satFlash = false;           // not used anymore?
+//let funFlash = false;           // not used anymore?
+//let secFlash = false;           // not used anymore?
 
 let allowSatJump = true;
 let allowFunJump = true;
@@ -159,24 +165,52 @@ let countSatJump = 0;
 let countFunJump = 0;
 let countSecJump = 0;
 
-
-
 const cooldownStatement = 2000;      // Cooldown for Furball's statements. Update statement only after cooldown time.
 let timeElapsedTemp = 0;
-const fadeInTime = 200;
-const fadeOutTime = 800;
-const fadeEasing = "linear";    // default: "swing"
 
-const bringOut = (element) => {
-    // (selector).animate({styles},speed,easing,callback)
-    element.animate({fontSize: "1.4em"}, "fast");
-    element.animate({fontSize: "1em"}, "fast");
-}
 
-const flash = (element) => {
-    element.animate({opacity: "0"}, fadeOutTime, fadeEasing);
-    element.animate({opacity: "1"}, fadeOutTime, fadeEasing);
-}
+// jQuery animations:
+const letJump = (element) => { $(function() {
+    element.animate( {fontSize: "+=0.4em"}, {         // increase from 1em to 1.4em
+        duration: "fast",
+        queue: false,
+        always: () => {
+            element.animate( {fontSize: "-=0.4em"}, {
+                duration: "fast",
+                queue: false                        
+            });
+        }
+        }
+    );
+})};
+
+// Unused. Doesn't work as intended:
+const flashAnimationX = (element, flash) => {
+    this.bol = flash;
+    if (this.bol) {
+        this.bol = false;
+        $(function() {
+            element.animate( {opacity: 0}, fadeOutTime, fadeEasing );      // (or chain these actions)
+            element.animate( {opacity: 1}, fadeOutTime, fadeEasing, ()=> this.bol = true);
+        })
+    };
+    return this.bol;    // should be true but stays false.
+};
+
+
+// Alternative: clear queue after looping of animations finished.
+const flashAnimation = (element) => {
+    $(function() {
+        element.animate( {opacity: 0}, fadeOutTime, fadeEasing)         // (chained here.)
+        .animate( {opacity: 1}, fadeOutTime, fadeEasing, ()=> element.clearQueue());    // THAT'S IT !
+    })
+    
+    
+};
+
+const clearQueue = (element) => {                   // check if still used.
+    $(function() { element.clearQueue(); })
+};
 
 
 //////////////////////////////////////////////////
@@ -225,10 +259,12 @@ const switchPause = () => {
 
 const feed = () => {
     let satiationIncrease;
+
     (myFurball.secureness < 0)?
         satiationIncrease = 0 :
         satiationIncrease = ( (-(foodPowerMax-foodPowerMin)/100 *myFurball.satiation) + foodPowerMax ) * myFurball.secureness/100;
         // the less secureness, the less myFurball will eat.
+
 
     /* If player doesn't have enough food for 1 food portion, Furball gets what player has.
         If player has no food, Furball gets no food. */
@@ -236,11 +272,13 @@ const feed = () => {
         satiationIncrease = player.food;
     } else if (!player.food) { satiationIncrease = 0 };
 
+
     // That's how food will increase Furballs satiation:
     satiationIncrease = Math.round(satiationIncrease);
     (myFurball.satiation < 0 && myFurball.secureness/100 > 0)?
         myFurball.satiation = satiationIncrease :
         myFurball.satiation += satiationIncrease;
+
 
     // Reset colors of html elements (warning system):
     furballStatement.style.color = "var(--black)";
@@ -258,11 +296,11 @@ const feed = () => {
         if (!satiationIncrease) {       // Because secureness is critical, no satiationIncrease.
             secCritical = true;
             saysFeed = furbalStates.secureness.noEat;
-            countSecShown = 0;
-            secShown = true;
-            secureness.style.color = "var(--red)";
-            $( () => $("#secureness").fadeIn(fadeInTime) );
             furballStatement.style.color = "var(--red)";
+            //countSecShown = 0;
+            //secShown = true;                                    // ..v
+            //secureness.style.color = "var(--red)";              // not really necessary. securenes sshould already be red and flashing in this range.
+            //$( () => $("#secureness").fadeIn(fadeInTime) );     // But, perhaps higher depending on result of satiationIncrease..
 
         } else if (myFurball.satiation >= 95) {
             saysFeed = furbalStates.toFeeding[95];
@@ -288,17 +326,17 @@ const feed = () => {
         countSatShown = 0;
         satShown = true;
 
+
         // same as $(document).ready(function(){/*jQuery method*/});
         $(function(){
             $("#satiation").fadeIn(fadeInTime);            // default: 400ms
             if (satiationIncrease > 0 && allowSatJump) {
-                bringOut($("#satiation"));
+                letJump($("#satiation"));
                 allowSatJump = false;
             }
         });
         
     }
-
 
     // Update players food box:
     player.food -= satiationIncrease;    
@@ -317,12 +355,14 @@ const play = () => {
         funIncrease = player.toy;
     } else if (!player.toy) { funIncrease = 0 };
 
+
     // That's how toys will increase Furballs fun:
     funIncrease = Math.round(funIncrease);
     (myFurball.fun < 0 && myFurball.secureness/100 -secToFunThreshold > 0)?
         myFurball.fun = funIncrease :
         myFurball.fun += funIncrease;
 
+        
     // Reset colors of html elements (warning system):
     furballStatement.style.color = "var(--black)";
     if (myFurball.fun > 30) { fun.style.color = "var(--black)"; }
@@ -340,10 +380,10 @@ const play = () => {
             secCritical = true;
             saysPlay = furbalStates.secureness.noPlay;
             furballStatement.style.color = "var(--red)";
-            countSecShown = 0;
-            secShown = true;
-            secureness.style.color = "var(--red)";
-            $( () => $("#secureness").fadeIn(fadeInTime) );
+            //countSecShown = 0;
+            //secShown = true;                                    // ..v
+            //secureness.style.color = "var(--red)";              // not really necessary. secureness
+            //$( () => $("#secureness").fadeIn(fadeInTime) );     // should already be red and flashing.
 
         } else if (myFurball.fun >= 95) {
             saysPlay = furbalStates.toPlaying[95];
@@ -377,6 +417,10 @@ const play = () => {
             if (b) fun.style.color = "var(--red)";
             $("#fun").fadeIn(fadeInTime, () => {
                 if (a) {
+                    if (allowFunJump) {
+                        letJump($("#fun"));
+                        allowFunJump = false;
+                    }
                     satShown = true;
                     $("#satiation").fadeIn(fadeInTime);
                 }
@@ -397,7 +441,7 @@ const play = () => {
 
 
 const pet = () => {
-    //let securenessIncrease = (-(petPowerMax-petPowerMin)/100*myFurball.secureness) + petPowerMax; // the less secureness, the more increase.
+
     let securenessIncrease = ((petPowerMax-petPowerMin)/100 *myFurball.secureness) + petPowerMin; // the less secureness, the less increase. LOST CONFIDENCE!
     
     // That's how petting will increase Furballs secureness:
@@ -406,15 +450,17 @@ const pet = () => {
         myFurball.secureness += securenessIncrease;
     if (myFurball.secureness > 100) myFurball.secureness = 100;
 
+
     // Reset colors of html elements (warning system):
     furballStatement.style.color = "var(--black)";
-    if (myFurball.secureness > 40) { secureness.style.color = "var(--black)"; }
+    if (myFurball.secureness > 40) { secureness.style.color = "var(--black)"; }     // shouldn't be necessary, or is it?
     else { secureness.style.color = "var(--red)"; }
 
 
     // reset prio:
     secCritical = false;
     prioAction = true;
+
 
     // Get Furballs statements about petting:
     if (myFurball.secureness >= 95) {
@@ -436,7 +482,14 @@ const pet = () => {
     countSecShown = 0;
     secShown = true;
 
-    if (saysPet) $(function(){ $("#secureness").fadeIn(fadeInTime); });
+    if (saysPet) { $(function() {
+        $("#secureness").fadeIn(fadeInTime, () => {
+            if (allowSecJump) {
+                letJump($("#secureness"));
+                allowSecJump = false;
+            }
+        })}
+    )}
 }
 
 
@@ -510,19 +563,8 @@ function update(progress) {
                     
                     $(function() {
                         $("#satiation").fadeIn(fadeOutTime, fadeEasing);
-                        
-                        if (satFlash) $(function() {        // Baustelle... Anscheinend gehen zwei Animationen gleichzeitig
-                            satFlash = false;               // auf ein Element nicht. Und: Endlos-Blinken.
-                            flash($("#satiation"));
-                        });
-
-                        /* if (allowSatJump) {                   // jumps 2x :/ Should jump only 1x.
-                            allowSatJump = false;
-                            bringOut($("#satiation"));
-                            console.log("allowSatJump: " + allowSatJump);
-                        } */
-                    });
-                    
+                        flashAnimation($("#satiation"));
+                    });                    
                     
                     if (myFurball.satiation <= 10) { saysSatiation = furbalStates.satiation[10]; }
                     else if ( myFurball.satiation <= 20) { saysSatiation = furbalStates.satiation[20]; }
@@ -545,12 +587,17 @@ function update(progress) {
             default:                                            // critical, priority 4:
                 if (myFurball.fun <= 30) {
                     fun.style.color = "var(--red)";
-                    $(function() { $("#fun").fadeIn(fadeOutTime, fadeEasing); });
+                    funShown = true;
+                    countFunShown = 0;
+
+                    $(function() {
+                        $("#fun").fadeIn(fadeOutTime, fadeEasing);
+                        flashAnimation($("#fun"));
+                    });
 
                     if (myFurball.fun <= 20) { saysFun = furbalStates.fun[20]; }
                     else if (myFurball.fun <= 30) { saysFun = furbalStates.fun[30]; }
                 }
-
 
                 // Furball happy, priority 7:
                 else if (myFurball.fun >= 90) { saysFun = furbalStates.fun[90]; }
@@ -567,7 +614,13 @@ function update(progress) {
             default:                                            // critical, priority 4:
                 if (myFurball.secureness <= 40) {
                     secureness.style.color = "var(--red)";
-                    $(function() { $("#secureness").fadeIn(fadeOutTime, fadeEasing); });
+                    secShown = true;
+                    countSecShown = 0;
+                    
+                    $(function() {
+                        $("#secureness").fadeIn(fadeOutTime, fadeEasing);
+                        flashAnimation($("#secureness"));
+                    });
 
                     saysSecureness = furbalStates.secureness[40];
                 }
@@ -659,8 +712,8 @@ function update(progress) {
 
     //Test: DELETE / DEACTIVATE !!!
     //myFurball.satiation = 100;
-    myFurball.fun = 100;
-    myFurball.secureness = 100;
+    //myFurball.fun = 100;
+    //myFurball.secureness = 100;
     //myFurball.health = 100;
     //if (v_timeElapsed >= 8000) { myFurball.isDead = true } // Control values after a certain time. Delete later.
     //if (myFurball.satiation <= 0) myFurball.isDead = true;  // time check. Delete later!
@@ -718,9 +771,9 @@ function draw() {
         if (countSatShown >= cooldownCond) {
                 $(function(){ $("#satiation").fadeOut(fadeOutTime, fadeEasing); });
                 satShown = false;
-                /* allowSatJump = true; */
+                allowSatJump = true;
                 countSatShown = 0;
-                /* countSatJump = 0; */
+                countSatJump = 0;
         }
     }
     if (funShown) {
@@ -728,9 +781,9 @@ function draw() {
         if (countFunShown >= cooldownCond) {
             $(function(){ $("#fun").fadeOut(fadeOutTime, fadeEasing); });
             funShown = false;
-            /* allowFunJump = true; */
+            allowFunJump = true;
             countFunShown = 0;
-            /* countFunJump = 0; */
+            countFunJump = 0;
         }
     }
     if (secShown) {
@@ -738,9 +791,9 @@ function draw() {
         if (countSecShown >= cooldownCond) {
             $(function(){ $("#secureness").fadeOut(fadeOutTime, fadeEasing); });
             secShown = false;
-            /* allowSecJump = true; */
+            allowSecJump = true;
             countSecShown = 0;
-            /* countSecJump = 0; */
+            countSecJump = 0;
         }
     }
 
