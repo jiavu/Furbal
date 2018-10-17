@@ -43,7 +43,9 @@ html {
     --dark2: #666;
     --dark3: #888;
     --dark4: #999;
-    --light: white;
+    --white: white;
+    --light1: hsl(0, 0%, 95%);
+    --light2: hsl(0, 0%, 90%);
     --green1: hsl(150, 100%, 25%);
     --green2: hsl(150, 100%, 40%);
     --green3: hsl(150, 100%, 60%);
@@ -57,7 +59,6 @@ html {
 }
 body {
     font-size: 0.9rem;
-    animation: fade 1s ease 0s 1 normal;
 }
 .monitor {
     position: fixed;
@@ -86,9 +87,22 @@ body {
     transform: translateY(-50%);
     font: 50% monospace;
 }
+#info-fenster {
+    position: fixed;    /* or absolute */
+    width: 85%;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 1;
+    background-color: var(--light1);
+    text-align: left;
+    font-size: 0.8rem;
+    padding: 6vmin;
+}
 
 .body-body {
     margin: 1% 2% 0;
+    animation: fade 1s ease 0s 1 normal;
 }
 h1 {
     font: 1.5rem "Coiny", cursive;
@@ -148,7 +162,7 @@ button {
     color: white;
     border-radius: 50%;        /* or 10px */
     background-image: linear-gradient(to bottom right, var(--green2), var(--green1));
-    color: var(--light, white);
+    color: var(--white, white);
     cursor: pointer;
     transition-duration: 0.15s;
     text-decoration: none;
@@ -159,7 +173,7 @@ button:hover {
     background-image: linear-gradient(to bottom right, var(--green3), var(--green1));
 }
 button:disabled {
-    background-image: linear-gradient(to bottom right, var(--light), var(--dark4));
+    background-image: linear-gradient(to bottom right, var(--white), var(--dark4));
     color: var(--red);
     box-shadow: 0 0.1em var(--dark2);
     transform: translateY(0.2em);

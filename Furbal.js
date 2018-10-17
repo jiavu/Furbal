@@ -99,9 +99,9 @@ const myFurball = {
     name : "My Furball",
     isDead : false,
     health : 100,
-    satiation : 45,
+    satiation : 50,
     fun : 80,
-    secureness : 40
+    secureness : 70
 };
 
 // Player:
@@ -208,10 +208,6 @@ const flashAnimation = (element) => {
     
 };
 
-const clearQueue = (element) => {                   // check if still used.
-    $(function() { element.clearQueue(); })
-};
-
 
 //////////////////////////////////////////////////
 //////////////////////////////////////////////////
@@ -299,9 +295,9 @@ const feed = () => {
             furballStatement.style.color = "var(--red)";
             //countSecShown = 0;
             //secShown = true;                                    // ..v
-            //secureness.style.color = "var(--red)";              // not really necessary. securenes sshould already be red and flashing in this range.
-            //$( () => $("#secureness").fadeIn(fadeInTime) );     // But, perhaps higher depending on result of satiationIncrease..
-
+            //secureness.style.color = "var(--red)";              // not really necessary. secureness should already be red and flashing in this range.
+            //$( () => $("#secureness").fadeIn(fadeInTime) );     // But, secCritical could maybe be higher than critical threshold of secureness,
+                                                                //depending on result of satiationIncrease.
         } else if (myFurball.satiation >= 95) {
             saysFeed = furbalStates.toFeeding[95];
         } else if (myFurball.satiation >= 90) {
@@ -415,16 +411,15 @@ const play = () => {
         $(function() {
             if (a) satiation.style.color = "var(--red)";
             if (b) fun.style.color = "var(--red)";
-            $("#fun").fadeIn(fadeInTime, () => {
-                if (a) {
-                    if (allowFunJump) {
-                        letJump($("#fun"));
-                        allowFunJump = false;
-                    }
-                    satShown = true;
-                    $("#satiation").fadeIn(fadeInTime);
+            $("#fun").fadeIn(fadeInTime);
+            if (a) {
+                if (allowFunJump) {
+                    letJump($("#fun"));
+                    allowFunJump = false;
                 }
-            });
+                satShown = true;
+                $("#satiation").fadeIn(fadeInTime);
+            }
         });
     }
     
@@ -483,13 +478,14 @@ const pet = () => {
     secShown = true;
 
     if (saysPet) { $(function() {
-        $("#secureness").fadeIn(fadeInTime, () => {
-            if (allowSecJump) {
-                letJump($("#secureness"));
-                allowSecJump = false;
-            }
-        })}
-    )}
+        $("#secureness").fadeIn(fadeInTime);
+        if (allowSecJump) {
+            letJump($("#secureness"));
+            allowSecJump = false;
+        }
+        })
+    }
+    
 }
 
 
@@ -675,7 +671,7 @@ function update(progress) {
             }
         }
     }
-        
+
     
     /////////////////////////////////////////////////////////
     /////////////////////////////////////////////////////////
