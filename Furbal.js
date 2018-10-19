@@ -3,6 +3,20 @@ let requestAnimationFrame = window.requestAnimationFrame || window.mozRequestAni
 let cancelAnimationFrame = window.cancelAnimationFrame || window.mozCancelAnimationFrame;
 let reqAnimF;
 
+/* I'll make it a progressive web app later! */
+// Fullscreen mode / progressive web app: https://developers.google.com/web/fundamentals/native-hardware/fullscreen/
+
+function toggleFullScreen() {   // supported by Safari?
+    let doc = window.document;
+    let docEl = doc.documentElement;    // returns the root element of the document (<html>)
+    let requestFullScreen = docEl.requestFullscreen || docEl.mozRequestFullScreen || docEl.webkitRequestFullScreen || docEl.msRequestFullscreen;
+    let cancelFullScreen = doc.exitFullscreen || doc.mozCancelFullScreen || doc.webkitExitFullscreen || doc.msExitFullscreen;
+    if (!doc.fullscreenElement && !doc.mozFullScreenElement && !doc.webkitFullscreenElement && !doc.msFullscreenElement) {
+        requestFullScreen.call(docEl);
+    } else { cancelFullScreen.call(doc)};
+}
+
+
 // 100 color values for condition bars: Red -> Yellow -> Green.
 const colorMaps = {
     // red -> yellow -> lighter green:
@@ -31,6 +45,8 @@ const other1 = document.getElementById("other1");
 const other2 = document.getElementById("other2");
 const other3 = document.getElementById("other3");
 
+document.getElementsByClassName("monitor")[0].style.visibility = "hidden";
+
 // Game elements:
 const healthHeading = document.getElementsByClassName("health")[0];
 const health = document.getElementById("health");
@@ -50,6 +66,7 @@ const credits = document.getElementById("credits");
 const food = document.getElementById("food");
 const toy = document.getElementById("toy");
 const specialItems = document.getElementById("specialItems");
+
 
 //////////////////////////////////////////////////
 //////////////////////////////////////////////////
@@ -99,8 +116,8 @@ const myFurball = {
     name : "My Furball",
     isDead : false,
     health : 100,
-    satiation : 50,
-    fun : 80,
+    satiation : 40,
+    fun : 40,
     secureness : 70
 };
 
@@ -124,6 +141,8 @@ or Bypass CORS by disabling web-security. */
 //If all files are saved to and accessed via request to server I can use:
 //import furbalStates from "./furbal_says.js";
 //Otherwise paste object here and don't forget to remove type="module":
+const infoText = {startScreen:{go:"<div class='alignCenter'><h1>Furball</h1><h3>Are you ready for it?</h3><button type='button' id='go'>YES!</button></div>"},finishScreen:{playAgain : "<div class='alignCenter'><button type='button' id='again'>GIMME A NEW FURBALL!</button></div>"},settingsScreen:"<button type='button' id='fScreen'>ToggleFullscreen</button>"};
+
 const furbalStates = {toFeeding:{95:"Salad. Not again.",90:"I'm so full.",85:"I am good, thanks.",1:"Can I have a dessert?",2:"Tastes good, thanks.",3:"Is it food or...",4:"Yummy!",5:"* munch crunch chomp *"},toPlaying:{95:"I don't want to play anymore. You can have it.",90:"Yeay. Toys. :/",85:"I already had a lot of them.",1:"It's my dolly! Play with your own one!",2:"Oh, toys!",3:"Yippee!",4:"Catch me! Haha, catch me!!!"},toPetting:{95:"Leave me some space, okay?",85:"Come on, you're squeezing me.",1:"Huuug!",2:"I love you mama!",3:"You are the sunshine of my live.",4:"It's so good to have you.",5:"Rrrrrrrr!"},health:{90:"Oh, happy day!",50:"Could be better.",40:"I am not feeling so well.",30:"Why do you let me die?",20:"I declare that this is my last will and testament.",10:"I am feeling so cold.",5:"I think it's over.",0:"I'm dead."},satiation:{75:"I could maybe eat something.",60:"I want candy, now!",50:"Can I have cookie?",40:"I am so hungry.",30:"Can I eat stones?",20:"I am starving...",10:"My stomache hurts.",},fun:{90:"Live is fun!",75:"Let's play something!",50:"Boring!!!",40:"* YAWN *",30:"* snooze *",20:"Deadly boring."},secureness:{85:"It's so good to have you.",60:"Where are you?",50:"I am so lonley.",40:"I am afraid all alone!",noPlay:"I am so alone and sad. I don't want to play.",noEat:"I am so alone and sad. I don't want to eat."}};
 
 let furballSaying = "";
@@ -213,6 +232,23 @@ const flashAnimation = (element) => {
 //////////////////////////////////////////////////
 // Functions:
 
+const startScreen = () => {
+    $(function() {
+        $("#info-window").fadeIn(1500).html(infoText.startScreen.go);
+        $(function() {
+            $("#go").click(function() {
+                $("#go").prop("disabled", true).html("Let's go!");
+                /* $("#go").animate({opacity: 0}, 700); */
+                $("#info-window").fadeOut(2000, ()=> {
+                $("#game-field").fadeIn(1500, ()=> {
+                    reqAnimF = requestAnimationFrame(loop);
+                });
+                });
+            });
+        });
+    });
+};
+
 const gameOver = () => {
     furballStatement.innerHTML = "I'm dead.";
     $(function(){$("#satiation,#fun,#secureness").fadeIn(fadeInTime); });
@@ -223,7 +259,14 @@ const gameOver = () => {
     const secondsMs = Math.round(v_timeElapsed)/1000 %60;
     const seconds = Math.floor(secondsMs);
     
-    
+    let gameOverText = myFurball.name + " survived " +
+        hours + " hours, " + minutes + " minutes and "
+        + seconds + " seconds.";
+
+    $(function() {
+        $("#info-window").fadeIn(1500).html(gameOverText + infoText.finishScreen.playAgain);
+    })
+
     console.log("");
     console.log("==============");
     console.log("==============");
@@ -236,22 +279,29 @@ const gameOver = () => {
         + minutes + " minutes, "
         + secondsMs + " seconds.");
 
-    // Replace: make an info window.
-    window.alert(myFurball.name + " survived " +
-    hours + " hours, "
-    + minutes + " minutes and "
-    + seconds + " seconds.");
+
 };
 
 
 const switchPause = () => {
     pause = !pause;
-        
     (pause)? console.log("=========PAUSE=========") : reqAnimF = requestAnimationFrame(loop);
 // When continuing game after pause: seems to entail longer looptimes sometimes. But it doesn't occur every time.
 }
 
+const settings = () => {
+    if (myFurball.isDead) { gameOver() }
+    else {
+        switchPause();
 
+        $(function() {
+            $("#info-window").html("<p>- Hier kommen die Settings hin -</p>" + infoText.settingsScreen);
+            $("#fScreen").click(toggleFullScreen);
+        })
+
+        pause? $(function() {$("#info-window").show()}) : $(function() {$("#info-window").hide()});
+    }
+}
 
 const feed = () => {
     let satiationIncrease;
@@ -707,9 +757,9 @@ function update(progress) {
     }
 
     //Test: DELETE / DEACTIVATE !!!
-    //myFurball.satiation = 100;
-    //myFurball.fun = 100;
-    //myFurball.secureness = 100;
+    //myFurball.satiation = 30;
+    //myFurball.fun = 20;
+    //myFurball.secureness = 20;
     //myFurball.health = 100;
     //if (v_timeElapsed >= 8000) { myFurball.isDead = true } // Control values after a certain time. Delete later.
     //if (myFurball.satiation <= 0) myFurball.isDead = true;  // time check. Delete later!
@@ -853,9 +903,10 @@ pauseButton.addEventListener("click", switchPause);
 feedBtn.addEventListener("click", feed);
 playBtn.addEventListener("click", play);
 petBtn.addEventListener("click", pet);
+$(function() {$("#settings").click(settings)});
 
 
 furballName.innerHTML = myFurball.name + ":";
 v_timeElapsed = 0;
 
-reqAnimF = requestAnimationFrame(loop);
+startScreen();

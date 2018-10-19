@@ -2,7 +2,7 @@
 
 :root {
     font-family: "Poor Story", cursive; /* font: font-style font-variant font-weight font-size/line-height font-family|caption|icon|menu|message-box|small-caption|status-bar|initial|inherit;*/
-    font-size: 3.2vh;
+    font-size: 3.1vh;
     margin: 0;
     min-width: 320px;
     border: 1px dashed black;       /* Delete later. It's for checking screen size */
@@ -46,6 +46,7 @@ html {
     --white: white;
     --light1: hsl(0, 0%, 95%);
     --light2: hsl(0, 0%, 90%);
+    --light3: hsl(0, 0%, 75%);
     --green1: hsl(150, 100%, 25%);
     --green2: hsl(150, 100%, 40%);
     --green3: hsl(150, 100%, 60%);
@@ -58,8 +59,14 @@ html {
     box-sizing: border-box;
 }
 body {
+    position: relative;
+    height: 100%;
+    width: 100%;
     font-size: 0.9rem;
 }
+
+/*============================*/
+
 .monitor {
     position: fixed;
     right: 0;
@@ -87,8 +94,10 @@ body {
     transform: translateY(-50%);
     font: 50% monospace;
 }
-#info-fenster {
-    position: fixed;    /* or absolute */
+
+#info-window {
+    position: absolute;
+    display: none;
     width: 85%;
     top: 50%;
     left: 50%;
@@ -97,20 +106,61 @@ body {
     background-color: var(--light1);
     text-align: left;
     font-size: 0.8rem;
-    padding: 6vmin;
+    padding: 4vmin 5vmin;
+    border-radius: 10px;
+    border: 1px solid var(--dark2);
+    box-shadow: -0.1rem 0.2rem 0.5rem var(--dark2);
+    
+}
+#info-window div.alignCenter { text-align: center; }
+#info-window h1 { font: 1.5rem "Coiny", cursive; }
+#info-window button {
+    font: 0.8rem "Poor Story", cursive;
+    display: inline-block;
+    margin: 5% 0 0;
+    padding: 3%;
+    border: none solid var(--dark1);
+    border-radius: 10px;
+    background-image: linear-gradient(to bottom right, var(--light1), var(--dark4));
+    color: var(--black, black);
+    cursor: pointer;
+    text-decoration: none;
+    box-shadow: -0.04rem 0.09rem 0.1rem var(--dark2);
+}
+#info-window button:hover {
+    font-size: 0.9rem;
+    background-image: linear-gradient(to bottom right, var(--white), var(--light3));
+}
+#info-window button:active {
+    background-image: linear-gradient(to bottom right, var(--white), var(--light2));
+    box-shadow: -0.01rem 0.02rem 0.04rem var(--dark4);
+    transform: translate(-0.03rem, 0.07rem);
+}
+#info-window button:focus { outline: none;}
+#info-window button:disabled {
+    font-size: 0.9rem;
+    pointer-events: none;
+    background-image: linear-gradient(to bottom right, var(--white), var(--light2));
+    box-shadow: none;
+    transform: translate(-0.04rem, 0.09rem);
 }
 
-.body-body {
-    margin: 1% 2% 0;
-    animation: fade 1s ease 0s 1 normal;
+/*============================*/
+/*============================*/
+
+#game-field {
+    position: relative;
+    display: none;
+    margin: 1% 2.5% 0;
+    /* animation: fade 1s ease 0s 1 normal; */
 }
+
 h1 {
     font: 1.5rem "Coiny", cursive;
     margin: 2% 0 0;
 }
-h3 {
-    font-size: 1rem;
-}
+h3 { font-size: 1rem; }
+
 .clearfix::after {
     content: "";
     clear: both;
@@ -152,7 +202,7 @@ h3 {
     flex-direction: column;
     justify-content: space-around;
 }
-button {
+.actionBtns {
     font: 1em "Poor Story", cursive;
     display: block;
     width: 2.7em;
@@ -169,21 +219,21 @@ button {
     border: 1px solid var(--dark2);
     box-shadow: 0 0.3em var(--dark3);
 }
-button:hover {
+.actionBtns:hover {
     background-image: linear-gradient(to bottom right, var(--green3), var(--green1));
 }
-button:disabled {
+.actionBtns:disabled {
     background-image: linear-gradient(to bottom right, var(--white), var(--dark4));
     color: var(--red);
     box-shadow: 0 0.1em var(--dark2);
     transform: translateY(0.2em);
 }
-button:active {
+.actionBtns:active {
     background-image: linear-gradient(to bottom right, var(--green4), var(--green2));
     box-shadow: 0 0.1em var(--dark2);
     transform: translateY(0.2em);
 }
-button:focus { outline: none;}
+.actionBtns:focus { outline: none;}
 
 .cage { display: inline-block; }
 
@@ -244,19 +294,40 @@ a {
     text-decoration: none;
     color: grey;
 }
-/* evtl: fixed footer */
-footer {
-    position: fixed;
+
+/*============================*/
+
+.footer1 {
+    position: absolute;
     width: 100%;
     bottom: 0;
 }
+#settings {
+    position: absolute;
+    top: 50%;
+    right: 5%;
+    height: 90%;
+    transform: translateY(-50%);
+    opacity: 0.7;
+}
+#settings:hover, #settings:active {
+    top: 50%;
+    right: 5%;
+    height: 99%;
+    transform: translateY(-50%);
+    opacity: 1;
+}
 
+/*============================*/
+/*============================*/
+
+/* 
 @keyframes fade {
     from {
         opacity: 0;
         /* evtl:
         display: none;
-        */
+        
     }
     to {opacity: 1}
-}
+}*/

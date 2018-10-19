@@ -11,7 +11,7 @@
     </head>
     <body>
         <!-- Deactivate later: -->
-<!--         
+        <!-- 
         <header id="mobile-browser-offset">
             <p>
             Android info bar<br>
@@ -21,7 +21,7 @@
             (moto G5 | 1080x1920p)
             </p>
         </header>
- -->       
+         -->
         <div class="monitor">
             <h4>Control Monitor</h4>
             <div id="timeElapsed"></div>
@@ -33,17 +33,10 @@
             <div id="other3"></div>
             <input type="button" id="pause" value="Pause">
         </div>
+
+        <div id="info-window"></div>
         
-        <div id="info-fenster">
-            <h1>Überschrift</h1>
-            Cat ipsum dolor sit amet, american bobtail savannah or jaguar or tom. Turkish angora jaguar. Jaguar.<br>
-            Scottish fold cougar scottish fold but turkish angora mouser so malkin for havana brown. Turkish angora.<br><br>
-            Bombay lynx, yet tomcat. Singapura. Cheetah bengal siberian and savannah norwegian forest. Balinese . <br>
-        </div>
-
-
-        <div class="body-body">
-            
+        <div id="game-field">
             <!--
             <h1>Furball</h1>
             -->
@@ -67,9 +60,9 @@
             </div>
             <div class="cage-container clearfix">
                 <div class="buttons">
-                    <button type="button" id="feedBtn">feed</button>
-                    <button type="button" id="playBtn">play</button>
-                    <button type="button" id="petBtn">pet</button>
+                    <button type="button" class="actionBtns" id="feedBtn">feed</button>
+                    <button type="button" class="actionBtns" id="playBtn">play</button>
+                    <button type="button" class="actionBtns" id="petBtn">pet</button>
 
                 </div>
                 <div class="cage">
@@ -111,16 +104,18 @@
                     </div>
                 </div>
             </div>
-            <footer class="my-credits">
-                <p>developed by <a href="https://github.com/jiavu" target="_blank"> Jan-Patrick Tyra</a></p>
-                <p>Version: 1.beta - Oct 2018</p>
-            </footer>
-
-            
-            <script src="./furbal_says.js"></script>
-            <script src="./Furbal.js"></script>
         </div>
-                
+
+        <footer class="my-credits footer1">
+            <p>developed by <a href="https://github.com/jiavu" target="_blank"> Jan-Patrick Tyra</a></p>
+            <p>Version: 1.beta - Oct 2018</p>
+            <img src="./icons/settings.svg" alt="S" id="settings">
+
+        </footer>
+
+        
+        <script src="./furbal_says.js"></script>
+        <script src="./Furbal.js"></script>                
         <!--
         <script type="module" src="./furbal_says.js"></script>
         <script type="module" src="./Furbal.js"></script>
