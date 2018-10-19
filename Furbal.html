@@ -5,13 +5,20 @@
         <meta http-equiv="X-UA-Compatible" content="IE=edge">
         <title>Furball</title>
         <meta name="viewport" content="width=device-width, initial-scale=1">
+
+        <!--
+        If page added to home screen, it should load to fullscreen when opening from home screen.
+        (Safari/iOS and Chrome/Android:) -->
+        <meta name="apple-mobile-web-app-capable" content="yes">
+        <meta name="mobile-web-app-capable" content="yes">
+
         <link href="https://fonts.googleapis.com/css?family=Amatic+SC|Caveat|Coiny|Indie+Flower|Open+Sans|Poor+Story|Source+Sans+Pro" rel="stylesheet">
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
         <link rel="stylesheet" type="text/css" media="screen" href="Furbal.css" >
     </head>
     <body>
         <!-- Deactivate later: -->
-        <!-- 
+        
         <header id="mobile-browser-offset">
             <p>
             Android info bar<br>
@@ -21,7 +28,7 @@
             (moto G5 | 1080x1920p)
             </p>
         </header>
-         -->
+        
         <div class="monitor">
             <h4>Control Monitor</h4>
             <div id="timeElapsed"></div>
@@ -37,13 +44,58 @@
         <div id="info-window"></div>
         
         <div id="game-field">
-            <!--
-            <h1>Furball</h1>
-            -->
 
-            <div class="clearfix">
+            <!-- <h1>Furball</h1> -->
+            <h1 id="furball-name" class="show-in-fullscreen-only"></h1>
+      
+            <div class="conditions clearfix">
+                <div>
+                    <div id="secureness">
+                            Secureness
+                            <div class="condition-bar">
+                                <div></div>
+                            </div>
+                        </div>
+                    <div id="fun">
+                        Fun                         <!-- (Entertainment) -->
+                        <div class="condition-bar">
+                            <div></div>
+                        </div>
+                    </div>
+                    <div id="satiation">
+                        Satiation       <!--Starvation/Hunger/Satiation -->
+                        <div class="condition-bar">
+                            <div></div>
+                        </div>
+                    </div>
+                    <div class="health">
+                        <p id="health-title">HEALTH</p>  <!--(ENERGY)-->
+                        <div class="health-bar" id="health">
+                            <div></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="cage-container clearfix">
+                <div class="buttons">
+                    <button type="button" class="actionBtns" id="petBtn">pet</button>
+                    <button type="button" class="actionBtns" id="playBtn">play</button>
+                    <button type="button" class="actionBtns" id="feedBtn">feed</button>
+
+                </div>
+                <div class="cage">
+                    <img class="furball" src="HN-4592-2.jpg" alt="Furball inspiration">
+                </div>
+            </div>
+
+            <div class="furball-statement">
+                    <p id="furball-says"></p>
+            </div>
+
+            <div> <!-- last div. Clearfix necessary? <div class="clearfix"> -->
                 <div class="user">
-                        <h3>User</h3>
+                        <h3 id="user-name"></h3>
                         <div>
                             <div>Points: <span id="points"></span></div>
                             <p>Credits: <span id="credits"></span></p>
@@ -58,58 +110,12 @@
                         </div>
                 </div>
             </div>
-            <div class="cage-container clearfix">
-                <div class="buttons">
-                    <button type="button" class="actionBtns" id="feedBtn">feed</button>
-                    <button type="button" class="actionBtns" id="playBtn">play</button>
-                    <button type="button" class="actionBtns" id="petBtn">pet</button>
-
-                </div>
-                <div class="cage">
-                    <img class="furball" src="HN-4592-2.jpg" alt="Furball inspiration">
-                </div>
-            </div>
-
-            <div class="furball-statement">
-                    <p id="furball-says"></p>
-            </div>
-
-            <div class="conditions">
-                <h3 id="furball-name"></h3>
-
-                <div>
-                    <div class="health">
-                        HEALTH                  <!--(ENERGY)-->
-                        <div class="health-bar" id="health">
-                            <div></div>
-                        </div>
-                    </div>
-                    <div id="satiation">
-                        Satiation       <!--Starvation/Hunger/Satiation -->
-                        <div class="condition-bar">
-                            <div></div>
-                        </div>
-                    </div>
-                    <div id="fun">
-                        Fun                         <!-- (Entertainment) -->
-                        <div class="condition-bar">
-                            <div></div>
-                        </div>
-                    </div>
-                    <div id="secureness">
-                        Secureness
-                        <div class="condition-bar">
-                            <div></div>
-                        </div>
-                    </div>
-                </div>
-            </div>
         </div>
 
         <footer class="my-credits footer1">
             <p>developed by <a href="https://github.com/jiavu" target="_blank"> Jan-Patrick Tyra</a></p>
             <p>Version: 1.beta - Oct 2018</p>
-            <img src="./icons/settings.svg" alt="S" id="settings">
+            <img src="./settings.svg" alt="S" id="settings">
 
         </footer>
 

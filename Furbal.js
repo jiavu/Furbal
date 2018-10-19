@@ -45,8 +45,6 @@ const other1 = document.getElementById("other1");
 const other2 = document.getElementById("other2");
 const other3 = document.getElementById("other3");
 
-document.getElementsByClassName("monitor")[0].style.visibility = "hidden";
-
 // Game elements:
 const healthHeading = document.getElementsByClassName("health")[0];
 const health = document.getElementById("health");
@@ -61,6 +59,7 @@ const feedBtn = document.getElementById("feedBtn");
 const playBtn = document.getElementById("playBtn");
 const petBtn = document.getElementById("petBtn");
 
+const userName = document.getElementById("user-name");
 const points = document.getElementById("points");
 const credits = document.getElementById("credits");
 const food = document.getElementById("food");
@@ -113,7 +112,7 @@ const secToFunThreshold = 0.12;   // in %. If security is 25% (or less), Furball
 
 // Furball:
 const myFurball = {
-    name : "My Furball",
+    name : "Bomber",
     isDead : false,
     health : 100,
     satiation : 40,
@@ -123,9 +122,10 @@ const myFurball = {
 
 // Player:
 const player = {
-    name : null,
-    points : 0,
-    credits : 0,
+    name : "Hans-Dietrich",
+    gameInProgress : true,
+    points : 9999,
+    credits : 9999,
     food : 1000,
     toy : 1000,
     specialItems : null     // another object { carrot: 0, lemon: 1, strawberry: 2}
@@ -285,6 +285,7 @@ const gameOver = () => {
 
 const switchPause = () => {
     pause = !pause;
+    pause? $( function() { $("#game-field").hide(); }) : $( function() { $("#game-field").show(); });
     (pause)? console.log("=========PAUSE=========") : reqAnimF = requestAnimationFrame(loop);
 // When continuing game after pause: seems to entail longer looptimes sometimes. But it doesn't occur every time.
 }
@@ -757,9 +758,9 @@ function update(progress) {
     }
 
     //Test: DELETE / DEACTIVATE !!!
-    //myFurball.satiation = 30;
-    //myFurball.fun = 20;
-    //myFurball.secureness = 20;
+    myFurball.satiation = 30;
+    myFurball.fun = 20;
+    myFurball.secureness = 20;
     //myFurball.health = 100;
     //if (v_timeElapsed >= 8000) { myFurball.isDead = true } // Control values after a certain time. Delete later.
     //if (myFurball.satiation <= 0) myFurball.isDead = true;  // time check. Delete later!
@@ -906,7 +907,18 @@ petBtn.addEventListener("click", pet);
 $(function() {$("#settings").click(settings)});
 
 
-furballName.innerHTML = myFurball.name + ":";
+furballName.innerHTML = myFurball.name /* + ":" */;
+
+// CONTINUE HERE!!! /////////////////////////////////////////////////////////////////
+if (document.fullscreenElement) {       // didn't work but I have another idea
+    console.log("Hat funktioniert");
+    $(function() { $("#health-title").text("HEALTH");});
+} else { $(function() { $("#health-title").text(myFurball.name);}); }
+
+userName.innerHTML = player.name;
 v_timeElapsed = 0;
 
-startScreen();
+player.gameInProgress? (
+    $(function() { $("#game-field").show() }),
+    reqAnimF = requestAnimationFrame(loop)
+    ) : startScreen();

@@ -23,7 +23,7 @@ need to be smaller because of line-breaks.
 */
 @media only screen and (orientation: landscape) {
     :root {
-        width: 64vh;
+        width: 100vh;
         /* make a landscape style later */
     }
 }
@@ -34,6 +34,15 @@ need to be smaller because of line-breaks.
     /* To edit later. Font size should be relative to viewport (vw), but resizing of all elements should stop by []px (Tablet size).
 }
 */
+
+@media (display-mode: fullscreen) {
+    .hide-in-fullscreen { display: none; }
+    .show-in-fullscreen-only { display: block; }
+}
+@media (display-mode: browser) {
+    .hide-in-fullscreen { display: block; }
+    .show-in-fullscreen-only { display: none; }
+}
 
 html {
     /* COLOR VARS: */
@@ -57,6 +66,7 @@ html {
 * {
     margin: 0;
     box-sizing: border-box;
+    /* border: 1px solid green; */
 }
 body {
     position: relative;
@@ -66,8 +76,10 @@ body {
 }
 
 /*============================*/
-
+/* FOR TESTING AND ADJUSTING */
+/*============================*/
 .monitor {
+    display: none;
     position: fixed;
     right: 0;
     top: 0;   /*23%*/
@@ -78,8 +90,10 @@ body {
     border: 1px solid red;
     padding: 0 0.2em;
     background-color: lightgrey;
+    z-index: 2;
 }
 #mobile-browser-offset {        /* for adjusting */
+    display: none;
     margin: 0;
     height: 240px;
     position: relative;
@@ -95,9 +109,12 @@ body {
     font: 50% monospace;
 }
 
+/*===============================================*/
+/* INFO WINDOW (Intro, Settings, GameOver-Screen */
+/*===============================================*/
 #info-window {
-    position: absolute;
     display: none;
+    position: absolute;
     width: 85%;
     top: 50%;
     left: 50%;
@@ -148,120 +165,60 @@ body {
 /*============================*/
 /*============================*/
 
+/*============================*/
+/* GAME FIELD AND HEADING */
+/*============================*/
+
 #game-field {
-    position: relative;
     display: none;
+    position: relative;
     margin: 1% 2.5% 0;
     /* animation: fade 1s ease 0s 1 normal; */
 }
+#game-field h3 { font-size: 1rem; }
 
 h1 {
-    font: 1.5rem "Coiny", cursive;
-    margin: 2% 0 0;
+    font: 1rem "Coiny", cursive;
+    margin: 0;         /* 2% 0 0 */
 }
-h3 { font-size: 1rem; }
+
+#furball-name {
+    font: 1.4rem "Coiny", cursive;
+
+}
 
 .clearfix::after {
     content: "";
     clear: both;
     display: table;
 }
-.user {
-    float: right;
-    text-align: right;
-    width: 30%;
-}
-.user > div {
-    border: 2px solid var(--colorB1);
-    outline: 2px dotted var(--colorB1);
-    outline-offset: 2px;
-    padding: 3% 5%;
-    margin: 1% 0;
-    text-align: left;
-    border-radius: 8px;
-}
-.items {
-    float: left;
-    text-align: left;
-    width: 40%;
-}
-.items > div {
-    border: 2px solid var(--colorA1);
-    border-radius: 8px;
-    padding: 3% 5%;
-    margin: 1% 0;
-}
-.cage-container {
-    display: flex;
-    justify-content: space-around;
-    flex-direction: row-reverse
-    /*border: 1px solid grey;*/
-}
-.buttons {
-    display: inline-flex;
-    flex-direction: column;
-    justify-content: space-around;
-}
-.actionBtns {
-    font: 1em "Poor Story", cursive;
-    display: block;
-    width: 2.7em;
-    height: 2.7em;
-    padding: 10%;
-    border: none;
-    color: white;
-    border-radius: 50%;        /* or 10px */
-    background-image: linear-gradient(to bottom right, var(--green2), var(--green1));
-    color: var(--white, white);
-    cursor: pointer;
-    transition-duration: 0.15s;
-    text-decoration: none;
-    border: 1px solid var(--dark2);
-    box-shadow: 0 0.3em var(--dark3);
-}
-.actionBtns:hover {
-    background-image: linear-gradient(to bottom right, var(--green3), var(--green1));
-}
-.actionBtns:disabled {
-    background-image: linear-gradient(to bottom right, var(--white), var(--dark4));
-    color: var(--red);
-    box-shadow: 0 0.1em var(--dark2);
-    transform: translateY(0.2em);
-}
-.actionBtns:active {
-    background-image: linear-gradient(to bottom right, var(--green4), var(--green2));
-    box-shadow: 0 0.1em var(--dark2);
-    transform: translateY(0.2em);
-}
-.actionBtns:focus { outline: none;}
 
-.cage { display: inline-block; }
+/*============================*/
+/* FURALLS CONDITIONS */
+/*============================*/
 
-.furball {
-    width: 10em;
-    height: 10em;
-}
-
-.conditions { /* Condition/Basic Stats*/
-    float: left;
+.conditions {
+    
     text-align: left;
     width: 100%;         /* why 90% ?? */
 }
 .conditions > div {
-    /*border: 2px solid orange;*/
-    padding: 2% 5%;
+    /* position: relative; */
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    
+    padding: 0 5% 0;
     margin: 1% 0;
     font-size: 0.7rem;
-}
-.furball-statement {
-    margin: 5% 0 7%;
-    font-size: 0.95rem;
-    height: 1rem;
-    /* For slim mobile phones (e. g. iPhoneX) element will probably break into 2 lines. */
+    height: 8rem;
 }
 .health {
     font-size: 1rem;
-    margin-bottom: 5.5%;
+    /* position: absolute; */
+    /* bottom: 0; */
+    width: 100%;
+    margin: 3% 0 4%;
 }
 .health-bar {
     width: 100%;
@@ -295,12 +252,111 @@ a {
     color: grey;
 }
 
+/*========================================*/
+/* CAGE AND BUTTONS + FURBALLS STATEMENTS */
+/*========================================*/
+
+.cage-container {
+    display: flex;
+    justify-content: space-around;
+    flex-direction: row-reverse
+    /*border: 1px solid grey;*/
+}
+
+.cage { display: inline-block; }
+
+.furball {
+    width: 10em;
+    height: 10em;
+}
+
+.buttons {
+    display: inline-flex;
+    flex-direction: column;
+    justify-content: space-around;
+}
+.actionBtns {
+    font: 1em "Poor Story", cursive;
+    display: block;
+    width: 2.7em;
+    height: 2.7em;
+    padding: 10%;
+    border: none;
+    color: white;
+    border-radius: 50%;        /* or 10px */
+    background-image: linear-gradient(to bottom right, var(--green2), var(--green1));
+    color: var(--white, white);
+    cursor: pointer;
+    transition-duration: 0.15s;
+    text-decoration: none;
+    border: 1px solid var(--dark2);
+    box-shadow: 0 0.22em var(--dark3);
+}
+.actionBtns:hover {
+    background-image: linear-gradient(to bottom right, var(--green3), var(--green1));
+}
+.actionBtns:disabled {
+    background-image: linear-gradient(to bottom right, var(--white), var(--dark4));
+    color: var(--red);
+    box-shadow: 0 0.08em var(--dark2);
+    transform: translateY(0.14em);
+}
+.actionBtns:active {
+    background-image: linear-gradient(to bottom right, var(--green4), var(--green2));
+    box-shadow: 0 0.08em var(--dark2);
+    transform: translateY(0.14em);
+}
+.actionBtns:focus { outline: none;}
+
+/*============================*/
+
+.furball-statement {
+    margin: 5% 0 7.5%;
+    font-size: 0.95rem;
+    height: 1rem;
+    /* For slim mobile phones (e. g. iPhoneX) element will probably break into 2 lines. */
+}
+
+/*============================*/
+/* USER AND ITEMS */
+/*============================*/
+
+.user {
+    float: left;
+    text-align: left;
+    width: 40%;
+}
+.user > div {
+    border: 2px solid var(--colorB1);
+    outline: 2px dotted var(--colorB1);
+    outline-offset: 2px;
+    padding: 3% 5%;
+    margin: 1% 0;
+    border-radius: 8px;
+}
+.items {
+    float: right;
+    text-align: right;
+    width: 40%;
+}
+.items > div {
+    border: 2px solid var(--colorA1);
+    border-radius: 8px;
+    padding: 3% 5%;
+    margin: 1% 0;
+    text-align: left;
+}
+
+/*============================*/
+/* FOOTER AND ICONS */
 /*============================*/
 
 .footer1 {
     position: absolute;
     width: 100%;
     bottom: 0;
+    margin: 0 0 4%;
+    z-index: 1;
 }
 #settings {
     position: absolute;
