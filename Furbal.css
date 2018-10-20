@@ -3,16 +3,15 @@
 :root {
     font-family: "Poor Story", cursive; /* font: font-style font-variant font-weight font-size/line-height font-family|caption|icon|menu|message-box|small-caption|status-bar|initial|inherit;*/
     font-size: 3.1vh;
-    margin: 0;
-    min-width: 420px;
-    border: 1px dashed black;       /* Delete later. It's for checking... I donknow */
+    /* border: 1px dashed black; */       /* Delete later. It's for checking... I donknow */
     text-align: center;
 }
 
 /*
 Apect ratio for main content should stay by 2:3.
 https://developer.mozilla.org/en-US/docs/Web/CSS/@media/aspect-ratio
-If I set a vh for width: if 2:3 => width: 66.66vh
+If I set a vh for width: if 2:3 => width: 66.66vh (not a good solution because viewport != browser window.
+try: via padding, https://www.w3schools.com/howto/howto_css_aspect_ratio.asp
 
 Make a landscape style later. Perhaps.
 
@@ -56,48 +55,49 @@ html {
     --green4: hsl(151, 100%, 80%);
     --colorA1: orange;
     --colorB1: darkblue;
-    width: 100vw;
 }
 * {
     margin: 0;
     box-sizing: border-box;
-    /* border: 1px solid green; */
+    /* border: 0.1px solid green; */
 }
-body {
-    top: 0;
-    height: 100%; /* vh or %??? */
+body {  /* stretch body to viewable area of the window or screen. */
+    position: fixed;
+    top: 0; left: 0; right: 0; bottom: 0;
+    height: 100%;
     width: 100%;
-    font-size: 0.9rem;  
+    font-size: 0.9rem;
 }
-
-.container {
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-    align-items: center;
-    height: 100%;   /* ARG, vh or %??? (s. o.) */
-    width: 100%;
-}
-
 @media (min-aspect-ratio: 2/3) {
     body {
-        width: 66.66vh;
+        max-width: 66.66vh;
+        position: relative;
         display: flex;
         justify-content: center;
         margin: auto;
     }
-
 }
 
-body > div > * {
-    /* border: 1px solid green; */
+/* body > div > * {
+    border: 1px solid green;
+} */
+
+.container {
+    min-width: 320px;
+    min-height: 480px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-between;
+    height: 100%;
+    width: 100%;
 }
 
 /*============================*/
 /* FOR TESTING AND ADJUSTING */
 /*============================*/
 
-.monitor {
+.test-monitor {
     display: none;
     position: fixed;
     right: 0;
@@ -119,7 +119,7 @@ body > div > * {
     position: relative;
     background-color: var(--dark4);
 }
-#mobile-browser-offset p {
+#mobile-browser-offset p {  /* nav- and address-bar of Android+Chrome */
     margin: 0 10%;
     position: absolute;
     top: 50%;
@@ -149,6 +149,7 @@ body > div > * {
     box-shadow: -0.1rem 0.2rem 0.5rem var(--dark2);
     
 }
+
 #info-window div.alignCenter { text-align: center; }
 #info-window h1 { font: 1.5rem "Coiny", cursive; }
 #info-window button {
@@ -192,21 +193,23 @@ body > div > * {
 #game-field {
     display: none;
     position: static;
-    margin: 1% 2.5% 0%;
+    margin: 0 2.5% 0;
     width: 95%;
-    /* animation: fade 1s ease 0s 1 normal; */
 }
 #game-field h3 { font-size: 1rem; }
 
-h1 {
-    font: 1rem "Coiny", cursive;
-    margin: 0;         /* 2% 0 0 */
-}
-
 #furball-name {
-    font: 1.4rem "Coiny", cursive;
-
+    margin: 1.8% 0;
+    font: 1.3rem "Coiny", cursive;
+    height: 1.7rem;
+    overflow-y: hidden;
+    /* overflow-x: scroll; or: */
+    overflow-x: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
 }
+
+/*============================*/
 
 .clearfix::after {
     content: "";
@@ -219,7 +222,6 @@ h1 {
 /*============================*/
 
 .conditions {
-    
     text-align: left;
     width: 100%;         /* why 90% ?? */
 }
@@ -239,7 +241,7 @@ h1 {
     /* position: absolute; */
     /* bottom: 0; */
     width: 100%;
-    margin: 3% 0 4%;
+    margin: 2.9% 0 2%;
 }
 .health-bar {
     width: 100%;
@@ -262,15 +264,6 @@ h1 {
 .condition-bar > div {
     height: 100%;
     border-radius: 0.2em;
-}
-.my-credits {
-    font-size: 0.48rem;
-    color: lightgrey;
-    margin: 10% 0 2%;
-}
-a {
-    text-decoration: none;
-    color: grey;
 }
 
 /*========================================*/
@@ -332,7 +325,7 @@ a {
 /*============================*/
 
 .furball-statement {
-    margin: 5% 0 7.5%;
+    margin: 5% 0;
     font-size: 0.95rem;
     height: 1rem;
     /* For slim mobile phones (e. g. iPhoneX) element will probably break into 2 lines. */
@@ -347,12 +340,20 @@ a {
     text-align: left;
     width: 40%;
 }
+.user > h3 {
+    height: 1.45rem;
+    overflow-y: hidden;
+    /* overflow-x: scroll; or: */
+    overflow-x: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
 .user > div {
     border: 2px solid var(--colorB1);
     outline: 2px dotted var(--colorB1);
     outline-offset: 2px;
     padding: 3% 5%;
-    margin: 1% 0;
+    margin: 2.5% 0;
     border-radius: 8px;
 }
 .items {
@@ -364,7 +365,7 @@ a {
     border: 2px solid var(--colorA1);
     border-radius: 8px;
     padding: 3% 5%;
-    margin: 1% 0;
+    margin: 2.5% 0;
     text-align: left;
 }
 
@@ -372,14 +373,22 @@ a {
 /* FOOTER AND ICONS */
 /*============================*/
 
-.footer1 {
+.my-credits {
+    display: none;
     position: relative;
+    bottom: 0;
     width: 100%;
-    /* bottom: 0; */
-    margin: 3% 0 3%;
+    margin: 2% 0;
     z-index: 1;
+    font-size: 0.48rem;
+    color: var(--dark4);
 }
-#settings {
+.my-credits a {
+    text-decoration: none;
+    color: var(--dark2);
+}
+
+#go-to-settings {
     position: absolute;
     top: 50%;
     right: 5%;
@@ -387,11 +396,21 @@ a {
     transform: translateY(-50%);
     opacity: 0.7;
 }
-#settings:hover, #settings:active {
-    top: 50%;
-    right: 5%;
+#go-to-settings:hover, #go-to-settings:active {
     height: 99%;
+    opacity: 1;
+}
+
+#toggle-fScreen {
+    position: absolute;
+    top: 50%;
+    left: 5%;
+    height: 90%;
     transform: translateY(-50%);
+    opacity: 0.7;
+}
+#toggle-fScreen:hover, #toggle-fScreen:active {
+    height: 99%;
     opacity: 1;
 }
 

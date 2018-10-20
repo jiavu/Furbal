@@ -14,7 +14,7 @@ const infoText = {
                         <button type='button' id='again'>GIMME A NEW FURBALL!</button>\
                     </div>"
     },
-    settingsScreen : "<button type='button' id='fScreen'>ToggleFullscreen</button>",
+    settingsScreen : "<div class='alignCenter'><button type='button' id='continue'>Continue</button></div>",
     catIpsum : 
         "<h1>Überschrift</h1>\
         Cat ipsum dolor sit amet, american bobtail savannah or jaguar or tom. Turkish angora jaguar. Jaguar.<br>\
