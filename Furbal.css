@@ -4,38 +4,30 @@
     font-family: "Poor Story", cursive; /* font: font-style font-variant font-weight font-size/line-height font-family|caption|icon|menu|message-box|small-caption|status-bar|initial|inherit;*/
     font-size: 3.1vh;
     margin: 0;
-    min-width: 320px;
-    border: 1px dashed black;       /* Delete later. It's for checking screen size */
+    min-width: 420px;
+    border: 1px dashed black;       /* Delete later. It's for checking... I donknow */
     text-align: center;
-    height: 100%;
-}
-
-/* Set a media query: for slim mobile phones (check iPhoneX) fonts and especially furbal-says
-need to be smaller because of line-breaks.
--> Check aspect ratio. */
-
-/*
-@media only screen and (orientation: portrait) {
-    :root {
-        font-size: 3vh;
-    }
-}
-*/
-@media only screen and (orientation: landscape) {
-    :root {
-        width: 100vh;
-        /* make a landscape style later */
-    }
 }
 
 /*
-@media only screen and (max-device-width: 480) {
-    :root {font-size: 100%;}
-    /* To edit later. Font size should be relative to viewport (vw), but resizing of all elements should stop by []px (Tablet size).
-}
+Apect ratio for main content should stay by 2:3.
+https://developer.mozilla.org/en-US/docs/Web/CSS/@media/aspect-ratio
+If I set a vh for width: if 2:3 => width: 66.66vh
+
+Make a landscape style later. Perhaps.
+
 */
 
-@media (display-mode: fullscreen) {
+
+/*
+
+NAV-/ADRESS-BAR PROBLEMS. Maybe hide and show elements according to state of fullscreen mode.
+
+@media (display-mode: fullscreen|standalone|minimal-ui) {
+    .hide-in-fullscreen { display: none; }
+    .show-in-fullscreen-only { display: block; }
+}
+@media (display-mode: standalone) {
     .hide-in-fullscreen { display: none; }
     .show-in-fullscreen-only { display: block; }
 }
@@ -43,6 +35,8 @@ need to be smaller because of line-breaks.
     .hide-in-fullscreen { display: block; }
     .show-in-fullscreen-only { display: none; }
 }
+*/
+.hide-in-fullscreen { display: none; }
 
 html {
     /* COLOR VARS: */
@@ -62,6 +56,7 @@ html {
     --green4: hsl(151, 100%, 80%);
     --colorA1: orange;
     --colorB1: darkblue;
+    width: 100vw;
 }
 * {
     margin: 0;
@@ -69,15 +64,39 @@ html {
     /* border: 1px solid green; */
 }
 body {
-    position: relative;
-    height: 100%;
+    top: 0;
+    height: 100%; /* vh or %??? */
     width: 100%;
-    font-size: 0.9rem;
+    font-size: 0.9rem;  
+}
+
+.container {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: center;
+    height: 100%;   /* ARG, vh or %??? (s. o.) */
+    width: 100%;
+}
+
+@media (min-aspect-ratio: 2/3) {
+    body {
+        width: 66.66vh;
+        display: flex;
+        justify-content: center;
+        margin: auto;
+    }
+
+}
+
+body > div > * {
+    /* border: 1px solid green; */
 }
 
 /*============================*/
 /* FOR TESTING AND ADJUSTING */
 /*============================*/
+
 .monitor {
     display: none;
     position: fixed;
@@ -92,10 +111,11 @@ body {
     background-color: lightgrey;
     z-index: 2;
 }
-#mobile-browser-offset {        /* for adjusting */
+#mobile-browser-offset {        /* for adjusting. nav bar and address bar of Chrome and system. */
     display: none;
     margin: 0;
-    height: 240px;
+    height: 12.5vh;      /* 240p bei 1920p*/
+    width: 100%;
     position: relative;
     background-color: var(--dark4);
 }
@@ -171,8 +191,9 @@ body {
 
 #game-field {
     display: none;
-    position: relative;
-    margin: 1% 2.5% 0;
+    position: static;
+    margin: 1% 2.5% 0%;
+    width: 95%;
     /* animation: fade 1s ease 0s 1 normal; */
 }
 #game-field h3 { font-size: 1rem; }
@@ -352,10 +373,10 @@ a {
 /*============================*/
 
 .footer1 {
-    position: absolute;
+    position: relative;
     width: 100%;
-    bottom: 0;
-    margin: 0 0 4%;
+    /* bottom: 0; */
+    margin: 3% 0 3%;
     z-index: 1;
 }
 #settings {

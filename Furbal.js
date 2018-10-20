@@ -781,7 +781,7 @@ function draw() {
     credits.innerHTML = player.credits;
     food.innerHTML = player.food;
     toy.innerHTML = player.toy;
-    specialItems.innerHTML = player.specialItems;
+    specialItems.innerHTML = "/";/* player.specialItems; */
 
     // Disable Buttons:
 
@@ -908,14 +908,10 @@ $(function() {$("#settings").click(settings)});
 
 
 furballName.innerHTML = myFurball.name /* + ":" */;
-
-// CONTINUE HERE!!! /////////////////////////////////////////////////////////////////
-if (document.fullscreenElement) {       // didn't work but I have another idea
-    console.log("Hat funktioniert");
-    $(function() { $("#health-title").text("HEALTH");});
-} else { $(function() { $("#health-title").text(myFurball.name);}); }
+$(function() { $("#name-in-health").text(myFurball.name); });
 
 userName.innerHTML = player.name;
+
 v_timeElapsed = 0;
 
 player.gameInProgress? (

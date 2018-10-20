@@ -11,6 +11,7 @@
         (Safari/iOS and Chrome/Android:) -->
         <meta name="apple-mobile-web-app-capable" content="yes">
         <meta name="mobile-web-app-capable" content="yes">
+        <!-- (A better option is to use the Web App Manifest. -->
 
         <link href="https://fonts.googleapis.com/css?family=Amatic+SC|Caveat|Coiny|Indie+Flower|Open+Sans|Poor+Story|Source+Sans+Pro" rel="stylesheet">
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
@@ -19,109 +20,118 @@
     <body>
         <!-- Deactivate later: -->
         
-        <header id="mobile-browser-offset">
-            <p>
-            Android info bar<br>
-            +<br>
-            mobile Chrome header (address bar)<br>
-            = 240p<br>
-            (moto G5 | 1080x1920p)
-            </p>
-        </header>
-        
         <div class="monitor">
-            <h4>Control Monitor</h4>
-            <div id="timeElapsed"></div>
-            <div id="loopSpeed"></div>
-            <div id="gSpeed"></div>
-            <div id="other0"></div>
-            <div id="other1"></div>
-            <div id="other2"></div>
-            <div id="other3"></div>
-            <input type="button" id="pause" value="Pause">
+                <h4>Control Monitor</h4>
+                <div id="timeElapsed"></div>
+                <div id="loopSpeed"></div>
+                <div id="gSpeed"></div>
+                <div id="other0"></div>
+                <div id="other1"></div>
+                <div id="other2"></div>
+                <div id="other3"></div>
+                <input type="button" id="pause" value="Pause">
+            </div>
+
+        <div id="mobile-browser-offset">
+            <p>
+                Android info bar<br>
+                +<br>
+                mobile Chrome header (address bar)<br>
+                = 240p<br>
+                (moto G5 | 1080x1920p)
+            </p>
         </div>
-
-        <div id="info-window"></div>
         
-        <div id="game-field">
 
-            <!-- <h1>Furball</h1> -->
-            <h1 id="furball-name" class="show-in-fullscreen-only"></h1>
-      
-            <div class="conditions clearfix">
-                <div>
-                    <div id="secureness">
-                            Secureness
+        <div class="container">
+
+            <div id="info-window"></div>
+            
+            <div id="game-field">
+
+                <!-- <h1>Furball</h1> -->
+                <h1 id="furball-name" class="show-in-fullscreen-only"></h1>
+        
+                <div class="conditions clearfix">
+                    <div>
+                        <div id="secureness">
+                                Secureness
+                                <div class="condition-bar">
+                                    <div></div>
+                                </div>
+                            </div>
+                        <div id="fun">
+                            Fun                         <!-- (Entertainment) -->
                             <div class="condition-bar">
                                 <div></div>
                             </div>
                         </div>
-                    <div id="fun">
-                        Fun                         <!-- (Entertainment) -->
-                        <div class="condition-bar">
-                            <div></div>
+                        <div id="satiation">
+                            Satiation       <!--Starvation/Hunger/Satiation -->
+                            <div class="condition-bar">
+                                <div></div>
+                            </div>
                         </div>
-                    </div>
-                    <div id="satiation">
-                        Satiation       <!--Starvation/Hunger/Satiation -->
-                        <div class="condition-bar">
-                            <div></div>
-                        </div>
-                    </div>
-                    <div class="health">
-                        <p id="health-title">HEALTH</p>  <!--(ENERGY)-->
-                        <div class="health-bar" id="health">
-                            <div></div>
+                        <div class="health">
+                            <p class="hide-in-fullscreen" id="name-in-health"></p>
+                            <p class="show-in-fullscreen-only">HEALTH</p>  <!--(ENERGY)-->
+                            <div class="health-bar" id="health">
+                                <div></div>
+                            </div>
                         </div>
                     </div>
                 </div>
+
+
+                <div class="cage-container clearfix">
+                    <div class="buttons">
+                        <button type="button" class="actionBtns" id="petBtn">pet</button>
+                        <button type="button" class="actionBtns" id="playBtn">play</button>
+                        <button type="button" class="actionBtns" id="feedBtn">feed</button>
+
+                    </div>
+                    <div class="cage">
+                        <img class="furball" src="HN-4592-2.jpg" alt="Furball inspiration">
+                    </div>
+                </div>
+
+                <div class="furball-statement">
+                        <p id="furball-says"></p>
+                </div>
+
+
+                <div> <!-- last div. Clearfix necessary? <div class="clearfix"> -->
+                    <div class="user">
+                            <h3 id="user-name"></h3>
+                            <div>
+                                <div>Points: <span id="points"></span></div>
+                                <p>Credits: <span id="credits"></span></p>
+                            </div>
+                    </div>
+                    <div class="items">
+                            <h3>Items</h3>
+                            <div>
+                                <div>Food: <span id="food"></span></div>
+                                <div>Toy: <span id="toy"></span></div>
+                                <p>Special Items:</p>
+                                <div id="specialItems"></div>
+                            </div>
+                    </div>
+                </div>
             </div>
 
-            <div class="cage-container clearfix">
-                <div class="buttons">
-                    <button type="button" class="actionBtns" id="petBtn">pet</button>
-                    <button type="button" class="actionBtns" id="playBtn">play</button>
-                    <button type="button" class="actionBtns" id="feedBtn">feed</button>
+            
+            <footer class="my-credits footer1">
+                <p>developed by <a href="https://github.com/jiavu" target="_blank"> Jan-Patrick Tyra</a></p>
+                <p>Version: 1.beta - Oct 2018</p>
+                <img src="./icons/settings.svg" alt="S" id="settings">
 
-                </div>
-                <div class="cage">
-                    <img class="furball" src="HN-4592-2.jpg" alt="Furball inspiration">
-                </div>
-            </div>
-
-            <div class="furball-statement">
-                    <p id="furball-says"></p>
-            </div>
-
-            <div> <!-- last div. Clearfix necessary? <div class="clearfix"> -->
-                <div class="user">
-                        <h3 id="user-name"></h3>
-                        <div>
-                            <div>Points: <span id="points"></span></div>
-                            <p>Credits: <span id="credits"></span></p>
-                        </div>
-                </div>
-                <div class="items">
-                        <h3>Items</h3>
-                        <div>
-                            <div>Food: <span id="food"></span></div>
-                            <div>Toy: <span id="toy"></span></div>
-                            <p>Special Items: <span id="specialItems"></span></p>
-                        </div>
-                </div>
-            </div>
+            </footer>
         </div>
-
-        <footer class="my-credits footer1">
-            <p>developed by <a href="https://github.com/jiavu" target="_blank"> Jan-Patrick Tyra</a></p>
-            <p>Version: 1.beta - Oct 2018</p>
-            <img src="./settings.svg" alt="S" id="settings">
-
-        </footer>
 
         
         <script src="./furbal_says.js"></script>
-        <script src="./Furbal.js"></script>                
+        <script src="./Furbal.js"></script>
         <!--
         <script type="module" src="./furbal_says.js"></script>
         <script type="module" src="./Furbal.js"></script>
