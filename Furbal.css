@@ -18,24 +18,19 @@ Make a landscape style later. Perhaps.
 */
 
 
-/*
 
-NAV-/ADRESS-BAR PROBLEMS. Maybe hide and show elements according to state of fullscreen mode.
 
-@media (display-mode: fullscreen|standalone|minimal-ui) {
+/* NAV-/ADRESS-BAR PROBLEMS. Maybe hide and show elements according to state of fullscreen mode. */
+
+/*@media only screen and (display-mode: fullscreen or standalone or minimal-ui) {*/
+@media only screen and (display-mode:fullscreen), (display-mode:standalone), (display-mode: minimal-ui) {
     .hide-in-fullscreen { display: none; }
     .show-in-fullscreen-only { display: block; }
 }
-@media (display-mode: standalone) {
-    .hide-in-fullscreen { display: none; }
-    .show-in-fullscreen-only { display: block; }
-}
-@media (display-mode: browser) {
+@media only screen and (display-mode: browser) {
     .hide-in-fullscreen { display: block; }
     .show-in-fullscreen-only { display: none; }
 }
-*/
-.hide-in-fullscreen { display: none; }
 
 html {
     /* COLOR VARS: */
@@ -78,9 +73,9 @@ body {  /* stretch body to viewable area of the window or screen. */
     }
 }
 
-/* body > div > * {
+body > div > * {
     border: 1px solid green;
-} */
+}
 
 .container {
     min-width: 320px;
@@ -199,7 +194,7 @@ body {  /* stretch body to viewable area of the window or screen. */
 #game-field h3 { font-size: 1rem; }
 
 #furball-name {
-    margin: 1.8% 0;
+    margin: 0 0 1.8%;         /* 1.8% 0 if I remove 1st div of .container  */
     font: 1.3rem "Coiny", cursive;
     height: 1.7rem;
     overflow-y: hidden;
@@ -336,8 +331,8 @@ body {  /* stretch body to viewable area of the window or screen. */
 /*============================*/
 
 .user {
-    float: left;
-    text-align: left;
+    float: right;
+    text-align: right;
     width: 40%;
 }
 .user > h3 {
@@ -355,10 +350,11 @@ body {  /* stretch body to viewable area of the window or screen. */
     padding: 3% 5%;
     margin: 2.5% 0;
     border-radius: 8px;
+    text-align: left;
 }
 .items {
-    float: right;
-    text-align: right;
+    float: left;
+    text-align: left;
     width: 40%;
 }
 .items > div {
@@ -368,20 +364,31 @@ body {  /* stretch body to viewable area of the window or screen. */
     margin: 2.5% 0;
     text-align: left;
 }
+.buy-button {
+    float: right;
+    height: 1rem;
+}
 
 /*============================*/
 /* FOOTER AND ICONS */
 /*============================*/
 
 .my-credits {
-    display: none;
+    /* display: none; */
     position: relative;
-    bottom: 0;
+    /* bottom: 0; */
     width: 100%;
     margin: 2% 0;
     z-index: 1;
     font-size: 0.48rem;
     color: var(--dark4);
+}
+@media (min-aspect-ratio: 2/3) {
+    .my-credits {
+        position: fixed;
+        bottom: 0;
+        width: 66.66vh;
+    }
 }
 .my-credits a {
     text-decoration: none;

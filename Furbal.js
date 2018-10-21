@@ -16,6 +16,10 @@ function toggleFullScreen() {   // supported by Safari?
     } else { cancelFullScreen.call(doc)};
 }
 
+/*
+MODULES:
+colorMaps, infoText, furbalStates
+*/
 
 // 100 color values for condition bars: Red -> Yellow -> Green.
 const colorMaps = {
@@ -70,6 +74,29 @@ const specialItems = document.getElementById("specialItems");
 //////////////////////////////////////////////////
 //////////////////////////////////////////////////
 
+// Furball:
+const myFurball = {
+/*     name : "Wully",
+    isDead : false,
+    health : 100,
+    satiation : 20,
+    fun : 20,
+    secureness : 30 */
+};
+
+// Player:
+const player = {            // empty object because keys will be set in initialization / when reading cookies.
+    /* name : "Master J.",
+    gameInProgress : false,
+    points : 9999,
+    credits : 9999,
+    food : 1000,
+    toy : 1000,
+    specialItems : null */     // another object { carrot: 0, lemon: 1, strawberry: 2}
+};
+
+//////////////////////////////////////////////////
+//////////////////////////////////////////////////
 
 // Gameloop parameter:
 const gameSpeed = 1;
@@ -109,28 +136,6 @@ const secToFunThreshold = 0.12;   // in %. If security is 25% (or less), Furball
 
 //////////////////////////////////////////////////
 
-
-// Furball:
-const myFurball = {
-    name : "Wully",
-    isDead : false,
-    health : 100,
-    satiation : 20,
-    fun : 20,
-    secureness : 30
-};
-
-// Player:
-const player = {
-    name : "Master J.",
-    gameInProgress : false,
-    points : 9999,
-    credits : 9999,
-    food : 1000,
-    toy : 1000,
-    specialItems : null     // another object { carrot: 0, lemon: 1, strawberry: 2}
-};
-
 /*
 Regarding: importing modules from file://
 The file:// protocol does not work with CORS - only a certain set of them work, such as http://, among others.
@@ -141,7 +146,7 @@ or Bypass CORS by disabling web-security. */
 //If all files are saved to and accessed via request to server I can use:
 //import furbalStates from "./furbal_says.js";
 //Otherwise paste object here and don't forget to remove type="module":
-const infoText = {startScreen:{go:"<div class='alignCenter'><h1>Furball</h1><h3>Are you ready for it?</h3><button type='button' id='go'>YES!</button></div>"},finishScreen:{playAgain : "<div class='alignCenter'><button type='button' id='again'>GIMME A NEW FURBALL!</button></div>"},settingsScreen:"<div class='alignCenter'><button type='button' id='continue'>Continue</button></div>"};
+const infoText = {startWindow:{go:"<div class='alignCenter'><h1>Furball</h1><h3>Are you ready for it?</h3><button type='button' id='go'>YES!</button></div>"},finishScreen:{playAgain : "<div class='alignCenter'><button type='button' id='again'>GIMME A NEW FURBALL!</button></div>"},settingsScreen:"<div class='alignCenter'><button type='button' id='continue'>Continue</button></div>"};
 
 const furbalStates = {toFeeding:{95:"Salad. Not again.",90:"I'm so full.",85:"I am good, thanks.",1:"Can I have a dessert?",2:"Tastes good, thanks.",3:"Is it food or...",4:"Yummy!",5:"* munch crunch chomp *"},toPlaying:{95:"I don't want to play anymore. You can have it.",90:"Yeay. Toys. :/",85:"I already had a lot of them.",1:"It's my dolly! Play with your own one!",2:"Oh, toys!",3:"Yippee!",4:"Catch me! Haha, catch me!!!"},toPetting:{95:"Leave me some space, okay?",85:"Come on, you're squeezing me.",1:"Huuug!",2:"I love you mama!",3:"You are the sunshine of my live.",4:"It's so good to have you.",5:"Rrrrrrrr!"},health:{90:"Oh, happy day!",50:"Could be better.",40:"I am not feeling so well.",30:"Why do you let me die?",20:"I declare that this is my last will and testament.",10:"I am feeling so cold.",5:"I think it's over.",0:"I'm dead."},satiation:{75:"I could maybe eat something.",60:"I want candy, now!",50:"Can I have cookie?",40:"I am so hungry.",30:"Can I eat stones?",20:"I am starving...",10:"My stomache hurts.",},fun:{90:"Live is fun!",75:"Let's play something!",50:"Boring!!!",40:"* YAWN *",30:"* snooze *",20:"Deadly boring."},secureness:{85:"It's so good to have you.",60:"Where are you?",50:"I am so lonley.",40:"I am afraid all alone!",noPlay:"I am so alone and sad. I don't want to play.",noEat:"I am so alone and sad. I don't want to eat."}};
 
@@ -172,17 +177,10 @@ const fadeInTime = 200;
 const fadeOutTime = 800;
 const fadeEasing = "linear";    // default: "swing"
 
-//let satFlash = false;           // not used anymore?
-//let funFlash = false;           // not used anymore?
-//let secFlash = false;           // not used anymore?
-
 let allowSatJump = true;
 let allowFunJump = true;
 let allowSecJump = true;
-const cooldownJump = 500;
-let countSatJump = 0;
-let countFunJump = 0;
-let countSecJump = 0;
+
 
 const cooldownStatement = 2000;      // Cooldown for Furball's statements. Update statement only after cooldown time.
 let timeElapsedTemp = 0;
@@ -196,7 +194,12 @@ const letJump = (element) => { $(function() {
         always: () => {
             element.animate( {fontSize: "-=0.4em"}, {
                 duration: "fast",
-                queue: false                        
+                queue: false,
+                always: () => {
+                    allowSatJump = true;
+                    allowFunJump = true;
+                    allowSecJump = true;
+                }
             });
         }
         }
@@ -232,24 +235,63 @@ const flashAnimation = (element) => {
 //////////////////////////////////////////////////
 // Functions:
 
-const startScreen = () => {
+const startWindow = () => {
     $(function() {
-        $("#info-window").fadeIn(1500).html(infoText.startScreen.go);
-        $(function() {
-            $("#go").click(function() {
-                $("#go").prop("disabled", true).html("Let's go!");
-                /* $("#go").animate({opacity: 0}, 700); */
-                $("#info-window").fadeOut(2000, ()=> {
-                $("#game-field").fadeIn(1500, ()=> {
-                    v_timeElapsed = 0;  // COOKIE   // THIS IS A RESET !!! 
-                    reqAnimF = requestAnimationFrame(loop);
-                });
-                $(".my-credits").show();
-                });
-            });
+        $("#go-to-settings").hide();
+        // Insert Intro pages here...
+        // Let user enter names...
+        
+    });
+    newGame();
+};
+
+const newGame = () => {
+
+    myFurball.name = "Wully";   // Let user insert a name in startWindow()...
+    myFurball.isDead = false;
+    myFurball.health = 100;
+    myFurball.satiation = 20;
+    myFurball.fun = 20;
+    myFurball.secureness = 30;
+
+    player.name = "Andi Depressiva";    // let user insert a name in startWindow()...
+    player.gameInProgress = true;
+    player.points = 9999;
+    player.credits = 9999;
+    player.food = 1000;
+    player.toy = 1000;
+    player.specialItems = null;     // another object { carrot: 0, lemon: 1, strawberry: 2}
+
+
+    // last page of start window, confirm to start game, close start window.
+    $("#info-window").fadeIn(1500).html(infoText.startWindow.go);
+    $(function() {
+        $("#go").click(function() {
+            $("#go").prop("disabled", true).html("Let's go!");
+            /* $("#go").animate({opacity: 0}, 700); */
+            $("#info-window").fadeOut(2000, gameInit);
         });
     });
-};
+}
+
+const gameInit = () => {
+    // Load cookies here...
+    v_timeElapsed = 0;                      // COOKIE   // THIS WOULD BE A RESET !!!
+    // If no cookies, "I couldn't find your progress. Did you delete the browser cookies?"
+    // (and go to newGame).
+
+    $(function() {
+        furballName.innerHTML = myFurball.name;
+        $("#name-in-health").text(myFurball.name);
+        userName.innerHTML = player.name;
+
+        $("#game-field").fadeIn(1500, ()=> {
+            $("#go-to-settings").show();
+            
+            reqAnimF = requestAnimationFrame(loop);
+        });
+    })
+}
 
 const gameOver = () => {
     furballStatement.innerHTML = "I'm dead.";
@@ -266,16 +308,16 @@ const gameOver = () => {
 
     $(function(){
         $("#game-field").css("pointerEvents", "none");
-        $("#go-to-settings").css("pointerEvents", "none");
-        $("#satiation,#fun,#secureness").clearQueue().fadeIn(fadeInTime, ()=> {
+        $("#go-to-settings").hide();
+        $("#satiation,#fun,#secureness").clearQueue().fadeIn(fadeInTime,
             window.setTimeout(function() {
-                $(".my-credits").fadeOut(1500);
                 $("#game-field").fadeOut(1500, ()=> {
                     $("#info-window").fadeIn(1500)
                     .html(gameOverText + infoText.finishScreen.playAgain);
+                    $("#again").click(newGame);
                 });
-        }, 1500);
-        });
+        }, 1500)
+        );
     });
 
 
@@ -300,7 +342,6 @@ const switchPause = () => {
     pause? $( function() {
         $("#game-field").css( {pointerEvents:"none", opacity: 0.4});
     }) : $( function() {
-        $("#game-field").show();
         $("#game-field").css( {pointerEvents:"auto", opacity: 1});
     });
     (pause)? console.log("=========PAUSE=========") : reqAnimF = requestAnimationFrame(loop);
@@ -395,8 +436,9 @@ const feed = () => {
         $(function(){
             $("#satiation").fadeIn(fadeInTime);            // default: 400ms
             if (satiationIncrease > 0 && allowSatJump) {
-                letJump($("#satiation"));
                 allowSatJump = false;
+                letJump($("#satiation"));
+                
             }
         });
         
@@ -775,9 +817,9 @@ function update(progress) {
     }
 
     //Test: DELETE / DEACTIVATE !!!
-    //myFurball.satiation = 30;
-    //myFurball.fun = 20;
-    //myFurball.secureness = 20;
+    myFurball.satiation = 60;
+    myFurball.fun = 30;
+    myFurball.secureness = 45;
     //myFurball.health = 100;
     //if (v_timeElapsed >= 8000) { myFurball.isDead = true } // Control values after a certain time. Delete later.
     //if (myFurball.satiation <= 0) myFurball.isDead = true;  // time check. Delete later!
@@ -837,7 +879,6 @@ function draw() {
                 satShown = false;
                 allowSatJump = true;
                 countSatShown = 0;
-                countSatJump = 0;
         }
     }
     if (funShown) {
@@ -847,7 +888,6 @@ function draw() {
             funShown = false;
             allowFunJump = true;
             countFunShown = 0;
-            countFunJump = 0;
         }
     }
     if (secShown) {
@@ -857,33 +897,8 @@ function draw() {
             secShown = false;
             allowSecJump = true;
             countSecShown = 0;
-            countSecJump = 0;
         }
     }
-
-    // Limit jumping:
-    if (!allowSatJump) {
-        countSatJump += progress;
-        if (countSatJump >= cooldownJump) {
-            allowSatJump = true;
-            countSatJump = 0;
-        }
-    }
-    if (!allowFunJump) {
-        countFunJump += progress;
-        if (countFunJump >= cooldownJump) {
-            allowFunJump = true;
-            countFunJump = 0;
-        }
-    }
-    if (!allowSecJump) {
-        countSecJump += progress;
-        if (countSecJump >= cooldownJump) {
-            allowSecJump = true;
-            countSecJump = 0;
-        }
-    }
-
 }
 
 
@@ -926,16 +941,4 @@ $(function() {
     $("#go-to-settings").click(settings);
 });
 
-
-furballName.innerHTML = myFurball.name /* + ":" */;
-$(function() { $("#name-in-health").text(myFurball.name); });   // maybe unused.
-
-userName.innerHTML = player.name;
-
-player.gameInProgress? (
-    $(function() {
-        $("#game-field").show();
-        $(".my-credits").show();
-    }),
-    reqAnimF = requestAnimationFrame(loop)
-    ) : startScreen();
+player.gameInProgress? gameInit() : startWindow();

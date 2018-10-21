@@ -3,7 +3,7 @@ const infoText = {
         1 : "Once there was a Furball...",
         2 : "What's the name of your Furball?:"
     },
-    startScreen : {
+    startWindow : {
         go : "<div class='alignCenter'><h1>Furball</h1>\
                     <h3>Are you ready for it?</h3>\
                     <button type='button' id='go'>YES!</button>\

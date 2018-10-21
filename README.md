@@ -11,3 +11,8 @@ If your Furball is sad or ill, it will lose it's color.
 You have to raise your Furball. It will be small and hungry when you adopt it, later it wants to play a lot.
 
 Some Furballs are...
+
+
+Use htmlpreview to check the progress (master branch):
+
+https://htmlpreview.github.io/?https://github.com/jiavu/Furbal/blob/master/Furbal.html

@@ -47,6 +47,8 @@
 
             <div id="info-window"></div>
             
+            <div></div> <!-- For flexbox, pushes footer to bottom.-->
+
             <div id="game-field">
 
                 <!-- <h1>Furball</h1> or: -->
@@ -55,11 +57,11 @@
                 <div class="conditions clearfix">
                     <div>
                         <div id="secureness">
-                                Secureness
-                                <div class="condition-bar">
-                                    <div></div>
-                                </div>
-                            </div>
+                            Secureness
+                            <div class="condition-bar">
+                            <div></div>
+                        </div>
+                        </div>
                         <div id="fun">
                             Fun                         <!-- (Entertainment) -->
                             <div class="condition-bar">
@@ -100,7 +102,7 @@
                 </div>
 
 
-                <div> <!-- last div. Clearfix necessary? <div class="clearfix"> -->
+                <div class=""> <!-- last div. Clearfix necessary? <div class="clearfix"> -->
                     <div class="user">
                             <h3 id="user-name"></h3>
                             <div>
@@ -111,8 +113,15 @@
                     <div class="items">
                             <h3>Items</h3>
                             <div>
-                                <div>Food: <span id="food"></span></div>
-                                <div>Toy: <span id="toy"></span></div>
+                                <div>
+                                    Food: 
+                                    <span id="food"></span>
+                                    <img src="./icons/coin.svg" alt="$" class="buy-button" id="buy-food">
+                                <div>
+                                    Toy: 
+                                    <span id="toy"></span>
+                                    <img src="./icons/coin.svg" alt="$" class="buy-button" id="buy-toy">
+                                </div>
                                 <p>Special Items:</p>
                                 <div id="specialItems"></div>
                             </div>
