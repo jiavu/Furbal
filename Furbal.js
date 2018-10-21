@@ -269,7 +269,7 @@ const newGame = () => {
         $("#go").click(function() {
             $("#go").prop("disabled", true).html("Let's go!");
             /* $("#go").animate({opacity: 0}, 700); */
-            $("#info-window").fadeOut(2000, gameInit);
+            $("#info-window").fadeOut(1500, gameInit);
         });
     });
 }

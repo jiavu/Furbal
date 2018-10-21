@@ -66,16 +66,15 @@ body {  /* stretch body to viewable area of the window or screen. */
 @media (min-aspect-ratio: 2/3) {
     body {
         max-width: 66.66vh;
-        position: relative;
         display: flex;
         justify-content: center;
         margin: auto;
     }
 }
 
-body > div > * {
+/* body > div > * {
     border: 1px solid green;
-}
+} */
 
 .container {
     min-width: 320px;
@@ -173,7 +172,9 @@ body > div > * {
 #info-window button:disabled {
     font-size: 0.9rem;
     pointer-events: none;
-    background-image: linear-gradient(to bottom right, var(--white), var(--light2));
+    /* background-image: linear-gradient(to bottom right, var(--white), var(--light2)); */
+    background-image: none;
+    background-color: var(--light1);
     box-shadow: none;
     transform: translate(-0.04rem, 0.09rem);
 }
@@ -218,7 +219,7 @@ body > div > * {
 
 .conditions {
     text-align: left;
-    width: 100%;         /* why 90% ?? */
+    width: 100%;
 }
 .conditions > div {
     /* position: relative; */
@@ -296,24 +297,26 @@ body > div > * {
     background-image: linear-gradient(to bottom right, var(--green2), var(--green1));
     color: var(--white, white);
     cursor: pointer;
-    transition-duration: 0.15s;
+    transition-duration: 0.050s;
     text-decoration: none;
     border: 1px solid var(--dark2);
     box-shadow: 0 0.22em var(--dark3);
 }
 .actionBtns:hover {
     background-image: linear-gradient(to bottom right, var(--green3), var(--green1));
+    box-shadow: 0 0.18em var(--dark2);
+    transform: translateY(0.04em);
 }
 .actionBtns:disabled {
     background-image: linear-gradient(to bottom right, var(--white), var(--dark4));
     color: var(--red);
-    box-shadow: 0 0.08em var(--dark2);
-    transform: translateY(0.14em);
+    box-shadow: 0 0.04em var(--dark2);
+    transform: translateY(0.18em);
 }
 .actionBtns:active {
     background-image: linear-gradient(to bottom right, var(--green4), var(--green2));
-    box-shadow: 0 0.08em var(--dark2);
-    transform: translateY(0.14em);
+    box-shadow: 0 0.04em var(--dark2);
+    transform: translateY(0.18em);
 }
 .actionBtns:focus { outline: none;}
 
@@ -364,9 +367,27 @@ body > div > * {
     margin: 2.5% 0;
     text-align: left;
 }
+.items > div > div {
+    position: relative;
+    /* width: 100%; */
+}
 .buy-button {
-    float: right;
+    position: absolute;
+    top: 50%;
+    right: 0;
     height: 1rem;
+    transform: translateY(-50%);
+    cursor: pointer;
+    transition-duration: 0.040s;
+}
+.buy-button:hover {
+    height: 0.9rem;
+    right: 0.05rem;
+}
+.buy-button:active {
+    height: 0.6rem;
+    right: 0.2rem;
+    opacity: 0.8;
 }
 
 /*============================*/
@@ -383,13 +404,13 @@ body > div > * {
     font-size: 0.48rem;
     color: var(--dark4);
 }
-@media (min-aspect-ratio: 2/3) {
+/* @media (min-aspect-ratio: 2/3) {
     .my-credits {
         position: fixed;
         bottom: 0;
         width: 66.66vh;
     }
-}
+} */
 .my-credits a {
     text-decoration: none;
     color: var(--dark2);
@@ -402,6 +423,7 @@ body > div > * {
     height: 90%;
     transform: translateY(-50%);
     opacity: 0.7;
+    cursor: pointer;
 }
 #go-to-settings:hover, #go-to-settings:active {
     height: 99%;
@@ -415,6 +437,7 @@ body > div > * {
     height: 90%;
     transform: translateY(-50%);
     opacity: 0.7;
+    cursor: pointer;
 }
 #toggle-fScreen:hover, #toggle-fScreen:active {
     height: 99%;
