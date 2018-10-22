@@ -229,7 +229,7 @@ body {  /* stretch body to viewable area of the window or screen. */
     
     padding: 0 5% 0;
     margin: 1% 0;
-    font-size: 0.7rem;
+    font-size: 70%;
     height: 8rem;
 }
 .health {
@@ -354,6 +354,7 @@ body {  /* stretch body to viewable area of the window or screen. */
     margin: 2.5% 0;
     border-radius: 8px;
     text-align: left;
+    overflow: hidden;
 }
 .items {
     float: left;
@@ -366,6 +367,7 @@ body {  /* stretch body to viewable area of the window or screen. */
     padding: 3% 5%;
     margin: 2.5% 0;
     text-align: left;
+    overflow: hidden;
 }
 .items > div > div {
     position: relative;

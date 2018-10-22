@@ -187,12 +187,52 @@ let timeElapsedTemp = 0;
 
 
 // jQuery animations:
+
+// I NEED A GLOBAL-VARIABLES-FREE SOLUTION FOR JUMP ANIMATIONS!
+/* $(function() {
+    element.queue( "jump", (next)=> {
+        element.animate( {fontSize: "+=40%"}, {
+            duration: "fast",
+            queue: "jump",
+            always: () => {
+                element.animate( {fontSize: "-=40%"}, {
+                    duration: "fast",
+                    queue: "jump",
+                    always: ()=> element.clearQueue("jump")
+                })
+            }}
+        );
+        next();
+    }).dequeue("jump");
+}) */
+
+                
+
 const letJump = (element) => { $(function() {
-    element.animate( {fontSize: "+=0.4em"}, {         // increase from 1em to 1.4em
+    element.animate( {fontSize: "+=40%"}, {         // increase from 1em to 1.4em
+        duration: "fast",                       // It's faltering a little bit. Using % makes no difference.
+        queue: false,
+        always: () => {
+            element.animate( {fontSize: "-=40%"}, {
+                duration: "fast",
+                queue: false,
+                always: () => {
+                    allowSatJump = true;
+                    allowFunJump = true;
+                    allowSecJump = true;
+                }
+            });
+        }
+        }
+    );
+})};
+
+const letShrink = (element) => { $(function() {
+    element.animate( {fontSize: "-=40%"}, {
         duration: "fast",
         queue: false,
         always: () => {
-            element.animate( {fontSize: "-=0.4em"}, {
+            element.animate( {fontSize: "+=40%"}, {
                 duration: "fast",
                 queue: false,
                 always: () => {
@@ -362,6 +402,8 @@ const settings = () => {
     }
 }
 
+//////////////////////////////////////////////////
+
 const feed = () => {
     let satiationIncrease;
 
@@ -438,7 +480,6 @@ const feed = () => {
             if (satiationIncrease > 0 && allowSatJump) {
                 allowSatJump = false;
                 letJump($("#satiation"));
-                
             }
         });
         
@@ -817,9 +858,9 @@ function update(progress) {
     }
 
     //Test: DELETE / DEACTIVATE !!!
-    myFurball.satiation = 60;
-    myFurball.fun = 30;
-    myFurball.secureness = 45;
+    //myFurball.satiation = 30;
+    //myFurball.fun = 30;
+    //myFurball.secureness = 30;
     //myFurball.health = 100;
     //if (v_timeElapsed >= 8000) { myFurball.isDead = true } // Control values after a certain time. Delete later.
     //if (myFurball.satiation <= 0) myFurball.isDead = true;  // time check. Delete later!

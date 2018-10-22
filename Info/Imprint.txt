@@ -4,6 +4,11 @@
 
 
 Icons: e. g. https://www.flaticon.com/
+
+----------------
+SETTINGS ICON	-> currently used
+https://www.flaticon.com/free-icon/settings_158866
+<div>Icons made by <a href="https://www.flaticon.com/authors/gregor-cresnar" title="Gregor Cresnar">Gregor Cresnar</a> from <a href="https://www.flaticon.com/" title="Flaticon">www.flaticon.com</a> is licensed by <a href="http://creativecommons.org/licenses/by/3.0/" title="Creative Commons BY 3.0" target="_blank">CC 3.0 BY</a></div>
 ----------------
 SETTINGS ICON
 https://www.flaticon.com/free-icon/two-settings-cogwheels_76716#term=settings&page=1&position=95
@@ -14,20 +19,24 @@ SETTINGS ICON
 https://www.flaticon.com/free-icon/nut-icon_69398#term=settings&page=1&position=90
 <div>Icons made by <a href="https://www.flaticon.com/authors/bogdan-rosu" title="Bogdan Rosu">Bogdan Rosu</a> from <a href="https://www.flaticon.com/" title="Flaticon">www.flaticon.com</a> is licensed by <a href="http://creativecommons.org/licenses/by/3.0/" title="Creative Commons BY 3.0" target="_blank">CC 3.0 BY</a></div>
 ----------------
-SETTINGS ICON
+SETTINGS ICON		-> also not bad
 https://www.flaticon.com/free-icon/settings_126472#term=settings&page=1&position=1
 <div>Icons made by <a href="https://www.flaticon.com/authors/gregor-cresnar" title="Gregor Cresnar">Gregor Cresnar</a> from <a href="https://www.flaticon.com/" title="Flaticon">www.flaticon.com</a> is licensed by <a href="http://creativecommons.org/licenses/by/3.0/" title="Creative Commons BY 3.0" target="_blank">CC 3.0 BY</a></div>
+
 ----------------
 ----------------
-FULLSCREEN ICON
+
+FULLSCREEN ICON		-> USED
 https://www.flaticon.com/free-icon/expand_158783#term=fullscreen&page=1&position=61
 <div>Icons made by <a href="https://www.flaticon.com/authors/gregor-cresnar" title="Gregor Cresnar">Gregor Cresnar</a> from <a href="https://www.flaticon.com/" title="Flaticon">www.flaticon.com</a> is licensed by <a href="http://creativecommons.org/licenses/by/3.0/" title="Creative Commons BY 3.0" target="_blank">CC 3.0 BY</a></div>
 ----------------
 FULLSCREEN ICON
 https://www.flaticon.com/free-icon/expand_152386
 <div>Icons made by <a href="http://www.freepik.com" title="Freepik">Freepik</a> from <a href="https://www.flaticon.com/" title="Flaticon">www.flaticon.com</a> is licensed by <a href="http://creativecommons.org/licenses/by/3.0/" title="Creative Commons BY 3.0" target="_blank">CC 3.0 BY</a></div>
+
 ----------------
 ----------------
+
 DOLLAR
 https://www.flaticon.com/free-icon/dollar_550638#term=dollar&page=1&position=36
 <div>Icons made by <a href="http://www.freepik.com" title="Freepik">Freepik</a> from <a href="https://www.flaticon.com/" title="Flaticon">www.flaticon.com</a> is licensed by <a href="http://creativecommons.org/licenses/by/3.0/" title="Creative Commons BY 3.0" target="_blank">CC 3.0 BY</a></div>
@@ -40,7 +49,7 @@ COIN
 https://www.flaticon.com/free-icon/coin_138233#term=money&page=1&position=27
 <div>Icons made by <a href="https://www.flaticon.com/authors/smashicons" title="Smashicons">Smashicons</a> from <a href="https://www.flaticon.com/" title="Flaticon">www.flaticon.com</a> is licensed by <a href="http://creativecommons.org/licenses/by/3.0/" title="Creative Commons BY 3.0" target="_blank">CC 3.0 BY</a></div>
 ----------------
-MONEY
+MONEY		-> Currently used
 https://www.flaticon.com/free-icon/money_639365#term=money&page=1&position=17
 <div>Icons made by <a href="https://www.flaticon.com/authors/dimitry-miroliubov" title="Dimitry Miroliubov">Dimitry Miroliubov</a> from <a href="https://www.flaticon.com/" title="Flaticon">www.flaticon.com</a> is licensed by <a href="http://creativecommons.org/licenses/by/3.0/" title="Creative Commons BY 3.0" target="_blank">CC 3.0 BY</a></div>
 ----------------
