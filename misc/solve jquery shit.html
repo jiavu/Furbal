@@ -3,6 +3,13 @@
 
 <!-- HOW TO FIRE 2 ANIMATIONS ON 1 ELEMENT AT THE SAME TIME -->
 
+<!--
+    https://codepen.io/mcmy/pen/nzasf?editors=0010
+    https://api.jquery.com/queue/
+    http://api.jquery.com/animate/
+    https://learn.jquery.com/effects/queue-and-dequeue-explained/
+-->
+
 <head>
     <meta charset="utf-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -11,17 +18,28 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
     <style>
         .center {
-            width: 100%;
+            position: relative;
+            margin: auto;
+            width: 500px;
+            height: 500px;
             text-align: center;
+            border: 1px solid red;
         }
         button {
             margin: 0 0 50px;
         }
-        #fadeInAndOut {
+        #block {
             margin: auto;
             width: 100px;
             height: 100px;
             background-color: black;
+            border: 1px solid green;
+        }
+        #jump {
+            position: absolute;
+            left: 50%;
+            bottom: 0;
+            transform: translateX(-50%);
         }
     </style>
 </head>
@@ -29,7 +47,7 @@
     <div class="center">
         <h1 id="state"></h1>
         <button type="button" id="button">Flash on/off</button>
-        <div id="fadeInAndOut"></div>
+        <div id="block"></div>
         <button type="button" id="jump" onclick="letJump1(block)">Jump</button>
     </div>
 
@@ -42,51 +60,84 @@
 
         let progress = 0;
         let lastRender = 0;
-        let play = false;
         let animationOn = false;
 
-        let blockFlash = true;
+        let blockFlash = true;  // unused/used by flashAnimation1 only (unused).
         
         const button = document.getElementById("button");
         const state = document.getElementById("state");
         const jump = document.getElementById("jump");
-        const block = $("#fadeInAndOut");
+        const block = $("#block");
 
-        const flashAnimation1 = (element, flash) => {
-            this.bol = flash;
+        const changeStatus = () => animationOn = !animationOn;
 
-            if (flash) {
-                this.bol = false;
-                $(function() {
-                    element.animate( {opacity: 0}, "fast", "linear" );
-                    element.animate( {opacity: 1}, "fast", "linear", ()=> this.bol = true);
-                });
-            };
-            return this.bol;        // still false. I don't find a solution.
-        };
-
-        const flashAnimation2 = (element) => { $(function() {
-                element.animate( {opacity: 0}, {
-                    duration: "fast",
-                    easing: "linear"
-                }, element.animate( {opacity: 1}, {
-                    duration: "fast",
-                    easing: "linear",
-                    queue: false
-                }));
-        })};
-
-        const flashAnimation3 = (element) => { $(function() {
+        const flashAnimation1 = (element) => { jQuery(function($) {
             element.animate( {opacity: 0}, "fast", "linear" )
             .animate( {opacity: 1}, "fast", "linear", ()=> element.clearQueue() );
             })
         }
 
-        const clearQueue = (element) => {
-            $(function() { element.clearQueue(); })
-        }
+        jQuery(function($) {
+            block.queue(
+                "flash",
+                function(next) {
+                    block.animate( {borderWidth: "20px"}, {
+                        duration: 4000,
+                        queue: "flash"
+                    });
+                    next();
+                }
+            );
+            block.queue(
+                "flash",
+                function(next) {
+                    block.animate( {borderWidth: "1px"}, {
+                        duration: 4000,
+                        queue: "flash"
+                        });
+                        next();
+                }
+            );
+            console.log(block.queue("flash").length);
+            block.dequeue("flash");
+            
+        });
 
-        // Jumping during flashing: no queue
+        function flashAnimation2 (element) { jQuery(function($) {
+            element.queue("flash", function (next) {
+                element.animate( {opacity: 0}, {
+                    duration: "fast",
+                    easing: "linear",
+                    queue: "flash"
+                });
+                next();
+            });
+            element.queue("flash", function(next) {
+                element.animate( {opacity: 1}, {
+                        duration: "fast",
+                        easing: "linear",
+                        queue: "flash"
+                        /* complete: element.clearQueue("flash") */
+                });
+                next();
+            }).dequeue("flash");
+            console.log(element.queue("flash").length);
+            });
+        };
+
+        function flashAnimationX (element, flash) {
+            this.bol = flash;
+            if (this.bol) {
+                this.bol = false;
+                $(function() {
+                    element.animate( {opacity: 0}, "fast", "linear" );      // (or chain these actions)
+                    element.animate( {opacity: 1}, "fast", "linear", ()=> this.bol = true);
+                })
+            };
+            return this.bol;    // will never give true to outside variable because callback executes after the outsided assignment.
+};
+
+        // Jumping: no queue
         const letJump1 = (element) => { $(function() {
             element.animate( {width: "+=50", height: "+=20"}, {
                 duration: "fast",
@@ -99,48 +150,50 @@
                 }
                 }
             );
-            
         })};
 
-        // Flashing paused during jumping: jumping queued
-        const letJump2 = (element) => { $(function() {
-            element.animate( {width: "+=50", height: "+=20"}, "fast");  // or chain both actions
-            element.animate( {width: "-=20", height: "-=20"}, "fast");
-        })}
-
-
-        const changeStatus = () => animationOn = !animationOn;
+        // Jumping queued to another queue
+        function letJump2(element) {
+            $(function() {
+                element.queue("jump", function(next) {
+                    element.animate({width: "+=50", height: "+=20"}, {
+                        duration: "fast",
+                        queue: "jump"
+                    })
+                    .animate( {width: "-=50", height: "-=20"}, {
+                        duration: "fast",
+                        queue: "jump"
+                    });
+                    next();
+                }).dequeue("jump");
+            })
+        };
+        
 
         //////////////////////////////////////////////////////////
         //////////////////////////////////////////////////////////
 
-        function update() {}
+        /* function update(progress) {} */
 
         function draw() {
             state.innerHTML = animationOn;
-
             if (animationOn) {
-                //flashAnimation1(block);
-                //blockFlash = flashAnimation3(block, blockFlash);
-                flashAnimation3(block);
-            } /* else { clearQueue(block); } */
+                flashAnimation2(block);
+            }
         }
-
 
         function loop(timestamp) {
             progress = timestamp - lastRender;
-            update(progress);
+            /* update(progress); */
             draw();
 
             lastRender = timestamp;
             reqAnimF = requestAnimationFrame(loop);
         }
 
-
         button.addEventListener("click", changeStatus);
         //jump.addEventListener("click", letJump1(block)); // button is dead for some reason
         
-
         reqAnimF = requestAnimationFrame(loop);
 
 

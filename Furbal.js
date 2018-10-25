@@ -118,13 +118,17 @@ const funPower = 0.0009;                    // = influence to health
 const naturalDecreaseOfSecureness = 0.013;
 const securenessPower = 0.0003;             // = influence to health
 
-const foodPowerMax = 10;    // if Furbals satiation is 0, Furbal will eat maximum.
-const foodPowerMin = 1;     // if Furbals satiation is 100, Furbal will eat minimum.
-const playPowerMax = 10;
-const playPowerMin = 1;
+// positive integers only! {
+const foodPowerMax = 10;    // if Furbals satiation is 0, Furbal will eat maximum (1 portion).
+const foodPowerMin = 1;     // if Furbals satiation is 100, Furbal will eat minimum (1 bite).
+const toyPowerMax = 10;
+const toyPowerMin = 1;
 const petPowerMax = 3;
 const petPowerMin = 1;
+// } positive integers only!
 
+const foodPrice = 1;
+const toyPrice = 1;
 
 const playToSat = 0.3;           // example: playToSat = 0.1; 10 toy consumed via play() will decrease satiation by 1. (PLAYING MAKES IT HUNGRY!)
 const healthToFun = 0.01;      // the less health, the higher fun decrease. Use: -(healthToFun/100)*health + healthToFun
@@ -206,7 +210,6 @@ let timeElapsedTemp = 0;
     }).dequeue("jump");
 }) */
 
-                
 
 const letJump = (element) => { $(function() {
     element.animate( {fontSize: "+=40%"}, {         // increase from 1em to 1.4em
@@ -217,7 +220,7 @@ const letJump = (element) => { $(function() {
                 duration: "fast",
                 queue: false,
                 always: () => {
-                    allowSatJump = true;
+                    allowSatJump = true;    // :/ not good. Calling every global allow...Jump variable here.
                     allowFunJump = true;
                     allowSecJump = true;
                 }
@@ -247,7 +250,7 @@ const letShrink = (element) => { $(function() {
 })};
 
 // Unused. Doesn't work as intended:
-const flashAnimationX = (element, flash) => {
+function flashAnimationX (element, flash) {
     this.bol = flash;
     if (this.bol) {
         this.bol = false;
@@ -256,7 +259,8 @@ const flashAnimationX = (element, flash) => {
             element.animate( {opacity: 1}, fadeOutTime, fadeEasing, ()=> this.bol = true);
         })
     };
-    return this.bol;    // should be true but stays false.
+    return this.bol;
+    // will never give true to outside variable because callback executes after the outsided assignment.
 };
 
 
@@ -264,7 +268,7 @@ const flashAnimationX = (element, flash) => {
 const flashAnimation = (element) => {
     $(function() {
         element.animate( {opacity: 0}, fadeOutTime, fadeEasing)         // (chained here.)
-        .animate( {opacity: 1}, fadeOutTime, fadeEasing, ()=> element.clearQueue());    // THAT'S IT !
+        .animate( {opacity: 1}, fadeOutTime, fadeEasing, ()=> element.clearQueue());
     })
     
     
@@ -290,16 +294,16 @@ const newGame = () => {
     myFurball.name = "Wully";   // Let user insert a name in startWindow()...
     myFurball.isDead = false;
     myFurball.health = 100;
-    myFurball.satiation = 20;
-    myFurball.fun = 20;
-    myFurball.secureness = 30;
+    myFurball.satiation = 50;
+    myFurball.fun = 50;
+    myFurball.secureness = 100;
 
     player.name = "Andi Depressiva";    // let user insert a name in startWindow()...
     player.gameInProgress = true;
     player.points = 9999;
-    player.credits = 9999;
-    player.food = 1000;
-    player.toy = 1000;
+    player.credits = 200;
+    player.food = 50;
+    player.toy = 50;
     player.specialItems = null;     // another object { carrot: 0, lemon: 1, strawberry: 2}
 
 
@@ -325,10 +329,10 @@ const gameInit = () => {
         $("#name-in-health").text(myFurball.name);
         userName.innerHTML = player.name;
 
+        reqAnimF = requestAnimationFrame(loop);
+
         $("#game-field").fadeIn(1500, ()=> {
             $("#go-to-settings").show();
-            
-            reqAnimF = requestAnimationFrame(loop);
         });
     })
 }
@@ -494,7 +498,7 @@ const feed = () => {
 
 
 const play = () => {
-    let funIncrease = ( (-(playPowerMax-playPowerMin)/100 *myFurball.fun) + playPowerMax ) * (myFurball.secureness/100 -secToFunThreshold);   // the less secureness, the less myFurball will play.
+    let funIncrease = ( (-(toyPowerMax-toyPowerMin)/100 *myFurball.fun) + toyPowerMax ) * (myFurball.secureness/100 -secToFunThreshold);   // the less secureness, the less myFurball will play.
     
     /* If player doesn't have enough toy for 1 toy portion, Furball gets what player has.
         If player has no toys, Furball gets no toys. */
@@ -640,6 +644,41 @@ const pet = () => {
 }
 
 
+const buyFood = () => {
+    // I need costs AND buyable food to be positive integers....
+    const maxbuyableFood = foodPowerMax/(foodPrice*foodPowerMax)*Math.ceil(foodPrice*foodPowerMax);
+
+    if (player.credits) {
+        if (player.credits < Math.ceil(foodPrice*foodPowerMax)) {
+            if (player.credits >= Math.ceil(foodPrice*foodPowerMin)) {
+                player.food += Math.ceil(Math.floor(player.credits - player.credits % foodPrice) / foodPrice);
+                player.credits -= Math.floor(player.credits - player.credits % foodPrice);
+            }
+        } else {
+            player.food += Math.round(maxbuyableFood);
+            player.credits -= Math.ceil(foodPrice*foodPowerMax);
+        }
+    }
+}
+
+
+const buyToy = () => {
+    const maxbuyableToy = toyPowerMax/(toyPrice*toyPowerMax)*Math.ceil(toyPrice*toyPowerMax);
+
+    if (player.credits) {
+        if (player.credits < Math.ceil(toyPrice*toyPowerMax)) {
+            if (player.credits >= Math.ceil(toyPrice*toyPowerMin)) {
+                player.toy += Math.ceil(Math.floor(player.credits - player.credits % toyPrice) / toyPrice);
+                player.credits -= Math.floor(player.credits - player.credits % toyPrice);
+            }
+        } else {
+            player.toy += Math.round(maxbuyableToy);
+            player.credits -= Math.ceil(toyPrice*toyPowerMax);
+        }
+    }
+}
+
+
 function update(progress) {
 
     function warningSystem() {
@@ -682,11 +721,13 @@ function update(progress) {
                 saysHealth = furbalStates.health[30];
                 break;
             default:                            //critical, priority 2:
-                if (myFurball.health <= 0) { saysHealth = furbalStates.health[0]; }
-                else if (myFurball.health <= 5) { saysHealth = furbalStates.health[5]; }
-                else if (myFurball.health <= 10) { saysHealth = furbalStates.health[10]; }
-                else if (myFurball.health <= 20) { saysHealth = furbalStates.health[20]; }
-
+                if (myFurball.health <= 20) {
+                    healthHeading.style.color = "var(--red)";
+                    if (myFurball.health <= 0) { saysHealth = furbalStates.health[0]; }
+                    else if (myFurball.health <= 5) { saysHealth = furbalStates.health[5]; }
+                    else if (myFurball.health <= 10) { saysHealth = furbalStates.health[10]; }
+                    else if (myFurball.health <= 20) { saysHealth = furbalStates.health[20]; }
+                }
                 // Furball healthy, priority 6:
                 else if (myFurball.health >= 90) {saysHealth = furbalStates.health[90];}
         }
@@ -785,7 +826,6 @@ function update(progress) {
             if (myFurball.health <= 20) {                       // health critical
                 furballSaying = saysHealth;
                 timeElapsedTemp = 0;
-                healthHeading.style.color = "var(--red)";
                 furballStatement.style.color = "var(--red)";
             } else if (!prioAction) {
                 if (saysHealth && myFurball.health < 90 && healthUpdate <= 0) { furballSaying = saysHealth }
@@ -883,15 +923,19 @@ function draw() {
     toy.innerHTML = player.toy;
     specialItems.innerHTML = "/";/* player.specialItems; */
 
+    !player.credits? credits.style.color = "var(--red)" : credits.style.color = "var(--black)";
+    !player.food? food.style.color = "var(--red)" : food.style.color = "var(--black)";
+    !player.toy? toy.style.color = "var(--red)" : toy.style.color = "var(--black)";
+
     // Disable Buttons:
 
-    if (!player.food) {
-        feedBtn.disabled = true;
-    } else { feedBtn.disabled = false; }
+    feedBtn.disabled = !player.food? true : false;
+    playBtn.disabled = !player.toy? true : false;
+    // "disable" buyButtons. They are icons and don't have the disable attribute.
+    // So, build a disable-function that accepts one parameter (element) and call function here.
+    // make icons black&white.
+    // enable again: short reset function.
 
-    if (!player.toy) {
-        playBtn.disabled = true;
-    } else { playBtn.disabled = false; }
 
     // draw condition bars and write Furballs statements
 
@@ -977,9 +1021,11 @@ pauseButton.addEventListener("click", switchPause);
 feedBtn.addEventListener("click", feed);
 playBtn.addEventListener("click", play);
 petBtn.addEventListener("click", pet);
-$(function() {
+jQuery(function($) {
     $("#toggle-fScreen").click(toggleFullScreen);
     $("#go-to-settings").click(settings);
+    $("#buy-food").click(buyFood);
+    $("#buy-toy").click(buyToy);
 });
 
 player.gameInProgress? gameInit() : startWindow();
