@@ -119,7 +119,7 @@ const naturalDecreaseOfSecureness = 0.013;
 const securenessPower = 0.0003;             // = influence to health
 
 // positive integers only! {
-const foodPowerMax = 10;    // if Furbals satiation is 0, Furbal will eat maximum (1 portion).
+const foodPowerMax = 9;    // if Furbals satiation is 0, Furbal will eat maximum (1 portion).
 const foodPowerMin = 1;     // if Furbals satiation is 100, Furbal will eat minimum (1 bite).
 const toyPowerMax = 10;
 const toyPowerMin = 1;
@@ -127,7 +127,7 @@ const petPowerMax = 3;
 const petPowerMin = 1;
 // } positive integers only!
 
-const foodPrice = 1;
+const foodPrice = 1.3;
 const toyPrice = 1;
 
 const playToSat = 0.3;           // example: playToSat = 0.1; 10 toy consumed via play() will decrease satiation by 1. (PLAYING MAKES IT HUNGRY!)
@@ -211,7 +211,7 @@ let timeElapsedTemp = 0;
 }) */
 
 
-const letJump = (element) => { $(function() {
+function letJump(element) { $(function() {
     element.animate( {fontSize: "+=40%"}, {         // increase from 1em to 1.4em
         duration: "fast",                       // It's faltering a little bit. Using % makes no difference.
         queue: false,
@@ -230,7 +230,7 @@ const letJump = (element) => { $(function() {
     );
 })};
 
-const letShrink = (element) => { $(function() {
+function letShrink (element) { $(function() {
     element.animate( {fontSize: "-=40%"}, {
         duration: "fast",
         queue: false,
@@ -265,7 +265,7 @@ function flashAnimationX (element, flash) {
 
 
 // Alternative: clear queue after looping of animations finished.
-const flashAnimation = (element) => {
+function flashAnimation(element) {
     $(function() {
         element.animate( {opacity: 0}, fadeOutTime, fadeEasing)         // (chained here.)
         .animate( {opacity: 1}, fadeOutTime, fadeEasing, ()=> element.clearQueue());
@@ -274,12 +274,21 @@ const flashAnimation = (element) => {
     
 };
 
-
+function greyout(element, toggle) {
+    if (toggle==="add") {
+        jQuery(function($) {
+            element.addClass("greyscaled");
+        })
+    } else {
+        jQuery(function($) {
+            element.removeClass("greyscaled");
+        })
+    }
+}
 //////////////////////////////////////////////////
 //////////////////////////////////////////////////
-// Functions:
 
-const startWindow = () => {
+function startWindow() {
     $(function() {
         $("#go-to-settings").hide();
         // Insert Intro pages here...
@@ -289,7 +298,7 @@ const startWindow = () => {
     newGame();
 };
 
-const newGame = () => {
+function newGame() {
 
     myFurball.name = "Wully";   // Let user insert a name in startWindow()...
     myFurball.isDead = false;
@@ -318,7 +327,7 @@ const newGame = () => {
     });
 }
 
-const gameInit = () => {
+function gameInit() {
     // Load cookies here...
     v_timeElapsed = 0;                      // COOKIE   // THIS WOULD BE A RESET !!!
     // If no cookies, "I couldn't find your progress. Did you delete the browser cookies?"
@@ -337,7 +346,7 @@ const gameInit = () => {
     })
 }
 
-const gameOver = () => {
+function gameOver() {
     furballStatement.innerHTML = "I'm dead.";
 
     const averageLoopSpeed = v_timeElapsed / counter;
@@ -381,7 +390,7 @@ const gameOver = () => {
 };
 
 
-const switchPause = () => {
+function switchPause() {
     pause = !pause;
     pause? $( function() {
         $("#game-field").css( {pointerEvents:"none", opacity: 0.4});
@@ -392,7 +401,7 @@ const switchPause = () => {
 // When continuing game after pause: seems to entail longer looptimes sometimes. But it doesn't occur every time.
 }
 
-const settings = () => {
+function settings() {
     if (myFurball.isDead) { gameOver() }
     else {
         switchPause();
@@ -408,7 +417,7 @@ const settings = () => {
 
 //////////////////////////////////////////////////
 
-const feed = () => {
+function feed() {
     let satiationIncrease;
 
     (myFurball.secureness < 0)?
@@ -497,7 +506,7 @@ const feed = () => {
 }
 
 
-const play = () => {
+function play() {
     let funIncrease = ( (-(toyPowerMax-toyPowerMin)/100 *myFurball.fun) + toyPowerMax ) * (myFurball.secureness/100 -secToFunThreshold);   // the less secureness, the less myFurball will play.
     
     /* If player doesn't have enough toy for 1 toy portion, Furball gets what player has.
@@ -590,7 +599,7 @@ const play = () => {
 }
 
 
-const pet = () => {
+function pet() {
 
     let securenessIncrease = ((petPowerMax-petPowerMin)/100 *myFurball.secureness) + petPowerMin; // the less secureness, the less increase. LOST CONFIDENCE!
     
@@ -644,38 +653,61 @@ const pet = () => {
 }
 
 
-const buyFood = () => {
+function buyFood(mode) {
     // I need costs AND buyable food to be positive integers....
-    const maxbuyableFood = foodPowerMax/(foodPrice*foodPowerMax)*Math.ceil(foodPrice*foodPowerMax);
 
-    if (player.credits) {
-        if (player.credits < Math.ceil(foodPrice*foodPowerMax)) {
-            if (player.credits >= Math.ceil(foodPrice*foodPowerMin)) {
-                player.food += Math.ceil(Math.floor(player.credits - player.credits % foodPrice) / foodPrice);
-                player.credits -= Math.floor(player.credits - player.credits % foodPrice);
-            }
-        } else {
-            player.food += Math.round(maxbuyableFood);
-            player.credits -= Math.ceil(foodPrice*foodPowerMax);
+    function buy() {
+        if (player.credits) {
+            if (player.credits < Math.ceil(foodPrice*foodPowerMax)) {
+                if (player.credits >= Math.ceil(foodPrice*foodPowerMin)) {
+                    player.food += Math.ceil(Math.floor(player.credits - player.credits % foodPrice) / foodPrice);
+                    player.credits -= Math.floor(player.credits - player.credits % foodPrice);
+                }
+            } else {
+                player.food += Math.round(maxbuyableFood);
+                player.credits -= Math.ceil(foodPrice*foodPowerMax);
+            } 
         }
     }
+
+    function check() {
+        !( player.credits >= Math.ceil(foodPrice*foodPowerMin) )?
+            jQuery(function($) { greyout($("#buy-food"), "add"); } ) :
+            jQuery(function($) { greyout($("#buy-food"), "remove"); } );
+    }
+
+    const maxbuyableFood = foodPowerMax/(foodPrice*foodPowerMax)*Math.ceil(foodPrice*foodPowerMax);
+
+    mode == "buy"? buy() : check();
 }
 
 
-const buyToy = () => {
-    const maxbuyableToy = toyPowerMax/(toyPrice*toyPowerMax)*Math.ceil(toyPrice*toyPowerMax);
+function buyToy(mode) {
 
-    if (player.credits) {
-        if (player.credits < Math.ceil(toyPrice*toyPowerMax)) {
-            if (player.credits >= Math.ceil(toyPrice*toyPowerMin)) {
-                player.toy += Math.ceil(Math.floor(player.credits - player.credits % toyPrice) / toyPrice);
-                player.credits -= Math.floor(player.credits - player.credits % toyPrice);
+    function buy() {
+        if (player.credits) {
+            if (player.credits < Math.ceil(toyPrice*toyPowerMax)) {
+                if (player.credits >= Math.ceil(toyPrice*toyPowerMin)) {
+                    player.toy += Math.ceil(Math.floor(player.credits - player.credits % toyPrice) / toyPrice);
+                    player.credits -= Math.floor(player.credits - player.credits % toyPrice);
+                }
+            } else {
+                player.toy += Math.round(maxbuyableToy);
+                player.credits -= Math.ceil(toyPrice*toyPowerMax);
             }
-        } else {
-            player.toy += Math.round(maxbuyableToy);
-            player.credits -= Math.ceil(toyPrice*toyPowerMax);
         }
     }
+    
+    function check() {
+        !(player.credits >= Math.ceil(toyPrice*toyPowerMin) )?
+            jQuery(function($) { greyout($("#buy-toy"), "add") }) :
+            jQuery(function($) { greyout($("#buy-toy"), "remove") });
+
+    }
+
+    const maxbuyableToy = toyPowerMax/(toyPrice*toyPowerMax)*Math.ceil(toyPrice*toyPowerMax);
+
+    mode == "buy"? buy() : check();
 }
 
 
@@ -931,10 +963,8 @@ function draw() {
 
     feedBtn.disabled = !player.food? true : false;
     playBtn.disabled = !player.toy? true : false;
-    // "disable" buyButtons. They are icons and don't have the disable attribute.
-    // So, build a disable-function that accepts one parameter (element) and call function here.
-    // make icons black&white.
-    // enable again: short reset function.
+    buyFood("check");
+    buyToy("check");
 
 
     // draw condition bars and write Furballs statements
@@ -1024,8 +1054,8 @@ petBtn.addEventListener("click", pet);
 jQuery(function($) {
     $("#toggle-fScreen").click(toggleFullScreen);
     $("#go-to-settings").click(settings);
-    $("#buy-food").click(buyFood);
-    $("#buy-toy").click(buyToy);
+    $("#buy-food").click( ()=> buyFood("buy") );
+    $("#buy-toy").click( ()=> buyToy("buy") );
 });
 
 player.gameInProgress? gameInit() : startWindow();

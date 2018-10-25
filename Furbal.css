@@ -449,6 +449,11 @@ body {  /* stretch body to viewable area of the window or screen. */
 /*============================*/
 /*============================*/
 
+.greyscaled {
+    -webkit-filter: grayscale(100%);
+    filter: grayscale(100%);
+    pointer-events: none;
+}
 /* 
 @keyframes fade {
     from {
