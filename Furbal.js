@@ -114,7 +114,7 @@ let healthUpdate;
 const naturalDecreaseOfSatiation = 0.015;
 const satiationPower = 0.0015;               // = influence to health
 const naturalDecreaseOfFun = 0.0078;
-const funPower = 0.0009;                    // = influence to health
+const funPower = 0.001;                    // = influence to health
 const naturalDecreaseOfSecureness = 0.013;
 const securenessPower = 0.0005;             // = influence to health
 
@@ -307,7 +307,7 @@ function newGame() {
     myFurball.name = "Wully";   // Let user insert a name in startWindow()...
     myFurball.isDead = false;
     myFurball.health = 100;
-    myFurball.satiation = 50;
+    myFurball.satiation = 45;
     myFurball.fun = 50;
     myFurball.secureness = 100;
 
@@ -344,7 +344,8 @@ function gameInit() {
 
         reqAnimF = requestAnimationFrame(loop);
 
-        $("#game-field").fadeIn(1500, ()=> {
+        $("#game-field").fadeIn(1500, function() {
+            $(this).css("pointerEvents", "auto");
             $("#go-to-settings").show();
         });
     })
@@ -366,7 +367,7 @@ function gameOver() {
     $(function(){
         $("#game-field").css("pointerEvents", "none");
         $("#go-to-settings").hide();
-        $("#satiation,#fun,#secureness").clearQueue().fadeIn(fadeInTime,
+        $("#satiation,#fun,#secureness").finish().fadeIn(fadeInTime,        //*
             window.setTimeout(function() {
                 $("#game-field").fadeOut(1500, ()=> {
                     $("#info-window").fadeIn(1500)
@@ -376,6 +377,14 @@ function gameOver() {
         }, 1500)
         );
     });
+    /*
+    * Sometimes crashes: It seems jquery script misses to read variable (easing).
+
+    Uncaught TypeError: w.easing[this.easing] is not a function
+    at init.run (jquery.min.js:2)
+
+    Especially if I play with buttons (I guess because of fading in elements).
+    */
 
 
     console.log("");
@@ -911,15 +920,21 @@ function update(progress) {
     /* Decrease power to health if condition falls below critical threshold */
     let factor = (condition, critical) => {
         return condition <= critical?
-            -(condition-critical)/50 + 1 : 1;
+            -(condition-critical)/25 + 1 : 1;
+        
+        // f(x) = -(x/50) + 1       // for x=-100 factor will be 3
+        // f(x) = -(x/100) + 1      // for x=-100 factor will be 2
+        // f(x) = -(x/25) + 1       // for x=-100 factor will be 5
+        // f(x) = -(x/33.33) + 1    // for x=-100 factor will be 4
     };
 
-    other0.innerHTML = "Other0: " + factor(myFurball.satiation, criticalSat);
+    other0.innerHTML = "Other0: " + factor(myFurball.satiation, criticalSat);   // test monitor
 
     /* Update Furballs health: Newtons Law of Cooling: u'(t) = -k(u(t)-a) */
-    healthUpdate = -satiationPower* factor(myFurball.satiation, criticalSat) * (myFurball.health-myFurball.satiation)
-                    -funPower*(myFurball.health-myFurball.fun)
-                    -securenessPower*(myFurball.health-myFurball.secureness);
+    healthUpdate = -satiationPower *factor(myFurball.satiation, criticalSat) * (myFurball.health-myFurball.satiation)
+                    -funPower *factor(myFurball.fun, criticalFun) * (myFurball.health-myFurball.fun)
+                    -securenessPower *factor(myFurball.secureness, criticalSec) * (myFurball.health-myFurball.secureness);
+    
     myFurball.health += healthUpdate * gameSpeed;
 
     if (myFurball.health >= 100) myFurball.health = 100;
@@ -945,8 +960,8 @@ function update(progress) {
 
     //Test: DELETE / DEACTIVATE !!!
     //myFurball.satiation = 30;
-    myFurball.fun = 100;
-    myFurball.secureness = 100;
+    //myFurball.fun = 100;
+    //myFurball.secureness = 100;
     //myFurball.health = 100;
     //if (v_timeElapsed >= 8000) { myFurball.isDead = true } // Control values after a certain time. Delete later.
     //if (myFurball.satiation <= 0) myFurball.isDead = true;  // time check. Delete later!
