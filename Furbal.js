@@ -116,7 +116,11 @@ const satiationPower = 0.0015;               // = influence to health
 const naturalDecreaseOfFun = 0.0078;
 const funPower = 0.0009;                    // = influence to health
 const naturalDecreaseOfSecureness = 0.013;
-const securenessPower = 0.0003;             // = influence to health
+const securenessPower = 0.0005;             // = influence to health
+
+const criticalSat = 40;                 // if satiation is critical or lower, influence to health will rise.
+const criticalFun = 30;
+const criticalSec = 30;
 
 // positive integers only! {
 const foodPowerMax = 10;    // if Furbals satiation is 0, Furbal will eat maximum (1 portion).
@@ -136,7 +140,7 @@ const healthToSec = 0.0110;     // the less health, the higher secureness decrea
 
 const secToFunThreshold = 0.12;   // in %. If security is 25% (or less), Furball won't play (and even lose fun by playing!).
 
-// Later: Character traits will influence the amounts of all power variables.
+// Later: Character traits (stats) will influence the amounts of all power variables.
 
 //////////////////////////////////////////////////
 
@@ -744,7 +748,7 @@ function update(progress) {
                 saysSatiation = furbalStates.satiation[50];
                 break;
             default:                                            // critical, priority 4:
-                if (myFurball.satiation <= 40) {
+                if (myFurball.satiation <= criticalSat) {
                     satiation.style.color = "var(--red)";
                     satShown = true;
                     countSatShown = 0;
@@ -773,7 +777,7 @@ function update(progress) {
             case 40:
                 saysFun = furbalStates.fun[40];
             default:                                            // critical, priority 4:
-                if (myFurball.fun <= 30) {
+                if (myFurball.fun <= criticalFun) {
                     fun.style.color = "var(--red)";
                     funShown = true;
                     countFunShown = 0;
@@ -800,7 +804,7 @@ function update(progress) {
                 saysSecureness = furbalStates.secureness[50];
                 break;
             default:                                            // critical, priority 4:
-                if (myFurball.secureness <= 40) {
+                if (myFurball.secureness <= criticalSec) {
                     secureness.style.color = "var(--red)";
                     secShown = true;
                     countSecShown = 0;
@@ -871,9 +875,19 @@ function update(progress) {
     myFurball.satiation -= naturalDecreaseOfSatiation * gameSpeed;                                                      // + character trait
     myFurball.fun -= (naturalDecreaseOfFun + -healthToFun/100*myFurball.health + healthToFun) * gameSpeed;              // + character trait
     myFurball.secureness -= (naturalDecreaseOfSecureness + -healthToSec/100*myFurball.health + healthToSec) * gameSpeed;// + character trait
-    
+
+    /* Decrease power to health if condition falls below critical threshold */
+    let factor = (condition, critical) => {
+        return condition <= critical?
+            -(condition-critical)/50 + 1 : 1;
+    };
+
+    other0.innerHTML = "Other0: " + factor(myFurball.satiation, criticalSat);
+
     /* Update Furballs health: Newtons Law of Cooling: u'(t) = -k(u(t)-a) */
-    healthUpdate = -satiationPower*(myFurball.health-myFurball.satiation)-funPower*(myFurball.health-myFurball.fun)-securenessPower*(myFurball.health-myFurball.secureness);
+    healthUpdate = -satiationPower* factor(myFurball.satiation, criticalSat) * (myFurball.health-myFurball.satiation)
+                    -funPower*(myFurball.health-myFurball.fun)
+                    -securenessPower*(myFurball.health-myFurball.secureness);
     myFurball.health += healthUpdate * gameSpeed;
 
     if (myFurball.health >= 100) myFurball.health = 100;
@@ -899,8 +913,8 @@ function update(progress) {
 
     //Test: DELETE / DEACTIVATE !!!
     //myFurball.satiation = 30;
-    //myFurball.fun = 30;
-    //myFurball.secureness = 30;
+    myFurball.fun = 100;
+    myFurball.secureness = 100;
     //myFurball.health = 100;
     //if (v_timeElapsed >= 8000) { myFurball.isDead = true } // Control values after a certain time. Delete later.
     //if (myFurball.satiation <= 0) myFurball.isDead = true;  // time check. Delete later!
@@ -912,7 +926,7 @@ function draw() {
     timeElapsed.innerHTML = "Time elapsed: " + Math.round(v_timeElapsed) + "ms";
     loopSpeed.innerHTML = "Loop Speed: " + Math.round(progress) + "ms/loop";
     gSpeed.innerHTML = "Game Speed: " + gameSpeed;
-    other0.innerHTML = "Other0: " + myFurball.health;
+    //other0.innerHTML = "Other0: " + myFurball.health;
     other1.innerHTML = "Other1: " + myFurball.satiation;
     other2.innerHTML = "Other2: " + myFurball.fun;
     other3.innerHTML = "Other3: " + myFurball.secureness;

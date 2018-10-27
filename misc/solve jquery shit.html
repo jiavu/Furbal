@@ -48,7 +48,7 @@
         <h1 id="state"></h1>
         <button type="button" id="button">Flash on/off</button>
         <div id="block"></div>
-        <button type="button" id="jump" onclick="letJump1(block)">Jump</button>
+        <button type="button" id="jump" onclick="letJump3(block)">Jump</button>
     </div>
 
     <script>
@@ -69,7 +69,10 @@
         const jump = document.getElementById("jump");
         const block = $("#block");
 
-        const changeStatus = () => animationOn = !animationOn;
+        const changeStatus = () => {
+            animationOn = !animationOn;
+            if (!animationOn) block.clearQueue();
+        }
 
         const flashAnimation1 = (element) => { jQuery(function($) {
             element.animate( {opacity: 0}, "fast", "linear" )
@@ -77,6 +80,7 @@
             })
         }
 
+/*
         jQuery(function($) {
             block.queue(
                 "flash",
@@ -102,6 +106,7 @@
             block.dequeue("flash");
             
         });
+*/
 
         function flashAnimation2 (element) { jQuery(function($) {
             element.queue("flash", function (next) {
@@ -122,6 +127,31 @@
                 next();
             }).dequeue("flash");
             console.log(element.queue("flash").length);
+            });
+        };
+
+        function flashAnimation3 (element) { jQuery(function($) {
+            console.log("Let me in");
+            element.queue("flash", function() {
+                console.log("I was here");
+                $(this).animate( {opacity: 0}, {
+                    duration: "fast",
+                    easing: "linear",
+                    queue: "flash"
+                }).dequeue("flash");
+            })
+            .queue("flash", function() {
+                console.log("I was here, too");
+                $(this).animate( {opacity: 1}, {
+                        duration: "fast",
+                        easing: "linear",
+                        queue: "flash"
+                        /* complete: element.clearQueue("flash") */
+                }).dequeue("flash");
+            })
+            .queue("flash", function() {
+                $(this).clearQueue("flash");
+            }).dequeue("flash");
             });
         };
 
@@ -168,6 +198,23 @@
                 }).dequeue("jump");
             })
         };
+
+        function letJump3(element) {
+            $(function() {
+                element.queue(function(next) {
+                    element.animate({opacity:1}, "fast", "linear")
+                    .animate({width: "+=50", height: "+=20"}, {
+                        duration: "fast",
+                        always:
+                            $(this).animate( {width: "-=50", height: "-=20"}, {
+                                duration: "fast",
+                                always: $(this).clearQueue()
+                            })
+                    });
+                    next();
+                }).dequeue();
+            })
+        };
         
 
         //////////////////////////////////////////////////////////
@@ -178,7 +225,7 @@
         function draw() {
             state.innerHTML = animationOn;
             if (animationOn) {
-                flashAnimation2(block);
+                flashAnimation1(block);
             }
         }
 
