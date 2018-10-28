@@ -147,7 +147,7 @@ body {  /* stretch body to viewable area of the window or screen. */
 #info-window div.alignCenter { text-align: center; }
 #info-window h1 { font: 1.5rem "Coiny", cursive; }
 #info-window button {
-    font: 0.8rem "Poor Story", cursive;
+    font: 0.9rem "Poor Story", cursive;
     display: inline-block;
     margin: 5% 0 0;
     padding: 3%;
@@ -160,7 +160,7 @@ body {  /* stretch body to viewable area of the window or screen. */
     box-shadow: -0.04rem 0.09rem 0.1rem var(--dark2);
 }
 #info-window button:hover {
-    font-size: 0.9rem;
+    font-size: 1rem;
     background-image: linear-gradient(to bottom right, var(--white), var(--light3));
 }
 #info-window button:active {
@@ -170,13 +170,26 @@ body {  /* stretch body to viewable area of the window or screen. */
 }
 #info-window button:focus { outline: none;}
 #info-window button:disabled {
-    font-size: 0.9rem;
+    font-size: 1rem;
     pointer-events: none;
-    /* background-image: linear-gradient(to bottom right, var(--white), var(--light2)); */
+    /* background-image: linear-gradient(to bottom right, var(--white), var(--light2));*/
     background-image: none;
     background-color: var(--light1);
     box-shadow: none;
     transform: translate(-0.04rem, 0.09rem);
+}
+#info-window a {
+    text-decoration: none;
+    color: var(--colorB1);
+}
+#info-window .smaller-button {
+    font-size: 0.8rem;
+    margin: 3%;
+    padding: 1.5% 2%;
+    box-shadow: -0.02rem 0.04rem 0.05rem var(--dark2);
+}
+#info-window .smaller-button:hover {
+    font-size: 0.75rem;
 }
 
 /*============================*/
