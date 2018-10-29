@@ -10,9 +10,10 @@ const infoText = {
                 </div>"
     },
     finishScreen : {
-        playAgain : "<div class='alignCenter'> \
+        playAgain : `<div class='alignCenter'> \
+                        <h2>Game Over</h2> \
                         <button type='button' id='again'>GIMME A NEW FURBALL!</button>\
-                    </div>"
+                    </div>`
     },
     settingsScreen : "<div class='alignCenter'> \
                         <h2>Options</h2>\

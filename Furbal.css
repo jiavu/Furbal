@@ -253,11 +253,12 @@ body {  /* stretch body to viewable area of the window or screen. */
     margin: 2.9% 0 2%;
 }
 .health-bar {
-    width: 100%;
+    position: relative;
+    width: 90%;
     height: 0.9em;
+    margin-bottom: 2%;
     border: 1px solid red;
     border-radius: 0.45em;
-    margin-bottom: 2%;
     overflow: hidden;
 }
 .health-bar > div {
