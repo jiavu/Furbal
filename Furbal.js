@@ -69,7 +69,7 @@ const points = document.getElementById("points");
 const credits = document.getElementById("credits");
 const food = document.getElementById("food");
 const toy = document.getElementById("toy");
-const specialItems = document.getElementById("specialItems");
+const specialItems = document.getElementById("special-items");
 
 
 //////////////////////////////////////////////////
@@ -93,7 +93,11 @@ const player = {            // empty object because keys will be set in initiali
     credits : 9999,
     food : 1000,
     toy : 1000,
-    specialItems : null */     // another object { carrot: 0, lemon: 1, strawberry: 2}
+    specialItems : {
+        "carrot": 0,
+        "lemon": 1,
+        "strawberry": 2
+    } */
 };
 
 //////////////////////////////////////////////////
@@ -134,6 +138,10 @@ const petPowerMin = 1;
 
 const foodPrice = 1.3;
 const toyPrice = 1;
+
+const carrotPower = 40;
+const lemonPower = 40;
+const strawberryPower = 40;
 
 const playToSat = 0.3;           // example: playToSat = 0.1; 10 toy consumed via play() will decrease satiation by 1. (PLAYING MAKES IT HUNGRY!)
 const healthToFun = 0.01;      // the less health, the higher fun decrease. Use: -(healthToFun/100)*health + healthToFun
@@ -318,8 +326,11 @@ function newGame() {
     player.credits = 100;
     player.food = 50;
     player.toy = 50;
-    player.specialItems = null;     // another object { carrot: 0, lemon: 1, strawberry: 2}
-
+    player.specialItems = {
+        carrot: 1,
+        lemon: 4,
+        strawberry: 3
+    };
 
     // last page of start window, confirm to start game, close start window.
     $("#info-window").fadeIn(1500).html(infoText.startWindow.go);
@@ -727,6 +738,47 @@ function buyToy(mode) {
 }
 
 
+function specialItem(mode, item) {
+
+    function give() {
+        switch (item) {
+            case strawberry:
+                player.specialItems.strawberry -= 1;
+                myFurball.secureness += strawberryPower;
+                if (myFurball.secureness > 100) myFurball.secureness = 100;
+                // fade in and let jump!!!
+                break;
+            case lemon:
+            player.specialItems.lemon -= 1;
+                myFurball.fun += lemonPower;
+                if (myFurball.fun > 100) myFurball.fun = 100;
+                // fade in and let jump!!!
+                break;
+            case carrot:
+                player.specialItems.carrot -= 1;
+                myFurball.satiation += carrotPower;
+                if (myFurball.satiation > 100) myFurball.satiation = 100;
+                // fade in and let jump!!!
+                break;
+        }
+    }
+
+    function check() {
+        if (!player.specialItems[item]) {
+            jQuery(function($) {
+                $("#"+item).addClass("hide");
+            })
+        } else {
+            jQuery(function($) {
+                $("#"+item).removeClass("hide");
+                $("#"+item+">span").text(player.specialItems[item]); //-> should show number of items available.
+            });
+        }
+    }
+
+    mode == "give"? give() : check();
+}
+
 function update(progress) {
 
     function warningSystem() {
@@ -987,7 +1039,7 @@ function draw() {
     credits.innerHTML = player.credits;
     food.innerHTML = player.food;
     toy.innerHTML = player.toy;
-    specialItems.innerHTML = "/";/* player.specialItems; */
+    //specialItems.innerHTML = "O";/* player.specialItems; */
 
     !player.credits? credits.style.color = "var(--red)" : credits.style.color = "var(--black)";
     !player.food? food.style.color = "var(--red)" : food.style.color = "var(--black)";
@@ -999,6 +1051,10 @@ function draw() {
     buyFood("check");
     buyToy("check");
 
+    // check special items:
+    specialItem("check", "strawberry");
+    specialItem("check", "lemon");
+    specialItem("check", "carrot");
 
     // draw condition bars and write Furballs statements
 
@@ -1084,11 +1140,18 @@ pauseButton.addEventListener("click", switchPause);
 feedBtn.addEventListener("click", feed);
 playBtn.addEventListener("click", play);
 petBtn.addEventListener("click", pet);
+
 jQuery(function($) {
     $("#toggle-fScreen").click(toggleFullScreen);
     $("#go-to-settings").click(settings);
+
     $("#buy-food").click( ()=> buyFood("buy") );
     $("#buy-toy").click( ()=> buyToy("buy") );
+
+    $("#strawberry").click( ()=> specialItem("give", strawberry) );
+    $("#lemon").click( ()=> specialItem("give", lemon) );
+    $("#carrot").click( ()=> specialItem("give", carrot) );
 });
+
 
 player.gameInProgress? gameInit() : startWindow();

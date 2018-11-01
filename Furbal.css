@@ -332,7 +332,7 @@ body {  /* stretch body to viewable area of the window or screen. */
     box-shadow: 0 0.04em var(--dark2);
     transform: translateY(0.18em);
 }
-.actionBtns:focus { outline: none;}
+.actionBtns:focus { outline: none; }
 
 /*============================*/
 
@@ -385,25 +385,53 @@ body {  /* stretch body to viewable area of the window or screen. */
 }
 .items > div > div {
     position: relative;
+    display: flex;
+    align-items: center;
+    height: 1.83rem;
     /* width: 100%; */
 }
 .buy-button {
     position: absolute;
-    top: 50%;
+    /* top: 50%; */
     right: 0;
-    height: 1rem;
-    transform: translateY(-50%);
+    height: 1.5rem;
+    /* transform: translateY(-50%); */
     cursor: pointer;
     transition-duration: 0.040s;
 }
 .buy-button:hover {
-    height: 0.9rem;
-    right: 0.05rem;
+    height: 1.3rem;
+    right: 0.1rem;
 }
 .buy-button:active {
-    height: 0.6rem;
-    right: 0.2rem;
+    height: 1rem;
+    right: 0.25rem;
     opacity: 0.8;
+}
+
+#special-items {
+    display: flex;
+    justify-content: space-around;
+    border-top: 2px solid var(--colorA1);
+    padding-top: 3%;
+}
+.special-item {
+    display: inline-block;
+    height: 1.5rem;
+    cursor: pointer;
+    transition-duration: 0.040s;
+}
+.special-item > img {height: 100%;}
+
+.special-item:hover {
+    height: 1.7rem;
+}
+.special-item:active {
+    opacity: 0;
+    transition-duration: 200ms;
+}
+.hide {
+    display: none;
 }
 
 /*============================*/
@@ -415,7 +443,7 @@ body {  /* stretch body to viewable area of the window or screen. */
     position: relative;
     /* bottom: 0; */
     width: 100%;
-    margin: 2% 0;
+    margin: 1.5% 0;
     z-index: 1;
     font-size: 0.48rem;
     color: var(--dark4);
