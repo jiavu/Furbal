@@ -92,7 +92,6 @@ body {  /* stretch body to viewable area of the window or screen. */
 /*============================*/
 
 .test-monitor {
-    display: none;
     position: fixed;
     right: 0;
     top: 0;   /*23%*/
@@ -106,7 +105,6 @@ body {  /* stretch body to viewable area of the window or screen. */
     z-index: 2;
 }
 #mobile-browser-offset {        /* for adjusting. nav bar and address bar of Chrome and system. */
-    display: none;
     margin: 0;
     height: 12.5vh;      /* 240p bei 1920p*/
     width: 100%;
@@ -496,6 +494,21 @@ body {  /* stretch body to viewable area of the window or screen. */
     filter: grayscale(100%);
     pointer-events: none;
 }
+
+/* Animations */
+
+@keyframes flash {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+.flash {
+    animation-name: flash;
+    animation-duration: .8s;
+    animation-iteration-count: infinite;
+    animation-timing-function: linear;
+    animation-direction: alternate;
+}
+
 /* 
 @keyframes fade {
     from {
@@ -506,3 +519,4 @@ body {  /* stretch body to viewable area of the window or screen. */
     }
     to {opacity: 1}
 }*/
+

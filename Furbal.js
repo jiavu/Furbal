@@ -1,3 +1,4 @@
+"use strict";
 
 let requestAnimationFrame = window.requestAnimationFrame || window.mozRequestAnimationFrame || window.webkitRequestAnimationFrame || windows.msRequestAnimationFrame;
 let cancelAnimationFrame = window.cancelAnimationFrame || window.mozCancelAnimationFrame;
@@ -92,12 +93,12 @@ const player = {            // empty object because keys will be set in initiali
     points : 9999,
     credits : 9999,
     food : 1000,
-    toy : 1000,
+    toy : 1000,*/
     specialItems : {
         "carrot": 0,
         "lemon": 1,
-        "strawberry": 2
-    } */
+        strawberry: 2
+    }
 };
 
 //////////////////////////////////////////////////
@@ -132,12 +133,12 @@ const foodPowerMax = 9;    // if Furbals satiation is 0, Furbal will eat maximum
 const foodPowerMin = 1;     // if Furbals satiation is 100, Furbal will eat minimum (1 bite).
 const toyPowerMax = 10;
 const toyPowerMin = 1;
-const petPowerMax = 3;
+const petPowerMax = 2;
 const petPowerMin = 1;
 // } positive integers only!
 
-const foodPrice = 1.3;
-const toyPrice = 1;
+const foodPrice = 1;
+const toyPrice = 1.2;
 
 const carrotPower = 40;
 const lemonPower = 40;
@@ -163,7 +164,8 @@ or Bypass CORS by disabling web-security. */
 //If all files are saved to and accessed via request to server I can use:
 //import furbalStates from "./furbal_says.js";
 //Otherwise paste object here and don't forget to remove type="module":
-const infoText = {startWindow:{go:"<div class='alignCenter'><h1>Furball</h1><h3>Are you ready for it?</h3><button type='button' id='go'>YES!</button></div>"},finishScreen:{playAgain:`<div class='alignCenter'><h2>Game Over</h2><button type='button' id='again'>GIMME A NEW FURBALL!</button></div>`},settingsScreen:"<div class='alignCenter'><h2>Options</h2><p><button class='smaller-button' id='restart-game'>Restart game</button></p><p><a href='https://goo.gl/forms/ktww9CI6E7xlP4vj1' target='_blank'>Give Feedback</a></p><button type='button' id='continue'>Continue</button></div>"};
+let gameOverText;
+const infoText = {startWindow:{go:"<div class='alignCenter'><h1>Furball</h1><h3>Are you ready for it?</h3><button type='button' id='go'>YES!</button></div>"},finishScreen:{playAgain:`<div class='alignCenter'><h2>Game Over</h2><p>${gameOverText}</p><button type='button' id='again'>GIMME A NEW FURBALL!</button></div>`},settingsScreen:"<div class='alignCenter'><h2>Options</h2><p><button class='smaller-button' id='restart-game'>Restart game</button></p><p><a href='https://goo.gl/forms/ktww9CI6E7xlP4vj1' target='_blank'>Give Feedback</a></p><button type='button' id='continue'>Continue</button></div>"};
 
 const furbalStates = {toFeeding:{95:"Salad. Not again.",90:"I'm so full.",85:"I am good, thanks.",1:"Can I have a dessert?",2:"Tastes good, thanks.",3:"Is it food or...",4:"Yummy!",5:"* munch crunch chomp *"},toPlaying:{95:"I don't want to play anymore. You can have it.",90:"Yeay. Toys. :/",85:"I already had a lot of them.",1:"It's my dolly! Play with your own one!",2:"Oh, toys!",3:"Yippee!",4:"Catch me! Haha, catch me!!!"},toPetting:{95:"Leave me some space, okay?",85:"Come on, you're squeezing me.",1:"Huuug!",2:"I love you mama!",3:"You are the sunshine of my live.",4:"It's so good to have you.",5:"Rrrrrrrr!"},health:{90:"Oh, happy day!",50:"Could be better.",40:"I am not feeling so well.",30:"Why do you let me die?",20:"I declare that this is my last will and testament.",10:"I am feeling so cold.",5:"I think it's over.",0:"I'm dead."},satiation:{75:"I could maybe eat something.",60:"I want candy, now!",50:"Can I have cookie?",40:"I am so hungry.",30:"Can I eat stones?",20:"I am starving...",10:"My stomache hurts.",},fun:{90:"Live is fun!",75:"Let's play something!",50:"Boring!!!",40:"* YAWN *",30:"* snooze *",20:"Deadly boring."},secureness:{85:"It's so good to have you.",60:"Where are you?",50:"I am so lonley.",40:"I am afraid all alone!",noPlay:"I am so alone and sad. I don't want to play.",noEat:"I am so alone and sad. I don't want to eat."}};
 
@@ -190,102 +192,63 @@ let countSatShown = 0;
 let countFunShown = 0;
 let countSecShown = 0;
 
-const fadeInTime = 200;
-const fadeOutTime = 800;
-const fadeEasing = "linear";    // default: "swing"
-
-let allowSatJump = true;
-let allowFunJump = true;
-let allowSecJump = true;
-
+const fadeInTime = 0.2;         //jQuery reads ms, gsap reads s.
+const fadeOutTime = 0.8;
+const fadeEasing = "linear";    // default: "swing"     //probably unused after replacing jQuery fades with gsap.
 
 const cooldownStatement = 2000;      // Cooldown for Furball's statements. Update statement only after cooldown time.
 let timeElapsedTemp = 0;
 
 
-// jQuery animations:
+// Animation:
 
-// I NEED A GLOBAL-VARIABLES-FREE SOLUTION FOR JUMP ANIMATIONS!
-/* $(function() {
-    element.queue( "jump", (next)=> {
-        element.animate( {fontSize: "+=40%"}, {
-            duration: "fast",
-            queue: "jump",
-            always: () => {
-                element.animate( {fontSize: "-=40%"}, {
-                    duration: "fast",
-                    queue: "jump",
-                    always: ()=> element.clearQueue("jump")
-                })
-            }}
-        );
-        next();
-    }).dequeue("jump");
-}) */
+function letShrink (element) {
+    TweenMax.to(element, 0.2, {
+        scaleX: 0.7,
+        scaleY: 0.7,
+        ease: Power2.easeInOut,
+        onComplete: ()=>
+            TweenMax.to(element, 0.2, {
+                scaleX: 1,
+                scaleY: 1,
+                ease: Power2.easeInOut
+            })
+        });
+}
 
+function letShrink2 (element) {
+    TweenMax.to(element, 0.2, {
+        scaleX: 0.9,
+        scaleY: 0.9,
+        transformOrigin: "35% 50%",
+        ease: Power2.easeInOut,
+        onComplete: ()=>
+            TweenMax.to(element, 0.2, {
+                scaleX: 1,
+                scaleY: 1,
+                transformOrigin: "35% 50%",
+                ease: Power2.easeInOut
+            })
+        });
+}
 
-function letJump(element) { $(function() {
-    element.animate( {fontSize: "+=40%"}, {         // increase from 1em to 1.4em
-        duration: "fast",                       // It's faltering a little bit. Using % makes no difference.
-        queue: false,
-        always: () => {
-            element.animate( {fontSize: "-=40%"}, {
-                duration: "fast",
-                queue: false,
-                always: () => {
-                    allowSatJump = true;    // :/ not good. Calling every global allow...Jump variable here.
-                    allowFunJump = true;
-                    allowSecJump = true;
-                }
-            });
-        }
-        }
-    );
-})};
+function letJump(element) {
+    TweenMax.to(element, 0.2, {
+        scaleX: 1.08,
+        scaleY:1.25,
+        transformOrigin: "35% 50%",
+        ease: Power2.easeInOut,
+        // evtl. onOverwrite: TweenMax.set(element, {scale: auf die Hälfte des Jumps})
+        onComplete: ()=>
+            TweenMax.to(element, 0.2, {
+                scaleX: 1,
+                scaleY: 1,
+                transformOrigin: "35% 50%",
+                ease: Power2.easeInOut
+            })
+        });
+}
 
-function letShrink (element) { $(function() {
-    element.animate( {fontSize: "-=40%"}, {
-        duration: "fast",
-        queue: false,
-        always: () => {
-            element.animate( {fontSize: "+=40%"}, {
-                duration: "fast",
-                queue: false,
-                always: () => {
-                    allowSatJump = true;
-                    allowFunJump = true;
-                    allowSecJump = true;
-                }
-            });
-        }
-        }
-    );
-})};
-
-// Unused. Doesn't work as intended:
-function flashAnimationX (element, flash) {
-    this.bol = flash;
-    if (this.bol) {
-        this.bol = false;
-        $(function() {
-            element.animate( {opacity: 0}, fadeOutTime, fadeEasing );      // (or chain these actions)
-            element.animate( {opacity: 1}, fadeOutTime, fadeEasing, ()=> this.bol = true);
-        })
-    };
-    return this.bol;
-    // will never give true to outside variable because callback executes after the outsided assignment.
-};
-
-
-// Alternative: clear queue after looping of animations finished.
-function flashAnimation(element) {
-    $(function() {
-        element.animate( {opacity: 0}, fadeOutTime, fadeEasing)         // (chained here.)
-        .animate( {opacity: 1}, fadeOutTime, fadeEasing, ()=> element.clearQueue());
-    })
-    
-    
-};
 
 function greyout(element, toggle) {
     if (toggle==="add") {
@@ -316,9 +279,9 @@ function newGame() {
     myFurball.name = "My Furball";   // Let user insert a name in startWindow()...
     myFurball.isDead = false;
     myFurball.health = 100;
-    myFurball.satiation = 100;
-    myFurball.fun = 100;
-    myFurball.secureness = 100;
+    myFurball.satiation = 45;
+    myFurball.fun = 45;
+    myFurball.secureness = 45;
 
     player.name = "Player";    // let user insert a name in startWindow()...
     player.gameInProgress = true;
@@ -337,7 +300,6 @@ function newGame() {
     $(function() {
         $("#go").click(function() {
             $("#go").prop("disabled", true).html("Let's go!");
-            /* $("#go").animate({opacity: 0}, 700); */
             $("#info-window").fadeOut(1500, gameInit);
         });
     });
@@ -372,9 +334,10 @@ function gameOver() {
     const secondsMs = Math.round(v_timeElapsed)/1000 %60;
     const seconds = Math.floor(secondsMs);
     
-    let gameOverText = myFurball.name + " survived " +
+    gameOverText = myFurball.name + " survived " +
         hours + " hours, " + minutes + " minutes and "
         + seconds + " seconds.";
+    gameOverText = infoText.finishScreen.playAgain;
 
     $(function(){
         $("#game-field").css("pointerEvents", "none");
@@ -383,7 +346,7 @@ function gameOver() {
             window.setTimeout(function() {
                 $("#game-field").fadeOut(1500, ()=> {
                     $("#info-window").fadeIn(1500)
-                    .html(infoText.finishScreen.playAgain);
+                    .html(gameOverText);
                     $("#again").click(newGame);
                 });
         }, 1500)
@@ -467,10 +430,9 @@ function feed() {
         myFurball.satiation += satiationIncrease;
 
 
-    // Reset colors of html elements (warning system):
+    // Reset color:
     furballStatement.style.color = "var(--black)";
-    if (myFurball.satiation > 40) { satiation.style.color = "var(--black)"; }
-    else { satiation.style.color = "var(--red)"; }
+    if (myFurball.satiation > criticalSat) satiation.style.color = "var(--black)";
 
 
     // Get Furballs statements about food and warn if necessary:
@@ -513,15 +475,23 @@ function feed() {
         countSatShown = 0;
         satShown = true;
 
-
-        // same as $(document).ready(function(){/*jQuery method*/});
+        /*      deprecated!
         $(function(){
             $("#satiation").fadeIn(fadeInTime);            // default: 400ms
             if (satiationIncrease > 0 && allowSatJump) {
                 allowSatJump = false;
                 letJump($("#satiation"));
             }
-        });
+        });*/
+
+        // Animation:
+        TweenMax.to(satiation, fadeInTime, {opacity:1});
+
+        if (satiationIncrease > 0) {
+            letJump(satiation);
+            letShrink(food);
+        }
+        
         
     }
 
@@ -550,10 +520,9 @@ function play() {
         myFurball.fun += funIncrease;
 
         
-    // Reset colors of html elements (warning system):
+    // Reset:
     furballStatement.style.color = "var(--black)";
-    if (myFurball.fun > 30) { fun.style.color = "var(--black)"; }
-    else { fun.style.color = "var(--red)"; }
+    if (myFurball.fun > criticalFun) fun.style.color = "var(--black)";
 
 
     // Get Furballs statements about toys and checking if a warning is necessary:
@@ -602,6 +571,18 @@ function play() {
         $(function() {
             if (a) satiation.style.color = "var(--red)";
             if (b) fun.style.color = "var(--red)";
+            
+            // Animation:
+            TweenMax.to(fun, fadeInTime, {opacity:1});
+
+            if (a) {
+                letJump(fun);
+                letShrink(toy);
+                satShown = true;
+                TweenMax.to(satiation, fadeInTime, {opacity:1});
+                letShrink2(satiation);
+            }
+            /*
             $("#fun").fadeIn(fadeInTime);
             if (a) {
                 if (allowFunJump) {
@@ -610,8 +591,9 @@ function play() {
                 }
                 satShown = true;
                 $("#satiation").fadeIn(fadeInTime);
-            }
+            } */
         });
+        
     }
     
     if (funIncrease > 0) {
@@ -637,10 +619,9 @@ function pet() {
     if (myFurball.secureness > 100) myFurball.secureness = 100;
 
 
-    // Reset colors of html elements (warning system):
+    // Reset color:
     furballStatement.style.color = "var(--black)";
-    if (myFurball.secureness > 40) { secureness.style.color = "var(--black)"; }     // shouldn't be necessary, or is it?
-    else { secureness.style.color = "var(--red)"; }
+    if (myFurball.secureness > criticalSec) secureness.style.color = "var(--black)";
 
 
     // reset prio:
@@ -669,11 +650,14 @@ function pet() {
     secShown = true;
 
     if (saysPet) { $(function() {
-        $("#secureness").fadeIn(fadeInTime);
+        //$("#secureness").fadeIn(fadeInTime);
+        TweenMax.to(secureness, fadeInTime, {opacity:1});
+        letJump(secureness);
+        /* 
         if (allowSecJump) {
             letJump($("#secureness"));
             allowSecJump = false;
-        }
+        } */
         })
     }
     
@@ -693,7 +677,8 @@ function buyFood(mode) {
             } else {
                 player.food += Math.round(maxbuyableFood);
                 player.credits -= Math.ceil(foodPrice*foodPowerMax);
-            } 
+            }
+            letShrink(credits);
         }
     }
 
@@ -722,6 +707,7 @@ function buyToy(mode) {
                 player.toy += Math.round(maxbuyableToy);
                 player.credits -= Math.ceil(toyPrice*toyPowerMax);
             }
+            letShrink(credits);
         }
     }
     
@@ -746,25 +732,35 @@ function specialItem(mode, item) {
                 player.specialItems.strawberry -= 1;
                 myFurball.secureness += strawberryPower;
                 if (myFurball.secureness > 100) myFurball.secureness = 100;
-                // fade in and let jump!!!
+                if (myFurball.secureness > criticalSec) secureness.style.color = "var(--black)";
+                TweenMax.to(secureness, fadeInTime, {opacity:1});
+                letJump(secureness);
+                secShown = true;
                 break;
             case lemon:
             player.specialItems.lemon -= 1;
                 myFurball.fun += lemonPower;
                 if (myFurball.fun > 100) myFurball.fun = 100;
-                // fade in and let jump!!!
+                if (myFurball.fun > criticalFun) fun.style.color = "var(--black)";
+                TweenMax.to(fun, fadeInTime, {opacity:1});
+                letJump(fun);
+                funShown = true;
                 break;
             case carrot:
                 player.specialItems.carrot -= 1;
                 myFurball.satiation += carrotPower;
                 if (myFurball.satiation > 100) myFurball.satiation = 100;
-                // fade in and let jump!!!
+                
+                if (myFurball.satiation > criticalSat) satiation.style.color = "var(--black)";
+                TweenMax.to(satiation, fadeInTime, {opacity:1});
+                letJump(satiation);
+                satShown = true;
                 break;
         }
     }
 
     function check() {
-        if (!player.specialItems[item]) {
+        if (player.specialItems[item] <= 0) {
             jQuery(function($) {
                 $("#"+item).addClass("hide");
             })
@@ -777,7 +773,13 @@ function specialItem(mode, item) {
     }
 
     mode == "give"? give() : check();
+    //(mode == "give" && player.specialItems[item] > 0)? give() : check();
+                // WTF jQUERY SYNTAX ERROR ???? ^
+    //Uncaught Error: Syntax error, unrecognized expression: #[object HTMLDivElement]
 }
+
+
+//////////////////////////////////////////////////
 
 function update(progress) {
 
@@ -832,7 +834,14 @@ function update(progress) {
                 else if (myFurball.health >= 90) {saysHealth = furbalStates.health[90];}
         }
 
+
         //// Satiation thresholds
+
+        // Reset:
+        if (myFurball.satiation > criticalSat) {
+            $(function() { $("#satiation").removeClass("flash"); });
+        }
+
         switch (Math.round(myFurball.satiation)) {
             case 75:
                 saysSatiation = furbalStates.satiation[75];
@@ -851,7 +860,8 @@ function update(progress) {
                     
                     $(function() {
                         $("#satiation").fadeIn(fadeOutTime, fadeEasing);
-                        flashAnimation($("#satiation"));
+                        ($("#satiation").addClass("flash"));
+                        //flashAnimation($("#satiation"));
                     });                    
                     
                     if (myFurball.satiation <= 10) { saysSatiation = furbalStates.satiation[10]; }
@@ -863,6 +873,13 @@ function update(progress) {
         }
 
         //// Fun thresholds
+
+
+        // Reset:
+        if (myFurball.fun > criticalFun) {
+            $(function() { $("#fun").removeClass("flash"); });
+        }
+
         switch (Math.round(myFurball.fun)) {
             case 75:
                 saysFun = furbalStates.fun[75];
@@ -880,7 +897,8 @@ function update(progress) {
 
                     $(function() {
                         $("#fun").fadeIn(fadeOutTime, fadeEasing);
-                        flashAnimation($("#fun"));
+                        $("#fun").addClass("flash");
+                        //flashAnimation($("#fun"));
                     });
 
                     if (myFurball.fun <= 20) { saysFun = furbalStates.fun[20]; }
@@ -891,7 +909,14 @@ function update(progress) {
                 else if (myFurball.fun >= 90) { saysFun = furbalStates.fun[90]; }
         }
 
+
         //// Secureness thresholds
+        
+        // Reset:
+        if (myFurball.secureness > criticalSec) {
+            $(function() { $("#secureness").removeClass("flash"); });
+        }
+
         switch (Math.round(myFurball.secureness)) {
             case 60:
                 saysSecureness = furbalStates.secureness[60];
@@ -907,7 +932,8 @@ function update(progress) {
                     
                     $(function() {
                         $("#secureness").fadeIn(fadeOutTime, fadeEasing);
-                        flashAnimation($("#secureness"));
+                        $("#secureness").addClass("flash");
+                        //flashAnimation($("#secureness"));
                     });
 
                     saysSecureness = furbalStates.secureness[40];
@@ -958,7 +984,7 @@ function update(progress) {
                 } else if (myFurball.secureness >= 85) {
                     furballSaying = saysSecureness;
                     timeElapsedTemp = 0;
-                } else { myFurballSaying = "" }
+                } else { furballSaying = "" }
             }
         }
     }
@@ -977,10 +1003,10 @@ function update(progress) {
         return condition <= critical?
             -(condition-critical)/25 + 1 : 1;
         
-        // f(x) = -(x/50) + 1       // for x=-100 factor will be 3
         // f(x) = -(x/100) + 1      // for x=-100 factor will be 2
-        // f(x) = -(x/25) + 1       // for x=-100 factor will be 5
+        // f(x) = -(x/50) + 1       // for x=-100 factor will be 3
         // f(x) = -(x/33.33) + 1    // for x=-100 factor will be 4
+        // f(x) = -(x/25) + 1       // for x=-100 factor will be 5
     };
 
     other0.innerHTML = "Other0: " + factor(myFurball.satiation, criticalSat);   // test monitor
@@ -997,8 +1023,8 @@ function update(progress) {
 
     warningSystem();
 
-    // Let a Furball's statement stay for a while until updating again:
 
+    // Let a Furball's statement stay for a while until updating again:
     if (furballSaying) {
         timeElapsedTemp += progress;
         if (timeElapsedTemp >= cooldownStatement) {
@@ -1014,9 +1040,9 @@ function update(progress) {
     }
 
     //Test: DELETE / DEACTIVATE !!!
-    //myFurball.satiation = 20;
-    //myFurball.fun = 20;
-    //myFurball.secureness = 20;
+    //myFurball.satiation = 45;
+    //myFurball.fun = 50;
+    //myFurball.secureness = 50;
     //myFurball.health = 100;
     //if (v_timeElapsed >= 8000) { myFurball.isDead = true } // Control values after a certain time. Delete later.
     //if (myFurball.satiation <= 0) myFurball.isDead = true;  // time check. Delete later!
@@ -1079,27 +1105,24 @@ function draw() {
     if (satShown) {
         countSatShown += progress;
         if (countSatShown >= cooldownCond) {
-                $(function(){ $("#satiation").fadeOut(fadeOutTime, fadeEasing); });
+                TweenMax.to(satiation, fadeOutTime, {opacity:0});       // what's wrong here? No fade out..
                 satShown = false;
-                allowSatJump = true;
                 countSatShown = 0;
         }
     }
     if (funShown) {
         countFunShown += progress;
         if (countFunShown >= cooldownCond) {
-            $(function(){ $("#fun").fadeOut(fadeOutTime, fadeEasing); });
+            TweenMax.to(fun, fadeOutTime, {opacity:0});       // what's wrong here? No fade out..
             funShown = false;
-            allowFunJump = true;
             countFunShown = 0;
         }
     }
     if (secShown) {
         countSecShown += progress;
         if (countSecShown >= cooldownCond) {
-            $(function(){ $("#secureness").fadeOut(fadeOutTime, fadeEasing); });
+            TweenMax.to(secureness, fadeOutTime, {opacity:0});       // what's wrong here? No fade out..
             secShown = false;
-            allowSecJump = true;
             countSecShown = 0;
         }
     }
@@ -1148,9 +1171,9 @@ jQuery(function($) {
     $("#buy-food").click( ()=> buyFood("buy") );
     $("#buy-toy").click( ()=> buyToy("buy") );
 
-    $("#strawberry").click( ()=> specialItem("give", strawberry) );
-    $("#lemon").click( ()=> specialItem("give", lemon) );
-    $("#carrot").click( ()=> specialItem("give", carrot) );
+    $("#strawberry").click( ()=> specialItem("give", strawberry) ); // fuck you jQuery
+    $("#lemon").click( function() {specialItem("give", lemon)} );   // You are causing bugs
+    $("#carrot").click( ()=> specialItem("give", carrot) );         //  ..
 });
 
 

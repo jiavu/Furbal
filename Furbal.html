@@ -13,14 +13,14 @@
         <meta name="mobile-web-app-capable" content="yes">
         <!-- (A better option is to use the Web App Manifest. -->
 
-        <link href="https://fonts.googleapis.com/css?family=Amatic+SC|Caveat|Coiny|Indie+Flower|Open+Sans|Poor+Story|Source+Sans+Pro" rel="stylesheet">
-        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Amatic+SC|Caveat|Coiny|Indie+Flower|Open+Sans|Poor+Story|Source+Sans+Pro">
         <link rel="stylesheet" type="text/css" media="screen" href="Furbal.css" >
+        <!-- Maybe preload stylesheets: rel="preload" as="style". Error when using it. -->
     </head>
     <body>
         <!-- Deactivate later: -->
         
-        <div class="test-monitor">
+        <div class="test-monitor" style="display: none">
                 <h4>Control Monitor</h4>
                 <div id="timeElapsed"></div>
                 <div id="loopSpeed"></div>
@@ -32,7 +32,7 @@
                 <input type="button" id="pause" value="Pause">
             </div>
 
-        <div id="mobile-browser-offset">
+        <div id="mobile-browser-offset" style="display: none">
             <p>
                 Android info bar<br>
                 +<br>
@@ -109,20 +109,20 @@
                     <div class="user">
                             <h3 id="user-name"></h3>
                             <div>
-                                <div><p>Points: <span id="points"></span></p></div>
-                                <div><p>Credits: <span id="credits"></span></p></div>
+                                <div><p>Points: <span id="points" style="display: inline-block"></span></p></div>
+                                <div><p>Credits: <span id="credits" style="display: inline-block"></span></p></div>
                             </div>
                     </div>
                     <div class="items">
                             <h3>Items</h3>
                             <div>
                                 <div>
-                                    <p> Food: <span id="food"></span></p>
+                                    <p> Food: <span id="food" style="display: inline-block"></span></p>
                                     <img src="./icons/money.svg" onerror="this.src='https://image.flaticon.com/icons/svg/639/639365.svg'" alt="$" class="buy-button" id="buy-food" disabled>
                                     <!-- money.svg or dollar.svg are my preferences. -->
                                 </div>
                                 <div>
-                                    <p>Toy: <span id="toy"></span></p>
+                                    <p>Toy: <span id="toy" style="display: inline-block"></span></p>
                                     <img src="./icons/money.svg" onerror="this.src='https://image.flaticon.com/icons/svg/639/639365.svg'" alt="$" class="buy-button" id="buy-toy">
                                 </div>
                                 <!-- <p>Special Items:</p> -->
@@ -156,6 +156,10 @@
         </div>
 
         
+        <!-- Loading scripts: -->
+        <!-- <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script> -->
+        <script src="./jquery-3.3.1.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/2.0.2/TweenMax.min.js"></script>
         <script src="./furbal_says.js"></script>
         <script src="./Furbal.js"></script>
         <!--
