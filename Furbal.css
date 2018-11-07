@@ -144,6 +144,7 @@ body {  /* stretch body to viewable area of the window or screen. */
 
 #info-window div.alignCenter { text-align: center; }
 #info-window h1 { font: 1.5rem "Coiny", cursive; }
+#info-window h2 { margin-bottom: 0.5em; }
 #info-window button {
     font: 0.9rem "Poor Story", cursive;
     display: inline-block;

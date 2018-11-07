@@ -72,6 +72,11 @@ const food = document.getElementById("food");
 const toy = document.getElementById("toy");
 const specialItems = document.getElementById("special-items");
 
+const infoWindow = document.getElementById("info-window");
+const gameField = document.getElementById("game-field");
+
+const goToSettings = document.getElementById("go-to-settings");
+const toggleFScreen = document.getElementById("toggle-fScreen");
 
 //////////////////////////////////////////////////
 //////////////////////////////////////////////////
@@ -93,12 +98,12 @@ const player = {            // empty object because keys will be set in initiali
     points : 9999,
     credits : 9999,
     food : 1000,
-    toy : 1000,*/
+    toy : 1000,
     specialItems : {
         "carrot": 0,
         "lemon": 1,
         strawberry: 2
-    }
+    }*/
 };
 
 //////////////////////////////////////////////////
@@ -122,14 +127,14 @@ const satiationPower = 0.0015;               // = influence to health
 const naturalDecreaseOfFun = 0.0078;
 const funPower = 0.001;                    // = influence to health
 const naturalDecreaseOfSecureness = 0.013;
-const securenessPower = 0.0005;             // = influence to health
+const securenessPower = 0.0006;             // = influence to health
 
 const criticalSat = 40;                 // if satiation is critical or lower, influence to health will rise.
 const criticalFun = 30;
 const criticalSec = 30;
 
 // positive integers only! {
-const foodPowerMax = 9;    // if Furbals satiation is 0, Furbal will eat maximum (1 portion).
+const foodPowerMax = 10;    // if Furbals satiation is 0, Furbal will eat maximum (1 portion).
 const foodPowerMin = 1;     // if Furbals satiation is 100, Furbal will eat minimum (1 bite).
 const toyPowerMax = 10;
 const toyPowerMin = 1;
@@ -164,8 +169,7 @@ or Bypass CORS by disabling web-security. */
 //If all files are saved to and accessed via request to server I can use:
 //import furbalStates from "./furbal_says.js";
 //Otherwise paste object here and don't forget to remove type="module":
-let gameOverText;
-const infoText = {startWindow:{go:"<div class='alignCenter'><h1>Furball</h1><h3>Are you ready for it?</h3><button type='button' id='go'>YES!</button></div>"},finishScreen:{playAgain:`<div class='alignCenter'><h2>Game Over</h2><p>${gameOverText}</p><button type='button' id='again'>GIMME A NEW FURBALL!</button></div>`},settingsScreen:"<div class='alignCenter'><h2>Options</h2><p><button class='smaller-button' id='restart-game'>Restart game</button></p><p><a href='https://goo.gl/forms/ktww9CI6E7xlP4vj1' target='_blank'>Give Feedback</a></p><button type='button' id='continue'>Continue</button></div>"};
+const infoText = {startWindow:{go:"<div class='alignCenter'><h1>Furball</h1><h3>Are you ready for it?</h3><button type='button' id='go'>YES!</button></div>"},finishScreen:{gameOverT1:"<div class='alignCenter'><h2>Game Over</h2><p>"/*insert gameOverInfo*/,gameOverT2:"</p><button type='button' id='again'>GIMME A NEW FURBALL!</button></div>"},settingsScreen:"<div class='alignCenter'><h2>Options</h2><p><button class='smaller-button' id='restart-game'>Restart game</button></p><p><a href='https://goo.gl/forms/ktww9CI6E7xlP4vj1' target='_blank'>Give Feedback</a></p><button type='button' id='continue'>Continue</button></div>"};
 
 const furbalStates = {toFeeding:{95:"Salad. Not again.",90:"I'm so full.",85:"I am good, thanks.",1:"Can I have a dessert?",2:"Tastes good, thanks.",3:"Is it food or...",4:"Yummy!",5:"* munch crunch chomp *"},toPlaying:{95:"I don't want to play anymore. You can have it.",90:"Yeay. Toys. :/",85:"I already had a lot of them.",1:"It's my dolly! Play with your own one!",2:"Oh, toys!",3:"Yippee!",4:"Catch me! Haha, catch me!!!"},toPetting:{95:"Leave me some space, okay?",85:"Come on, you're squeezing me.",1:"Huuug!",2:"I love you mama!",3:"You are the sunshine of my live.",4:"It's so good to have you.",5:"Rrrrrrrr!"},health:{90:"Oh, happy day!",50:"Could be better.",40:"I am not feeling so well.",30:"Why do you let me die?",20:"I declare that this is my last will and testament.",10:"I am feeling so cold.",5:"I think it's over.",0:"I'm dead."},satiation:{75:"I could maybe eat something.",60:"I want candy, now!",50:"Can I have cookie?",40:"I am so hungry.",30:"Can I eat stones?",20:"I am starving...",10:"My stomache hurts.",},fun:{90:"Live is fun!",75:"Let's play something!",50:"Boring!!!",40:"* YAWN *",30:"* snooze *",20:"Deadly boring."},secureness:{85:"It's so good to have you.",60:"Where are you?",50:"I am so lonley.",40:"I am afraid all alone!",noPlay:"I am so alone and sad. I don't want to play.",noEat:"I am so alone and sad. I don't want to eat."}};
 
@@ -249,7 +253,6 @@ function letJump(element) {
         });
 }
 
-
 function greyout(element, toggle) {
     if (toggle==="add") {
         jQuery(function($) {
@@ -261,16 +264,15 @@ function greyout(element, toggle) {
         })
     }
 }
+
 //////////////////////////////////////////////////
 //////////////////////////////////////////////////
 
 function startWindow() {
-    $(function() {
-        $("#go-to-settings").hide();
-        // Insert Intro pages here...
-        // Let user enter names...
-        
-    });
+    TweenMax.set(goToSettings, {display:"none"});
+    // Insert Intro pages here...
+    // Let user enter names...
+
     newGame();
 };
 
@@ -290,8 +292,8 @@ function newGame() {
     player.food = 50;
     player.toy = 50;
     player.specialItems = {
-        carrot: 1,
-        lemon: 4,
+        carrot: 2,
+        lemon: 2,
         strawberry: 3
     };
 
@@ -320,13 +322,13 @@ function gameInit() {
 
         $("#game-field").fadeIn(1500, function() {
             $(this).css("pointerEvents", "auto");
-            $("#go-to-settings").show();
+            TweenMax.set(goToSettings, {display:"inline-block"});
         });
     })
 }
 
 function gameOver() {
-    furballStatement.innerHTML = "I'm dead.";
+    furballStatement.innerHTML = furbalStates.health[0];    //"I'm dead.";
 
     const averageLoopSpeed = v_timeElapsed / counter;
     const hours = Math.floor(v_timeElapsed/3600000);
@@ -334,34 +336,29 @@ function gameOver() {
     const secondsMs = Math.round(v_timeElapsed)/1000 %60;
     const seconds = Math.floor(secondsMs);
     
-    gameOverText = myFurball.name + " survived " +
-        hours + " hours, " + minutes + " minutes and "
-        + seconds + " seconds.";
-    gameOverText = infoText.finishScreen.playAgain;
+    let gameOverInfo = myFurball.name + " survived ";
+    if (hours) gameOverInfo += hours + " hours, ";
+    if (minutes) gameOverInfo += minutes + " minutes and ";
+    gameOverInfo += seconds + " seconds.";
+
+    let gameOverHTML = infoText.finishScreen.gameOverT1
+                        + gameOverInfo
+                        + infoText.finishScreen.gameOverT2;
+
+    TweenMax.set(gameField, {pointerEvents:"none"});
+    TweenMax.set(goToSettings, {display:"none"});
 
     $(function(){
-        $("#game-field").css("pointerEvents", "none");
-        $("#go-to-settings").hide();
-        $("#satiation,#fun,#secureness").finish().fadeIn(200,        //* REPLACED fadeInTime NOW!
+        $("#satiation,#fun,#secureness").removeClass("flash").fadeIn(200,
             window.setTimeout(function() {
                 $("#game-field").fadeOut(1500, ()=> {
                     $("#info-window").fadeIn(1500)
-                    .html(gameOverText);
+                    .html(gameOverHTML);
                     $("#again").click(newGame);
                 });
         }, 1500)
         );
     });
-    /*
-    * Sometimes crashes: It seems jquery script misses to read variable (easing).
-
-    Uncaught TypeError: w.easing[this.easing] is not a function
-    at init.run (jquery.min.js:2)
-
-    Especially if I play with buttons (I guess because of fading in elements).
-    Try out with literal (fixed value) instead of variable.
-    */
-
 
     console.log("");
     console.log("==============");
@@ -375,17 +372,14 @@ function gameOver() {
         + minutes + " minutes, "
         + secondsMs + " seconds.");
 
-
 };
 
 
 function switchPause() {
     pause = !pause;
-    pause? $( function() {
-        $("#game-field").css( {pointerEvents:"none", opacity: 0.4});
-    }) : $( function() {
-        $("#game-field").css( {pointerEvents:"auto", opacity: 1});
-    });
+    pause? TweenMax.set(gameField, {pointerEvents:"none", opacity: 0.4} )
+           : TweenMax.set(gameField, {pointerEvents:"auto", opacity: 1} );
+
     (pause)? console.log("=========PAUSE=========") : reqAnimF = requestAnimationFrame(loop);
 // When continuing game after pause: seems to entail longer looptimes sometimes. But it doesn't occur every time.
 }
@@ -401,7 +395,9 @@ function settings() {
             $("#continue").click(settings);
         })
 
-        pause? $(function() {$("#info-window").show()}) : $(function() {$("#info-window").hide()});
+        // pause? $(function() {$("#info-window").show()}) : $(function() {$("#info-window").hide()});
+        pause? TweenMax.set(infoWindow, {display: "inline-block"} )
+               : TweenMax.set(infoWindow, { display: "none"} );
     }
 }
 
@@ -474,15 +470,6 @@ function feed() {
 
         countSatShown = 0;
         satShown = true;
-
-        /*      deprecated!
-        $(function(){
-            $("#satiation").fadeIn(fadeInTime);            // default: 400ms
-            if (satiationIncrease > 0 && allowSatJump) {
-                allowSatJump = false;
-                letJump($("#satiation"));
-            }
-        });*/
 
         // Animation:
         TweenMax.to(satiation, fadeInTime, {opacity:1});
@@ -567,33 +554,21 @@ function play() {
         
         let a = funIncrease > 0? true : false;
         let b = funIncrease < 0? true : false;
-       
-        $(function() {
-            if (a) satiation.style.color = "var(--red)";
-            if (b) fun.style.color = "var(--red)";
-            
-            // Animation:
-            TweenMax.to(fun, fadeInTime, {opacity:1});
 
-            if (a) {
-                letJump(fun);
-                letShrink(toy);
-                satShown = true;
-                TweenMax.to(satiation, fadeInTime, {opacity:1});
-                letShrink2(satiation);
-            }
-            /*
-            $("#fun").fadeIn(fadeInTime);
-            if (a) {
-                if (allowFunJump) {
-                    letJump($("#fun"));
-                    allowFunJump = false;
-                }
-                satShown = true;
-                $("#satiation").fadeIn(fadeInTime);
-            } */
-        });
+        if (a) satiation.style.color = "var(--red)";
+        if (b) fun.style.color = "var(--red)";
         
+        // Animation:
+        TweenMax.to(fun, fadeInTime, {opacity:1});
+
+        if (a) {
+            letJump(fun);
+            letShrink(toy);
+            satShown = true;
+            TweenMax.to(satiation, fadeInTime, {opacity:1});
+            letShrink2(satiation);
+        }
+
     }
     
     if (funIncrease > 0) {
@@ -649,16 +624,9 @@ function pet() {
     countSecShown = 0;
     secShown = true;
 
-    if (saysPet) { $(function() {
-        //$("#secureness").fadeIn(fadeInTime);
+    if (saysPet) {
         TweenMax.to(secureness, fadeInTime, {opacity:1});
         letJump(secureness);
-        /* 
-        if (allowSecJump) {
-            letJump($("#secureness"));
-            allowSecJump = false;
-        } */
-        })
     }
     
 }
@@ -730,34 +698,54 @@ function specialItem(mode, item) {
         switch (item) {
             case strawberry:
                 player.specialItems.strawberry -= 1;
-                myFurball.secureness += strawberryPower;
+
+                myFurball.secureness = myFurball.secureness < 0?
+                    strawberryPower
+                :   myFurball.secureness + strawberryPower;
+
                 if (myFurball.secureness > 100) myFurball.secureness = 100;
+                
                 if (myFurball.secureness > criticalSec) secureness.style.color = "var(--black)";
+                
                 TweenMax.to(secureness, fadeInTime, {opacity:1});
                 letJump(secureness);
                 secShown = true;
                 break;
+
             case lemon:
             player.specialItems.lemon -= 1;
-                myFurball.fun += lemonPower;
+
+                myFurball.fun = myFurball.fun < 0?
+                    lemonPower
+                :   myFurball.fun + lemonPower;
+
                 if (myFurball.fun > 100) myFurball.fun = 100;
+                
                 if (myFurball.fun > criticalFun) fun.style.color = "var(--black)";
+
                 TweenMax.to(fun, fadeInTime, {opacity:1});
                 letJump(fun);
                 funShown = true;
                 break;
+
             case carrot:
                 player.specialItems.carrot -= 1;
-                myFurball.satiation += carrotPower;
+
+                myFurball.satiation = myFurball.satiation < 0?
+                    carrotPower
+                :   myFurball.satiation + carrotPower;
+                
                 if (myFurball.satiation > 100) myFurball.satiation = 100;
                 
                 if (myFurball.satiation > criticalSat) satiation.style.color = "var(--black)";
+
                 TweenMax.to(satiation, fadeInTime, {opacity:1});
                 letJump(satiation);
                 satShown = true;
                 break;
         }
     }
+
 
     function check() {
         if (player.specialItems[item] <= 0) {
@@ -771,6 +759,7 @@ function specialItem(mode, item) {
             });
         }
     }
+
 
     mode == "give"? give() : check();
     //(mode == "give" && player.specialItems[item] > 0)? give() : check();
@@ -857,12 +846,13 @@ function update(progress) {
                     satiation.style.color = "var(--red)";
                     satShown = true;
                     countSatShown = 0;
+
+                    TweenMax.to(satiation, fadeOutTime, {
+                        ease: Power0.easeNone,
+                        opacity: 1
+                    });
                     
-                    $(function() {
-                        $("#satiation").fadeIn(fadeOutTime, fadeEasing);
-                        ($("#satiation").addClass("flash"));
-                        //flashAnimation($("#satiation"));
-                    });                    
+                    $(function() { ($("#satiation").addClass("flash")); });
                     
                     if (myFurball.satiation <= 10) { saysSatiation = furbalStates.satiation[10]; }
                     else if ( myFurball.satiation <= 20) { saysSatiation = furbalStates.satiation[20]; }
@@ -873,7 +863,6 @@ function update(progress) {
         }
 
         //// Fun thresholds
-
 
         // Reset:
         if (myFurball.fun > criticalFun) {
@@ -895,11 +884,12 @@ function update(progress) {
                     funShown = true;
                     countFunShown = 0;
 
-                    $(function() {
-                        $("#fun").fadeIn(fadeOutTime, fadeEasing);
-                        $("#fun").addClass("flash");
-                        //flashAnimation($("#fun"));
+                    TweenMax.to(fun, fadeOutTime, {
+                        ease: Power0.easeNone,
+                        opacity: 1
                     });
+
+                    $(function() { $("#fun").addClass("flash"); });
 
                     if (myFurball.fun <= 20) { saysFun = furbalStates.fun[20]; }
                     else if (myFurball.fun <= 30) { saysFun = furbalStates.fun[30]; }
@@ -930,11 +920,12 @@ function update(progress) {
                     secShown = true;
                     countSecShown = 0;
                     
-                    $(function() {
-                        $("#secureness").fadeIn(fadeOutTime, fadeEasing);
-                        $("#secureness").addClass("flash");
-                        //flashAnimation($("#secureness"));
+                    TweenMax.to(secureness, fadeOutTime, {
+                        ease: Power0.easeNone,
+                        opacity: 1
                     });
+
+                    $(function() { $("#secureness").addClass("flash"); });
 
                     saysSecureness = furbalStates.secureness[40];
                 }
@@ -1163,10 +1154,10 @@ pauseButton.addEventListener("click", switchPause);
 feedBtn.addEventListener("click", feed);
 playBtn.addEventListener("click", play);
 petBtn.addEventListener("click", pet);
+goToSettings.addEventListener("click", settings);
 
 jQuery(function($) {
     $("#toggle-fScreen").click(toggleFullScreen);
-    $("#go-to-settings").click(settings);
 
     $("#buy-food").click( ()=> buyFood("buy") );
     $("#buy-toy").click( ()=> buyToy("buy") );

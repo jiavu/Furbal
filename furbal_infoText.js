@@ -1,5 +1,3 @@
-let gameOverText;
-
 const infoText = {
     manual : {
         1 : "Once there was a Furball...",
@@ -12,11 +10,13 @@ const infoText = {
                 </div>"
     },
     finishScreen : {
-        playAgain : `<div class='alignCenter'> \
+        gameOverT1 : "<div class='alignCenter'> \
                         <h2>Game Over</h2> \
-                        <p>${gameOverText}</p> \
+                        <p>",
+                        // insert gameOverInfo  //
+        gameOverT2 :    "</p> \
                         <button type='button' id='again'>GIMME A NEW FURBALL!</button>\
-                    </div>`
+                    </div>"
     },
     settingsScreen : "<div class='alignCenter'> \
                         <h2>Options</h2>\
