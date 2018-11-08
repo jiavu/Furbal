@@ -1037,9 +1037,9 @@ function update(progress) {
     }
 
     //Test: DELETE / DEACTIVATE !!!
-    //myFurball.satiation = 45;
-    //myFurball.fun = 50;
-    //myFurball.secureness = 50;
+    myFurball.satiation = 45;
+    myFurball.fun = 50;
+    myFurball.secureness = 50;
     //myFurball.health = 100;
     //if (v_timeElapsed >= 8000) { myFurball.isDead = true } // Control values after a certain time. Delete later.
     //if (myFurball.satiation <= 0) myFurball.isDead = true;  // time check. Delete later!

@@ -79,7 +79,7 @@ body {  /* stretch body to viewable area of the window or screen. */
 
 .container {
     min-width: 320px;       /* 320px*/
-    min-height: 480px;
+    min-height: 480px; 
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -349,11 +349,11 @@ body {  /* stretch body to viewable area of the window or screen. */
 
 .items-container {
     margin-top: 10%;
-    /*
+    
     display: flex;
     flex-direction: row;
     justify-content: space-between;
-    */
+   
 }
 
 .items {
@@ -361,6 +361,8 @@ body {  /* stretch body to viewable area of the window or screen. */
     width: 40%;
 }
 .items > div {
+    margin: 0;
+    min-width: 133px;
     border: 2px solid var(--colorA1);
     border-radius: 8px;
     padding: 2% 5%;
@@ -426,18 +428,22 @@ body {  /* stretch body to viewable area of the window or screen. */
     display: none;
 }
 
+/*============================*/
+
 .to-right-side {
     float: right;
     display: flex;
     flex-direction: column;
-    /* justify-content: flex-end; */
-
+    padding-left: 2%;
+    align-items: flex-end;
 }
 
 /*============================*/
 
 .user {
     text-align: right;
+    min-width: 5.5rem;
+    max-width: 6rem;
 }
 /* displays user name: */
 .user > h3 {
@@ -462,26 +468,34 @@ body {  /* stretch body to viewable area of the window or screen. */
 .win-a-special {
     float: right;
     margin-top: 2vh;
-    border: 2px solid var(--colorC1);
+    /* border: 2px solid var(--colorC1);
     border-radius: 8px;
     outline: 2px dotted var(--colorC1);
-    outline-offset: 2px;
+    outline-offset: 2px;*/
+    border: 0.28rem solid transparent;
+    border-image: url(./icons/waS-border_Animation.gif) 50 round;
     display: flex;
     flex-direction: row;
-    padding: 3%;
+    padding: 0.25rem;
 }
 .win-a-special > div {
     position: relative;
     min-width: 1.5rem;
     height: 1.5rem;
 }
-.win-a-special img { height: 100%; }
+.win-a-special img { height: 1.5rem; }
 
 .win-a-special > div:nth-child(2) {
-    font-size: 0.5rem;
+    width: 3rem;
+    display: flex;
+    align-items: center;
+    font: 0.65rem/1 "Coiny", cursive;
+    color: var(--colorC1);
+    text-shadow: 0 0 0.02rem var(--dark1), 0 0 0.14rem var(--colorA1);
     border-left: 2px solid var(--colorC1);
     border-right: 2px solid var(--colorC1);
-    margin: 0 3%;
+    margin: 0 0.25rem;
+    padding: 0 0.25rem;
 }
 
 /*============================*/
