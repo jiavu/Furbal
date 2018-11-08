@@ -105,20 +105,35 @@
                 </div>
 
 
-                <div> <!-- last div. Clearfix necessary? <div class="clearfix"> -->
-                    <div class="user">
-                            <h3 id="user-name"></h3>
+                <div class="items-container"> <!-- last div. Clearfix necessary? <div class="clearfix"> -->
+                    <div class="to-right-side">
+                        <div class="user clearfix">
+                                <h3 id="user-name" style="display: none"></h3>
+                                <div>
+                                    <div><p>Points: <span id="points" style="display: inline-block"></span></p></div>
+                                    <div><p>Credits: <span id="credits" style="display: inline-block"></span></p></div>
+                                </div>
+                        </div>
+                        <div class="win-a-special">
                             <div>
-                                <div><p>Points: <span id="points" style="display: inline-block"></span></p></div>
-                                <div><p>Credits: <span id="credits" style="display: inline-block"></span></p></div>
+                                <img src="./icons/strawberry2b.svg" onerror="this.src='https://image.flaticon.com/icons/svg/135/135717.svg'" alt="S">
+                                <!-- insert every price as img here. position:absolute. display: none. -->
+                                <!-- insert every price as img here. position:absolute. display: none. -->
+                                <!-- insert every price as img here. position:absolute. display: none. -->
+                                <!-- insert every price as img here. position:absolute. display: none. -->
                             </div>
+                            <div>*Win-a-Special*</div>
+                            <div>
+                                <img src="./icons/money.svg" onerror="this.src='https://image.flaticon.com/icons/svg/639/639365.svg'" alt="$" class="buy-button">
+                            </div>
+                        </div>
                     </div>
                     <div class="items">
-                            <h3>Items</h3>
+                            <!-- <h3>Items</h3> -->
                             <div>
                                 <div>
                                     <p> Food: <span id="food" style="display: inline-block"></span></p>
-                                    <img src="./icons/money.svg" onerror="this.src='https://image.flaticon.com/icons/svg/639/639365.svg'" alt="$" class="buy-button" id="buy-food" disabled>
+                                    <img src="./icons/money.svg" onerror="this.src='https://image.flaticon.com/icons/svg/639/639365.svg'" alt="$" class="buy-button" id="buy-food">
                                     <!-- money.svg or dollar.svg are my preferences. -->
                                 </div>
                                 <div>

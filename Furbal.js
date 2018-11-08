@@ -78,6 +78,9 @@ const gameField = document.getElementById("game-field");
 const goToSettings = document.getElementById("go-to-settings");
 const toggleFScreen = document.getElementById("toggle-fScreen");
 
+//const carrot = document.getElementById("carrot"); // will continue using jQuery for the moment.
+
+
 //////////////////////////////////////////////////
 //////////////////////////////////////////////////
 
@@ -100,9 +103,9 @@ const player = {            // empty object because keys will be set in initiali
     food : 1000,
     toy : 1000,
     specialItems : {
-        "carrot": 0,
+        "carrot": 2,
         "lemon": 1,
-        strawberry: 2
+        "strawberry": 2
     }*/
 };
 
@@ -206,21 +209,41 @@ let timeElapsedTemp = 0;
 
 // Animation:
 
-function letShrink (element) {
+function letJump(element) {
     TweenMax.to(element, 0.2, {
-        scaleX: 0.7,
-        scaleY: 0.7,
+        fontSize: "130%",
+        scaleX: 1.05,
+        scaleY:1.05,
+        //transformOrigin: "35% 50%",
         ease: Power2.easeInOut,
         onComplete: ()=>
             TweenMax.to(element, 0.2, {
+                fontSize: "100%",
                 scaleX: 1,
                 scaleY: 1,
+                //transformOrigin: "35% 50%",
+                ease: Power2.easeInOut,
+            })
+        });
+}
+
+function letShrink (element) {
+    TweenMax.to(element, 0.2, {
+        fontSize: "80%",
+        //scaleX: 0.7,
+        //scaleY: 0.7,
+        ease: Power2.easeInOut,
+        onComplete: ()=>
+            TweenMax.to(element, 0.2, {
+                fontSize: "100%",
+                //scaleX: 1,
+                //scaleY: 1,
                 ease: Power2.easeInOut
             })
         });
 }
 
-function letShrink2 (element) {
+function letShrink2 (element) {     // check if used
     TweenMax.to(element, 0.2, {
         scaleX: 0.9,
         scaleY: 0.9,
@@ -236,33 +259,9 @@ function letShrink2 (element) {
         });
 }
 
-function letJump(element) {
-    TweenMax.to(element, 0.2, {
-        scaleX: 1.08,
-        scaleY:1.25,
-        transformOrigin: "35% 50%",
-        ease: Power2.easeInOut,
-        // evtl. onOverwrite: TweenMax.set(element, {scale: auf die Hälfte des Jumps})
-        onComplete: ()=>
-            TweenMax.to(element, 0.2, {
-                scaleX: 1,
-                scaleY: 1,
-                transformOrigin: "35% 50%",
-                ease: Power2.easeInOut
-            })
-        });
-}
-
 function greyout(element, toggle) {
-    if (toggle==="add") {
-        jQuery(function($) {
-            element.addClass("greyscaled");
-        })
-    } else {
-        jQuery(function($) {
-            element.removeClass("greyscaled");
-        })
-    }
+    if (toggle==="add") { element.addClass("greyscaled"); }
+    else { element.removeClass("greyscaled"); }
 }
 
 //////////////////////////////////////////////////
@@ -292,9 +291,9 @@ function newGame() {
     player.food = 50;
     player.toy = 50;
     player.specialItems = {
-        carrot: 2,
-        lemon: 2,
-        strawberry: 3
+        "carrot": 2,
+        "lemon": 2,
+        "strawberry": 3
     };
 
     // last page of start window, confirm to start game, close start window.
@@ -566,7 +565,7 @@ function play() {
             letShrink(toy);
             satShown = true;
             TweenMax.to(satiation, fadeInTime, {opacity:1});
-            letShrink2(satiation);
+            letShrink(satiation);
         }
 
     }
@@ -696,7 +695,7 @@ function specialItem(mode, item) {
 
     function give() {
         switch (item) {
-            case strawberry:
+            case "strawberry":
                 player.specialItems.strawberry -= 1;
 
                 myFurball.secureness = myFurball.secureness < 0?
@@ -712,7 +711,7 @@ function specialItem(mode, item) {
                 secShown = true;
                 break;
 
-            case lemon:
+            case "lemon":
             player.specialItems.lemon -= 1;
 
                 myFurball.fun = myFurball.fun < 0?
@@ -728,7 +727,7 @@ function specialItem(mode, item) {
                 funShown = true;
                 break;
 
-            case carrot:
+            case "carrot":
                 player.specialItems.carrot -= 1;
 
                 myFurball.satiation = myFurball.satiation < 0?
@@ -761,11 +760,12 @@ function specialItem(mode, item) {
     }
 
 
-    mode == "give"? give() : check();
-    //(mode == "give" && player.specialItems[item] > 0)? give() : check();
-                // WTF jQUERY SYNTAX ERROR ???? ^
+    //mode == "give"? give() : check();
+    (mode == "give" && player.specialItems[item] > 0)? give() : check();
+                // jQUERY SYNTAX ERROR ?      ^
     //Uncaught Error: Syntax error, unrecognized expression: #[object HTMLDivElement]
-}
+    //when using addEventListener: 
+}   // Furbal.js:767 Uncaught TypeError: Cannot read property 'carrot' of undefined at specialItem
 
 
 //////////////////////////////////////////////////
@@ -828,7 +828,8 @@ function update(progress) {
 
         // Reset:
         if (myFurball.satiation > criticalSat) {
-            $(function() { $("#satiation").removeClass("flash"); });
+            //$(function() { $("#satiation").removeClass("flash"); });
+            satiation.classList.remove("flash");
         }
 
         switch (Math.round(myFurball.satiation)) {
@@ -852,7 +853,8 @@ function update(progress) {
                         opacity: 1
                     });
                     
-                    $(function() { ($("#satiation").addClass("flash")); });
+                    //$(function() { ($("#satiation").addClass("flash")); });
+                    satiation.classList.add("flash");
                     
                     if (myFurball.satiation <= 10) { saysSatiation = furbalStates.satiation[10]; }
                     else if ( myFurball.satiation <= 20) { saysSatiation = furbalStates.satiation[20]; }
@@ -866,7 +868,8 @@ function update(progress) {
 
         // Reset:
         if (myFurball.fun > criticalFun) {
-            $(function() { $("#fun").removeClass("flash"); });
+            //$(function() { $("#fun").removeClass("flash"); });
+            fun.classList.remove("flash");
         }
 
         switch (Math.round(myFurball.fun)) {
@@ -889,7 +892,8 @@ function update(progress) {
                         opacity: 1
                     });
 
-                    $(function() { $("#fun").addClass("flash"); });
+                    //$(function() { $("#fun").addClass("flash"); });
+                    fun.classList.add("flash");
 
                     if (myFurball.fun <= 20) { saysFun = furbalStates.fun[20]; }
                     else if (myFurball.fun <= 30) { saysFun = furbalStates.fun[30]; }
@@ -904,7 +908,8 @@ function update(progress) {
         
         // Reset:
         if (myFurball.secureness > criticalSec) {
-            $(function() { $("#secureness").removeClass("flash"); });
+            //$(function() { $("#secureness").removeClass("flash"); });
+            secureness.classList.remove("flash");
         }
 
         switch (Math.round(myFurball.secureness)) {
@@ -925,7 +930,8 @@ function update(progress) {
                         opacity: 1
                     });
 
-                    $(function() { $("#secureness").addClass("flash"); });
+                    //$(function() { $("#secureness").addClass("flash"); });
+                    secureness.classList.add("flash");
 
                     saysSecureness = furbalStates.secureness[40];
                 }
@@ -1156,15 +1162,18 @@ playBtn.addEventListener("click", play);
 petBtn.addEventListener("click", pet);
 goToSettings.addEventListener("click", settings);
 
+//carrot.addEventListener("click", ()=> specialItem("give", "carrot"));
+//I will continue working with jQuery method.
+
 jQuery(function($) {
     $("#toggle-fScreen").click(toggleFullScreen);
 
     $("#buy-food").click( ()=> buyFood("buy") );
     $("#buy-toy").click( ()=> buyToy("buy") );
 
-    $("#strawberry").click( ()=> specialItem("give", strawberry) ); // fuck you jQuery
-    $("#lemon").click( function() {specialItem("give", lemon)} );   // You are causing bugs
-    $("#carrot").click( ()=> specialItem("give", carrot) );         //  ..
+    $("#strawberry").click( ()=> specialItem("give", "strawberry") ); // fuck you jQuery
+    $("#lemon").click( ()=> specialItem("give", "lemon") );   // You are causing bugs
+    $("#carrot").click( ()=> specialItem("give", "carrot") );         //  ..
 });
 
 
