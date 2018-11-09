@@ -50,10 +50,13 @@ const other1 = document.getElementById("other1");
 const other2 = document.getElementById("other2");
 const other3 = document.getElementById("other3");
 
+const sizeHeight = document.getElementById("size-height");
+const showHeight = document.getElementById("show-height");
+const adjustHeight = document.getElementById("adjust-height");
+
 // Game elements:
 const healthHeading = document.getElementsByClassName("health")[0];
 const health = document.getElementById("health");
-const healthContent = document.getElementById("health-content");
 const satiation = document.getElementById("satiation");
 const fun = document.getElementById("fun");
 const secureness = document.getElementById("secureness");
@@ -71,6 +74,9 @@ const credits = document.getElementById("credits");
 const food = document.getElementById("food");
 const toy = document.getElementById("toy");
 const specialItems = document.getElementById("special-items");
+
+const winASpecial = document.getElementById("win-a-special");
+const waSBox = document.getElementById("waS-box");
 
 const infoWindow = document.getElementById("info-window");
 const gameField = document.getElementById("game-field");
@@ -147,6 +153,7 @@ const petPowerMin = 1;
 
 const foodPrice = 1;
 const toyPrice = 1.2;
+const ticketPrice = 20;
 
 const carrotPower = 40;
 const lemonPower = 40;
@@ -268,6 +275,7 @@ function greyout(element, toggle) {
 //////////////////////////////////////////////////
 
 function startWindow() {
+    jQuery(function($) { $("#game-field").hide() });
     TweenMax.set(goToSettings, {display:"none"});
     // Insert Intro pages here...
     // Let user enter names...
@@ -279,10 +287,10 @@ function newGame() {
 
     myFurball.name = "My Furball";   // Let user insert a name in startWindow()...
     myFurball.isDead = false;
-    myFurball.health = 100;
-    myFurball.satiation = 45;
-    myFurball.fun = 45;
-    myFurball.secureness = 45;
+    myFurball.health = 50;
+    myFurball.satiation = 50;
+    myFurball.fun = 50;
+    myFurball.secureness = 50;
 
     player.name = "Player";    // let user insert a name in startWindow()...
     player.gameInProgress = true;
@@ -635,6 +643,7 @@ function buyFood(mode) {
     // I need costs AND buyable food to be positive integers....
 
     function buy() {
+        check();
         if (player.credits) {
             if (player.credits < Math.ceil(foodPrice*foodPowerMax)) {
                 if (player.credits >= Math.ceil(foodPrice*foodPowerMin)) {
@@ -647,6 +656,7 @@ function buyFood(mode) {
             }
             letShrink(credits);
         }
+        slotMachine.check();
     }
 
     function check() {
@@ -657,13 +667,14 @@ function buyFood(mode) {
 
     const maxbuyableFood = foodPowerMax/(foodPrice*foodPowerMax)*Math.ceil(foodPrice*foodPowerMax);
 
-    mode == "buy"? buy() : check();
+    mode == "check"? check() : buy();
 }
 
 
 function buyToy(mode) {
 
     function buy() {
+        check();
         if (player.credits) {
             if (player.credits < Math.ceil(toyPrice*toyPowerMax)) {
                 if (player.credits >= Math.ceil(toyPrice*toyPowerMin)) {
@@ -676,6 +687,7 @@ function buyToy(mode) {
             }
             letShrink(credits);
         }
+        slotMachine.check();
     }
     
     function check() {
@@ -687,7 +699,27 @@ function buyToy(mode) {
 
     const maxbuyableToy = toyPowerMax/(toyPrice*toyPowerMax)*Math.ceil(toyPrice*toyPowerMax);
 
-    mode == "buy"? buy() : check();
+    mode == "check"? check() : buy();
+}
+
+const slotMachine = {
+    
+    play() {
+        TweenMax.set(waSBox.firstChild, { rotationY:0 });
+        TweenMax.set(winASpecial, { borderImageSource: "url(./icons/waS-border_Animation.gif)" });
+        TweenMax.to(waSBox.firstChild, 4, {
+            /* onStart: ()=> winASpecial.style.borderImageSource = "url(./icons/waS-border_Animation.gif)", */
+            rotationY:360,
+            onComplete: ()=> winASpecial.style.borderImageSource = "url(./icons/waS-border1.gif)",
+        });
+        
+    },
+
+    check() {
+        !(player.credits >= ticketPrice)?
+        jQuery(function($) { greyout($("#buy-ticket"), "add") }) :
+        jQuery(function($) { greyout($("#buy-ticket"), "remove") });
+    }
 }
 
 
@@ -744,7 +776,6 @@ function specialItem(mode, item) {
                 break;
         }
     }
-
 
     function check() {
         if (player.specialItems[item] <= 0) {
@@ -1037,9 +1068,9 @@ function update(progress) {
     }
 
     //Test: DELETE / DEACTIVATE !!!
-    myFurball.satiation = 45;
-    myFurball.fun = 50;
-    myFurball.secureness = 50;
+    //myFurball.satiation = 30;
+    //myFurball.fun = 30;
+    //myFurball.secureness = 30;
     //myFurball.health = 100;
     //if (v_timeElapsed >= 8000) { myFurball.isDead = true } // Control values after a certain time. Delete later.
     //if (myFurball.satiation <= 0) myFurball.isDead = true;  // time check. Delete later!
@@ -1048,7 +1079,7 @@ function update(progress) {
 
 function draw() {
 
-    // test-monitor:
+    // test-monitor: // DEACTIVATE WHEN FINISHED!
     timeElapsed.innerHTML = "Time elapsed: " + Math.round(v_timeElapsed) + "ms";
     loopSpeed.innerHTML = "Loop Speed: " + Math.round(progress) + "ms/loop";
     gSpeed.innerHTML = "Game Speed: " + gameSpeed;
@@ -1071,8 +1102,11 @@ function draw() {
     // Disable Buttons:
     feedBtn.disabled = !player.food? true : false;
     playBtn.disabled = !player.toy? true : false;
-    buyFood("check");
-    buyToy("check");
+    
+    if (player.credits) {
+        buyFood("check");
+        buyToy("check");
+    }
 
     // check special items:
     specialItem("check", "strawberry");
@@ -1170,11 +1204,19 @@ jQuery(function($) {
 
     $("#buy-food").click( ()=> buyFood("buy") );
     $("#buy-toy").click( ()=> buyToy("buy") );
+    $("#buy-ticket").click( slotMachine.play );
 
     $("#strawberry").click( ()=> specialItem("give", "strawberry") ); // fuck you jQuery
     $("#lemon").click( ()=> specialItem("give", "lemon") );   // You are causing bugs
     $("#carrot").click( ()=> specialItem("give", "carrot") );         //  ..
 });
 
+sizeHeight.oninput = function() {       // for layout adjusting
+    adjustHeight.style.height = this.value + "px";
+    showHeight.value = sizeHeight.value;
+}
+showHeight.oninput = function() {
+    adjustHeight.style.height = this.value + "px";
+}
 
 player.gameInProgress? gameInit() : startWindow();

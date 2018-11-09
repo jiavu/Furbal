@@ -1,9 +1,9 @@
 /* selector :root is the same as selector html, but has a higher specificity. */
 
 :root {
-    font-family: "Poor Story", cursive; /* font: font-style font-variant font-weight font-size/line-height font-family|caption|icon|menu|message-box|small-caption|status-bar|initial|inherit;*/
+     /* font: font-style font-variant font-weight font-size/line-height font-family|caption|icon|menu|message-box|small-caption|status-bar|initial|inherit;*/
+    font-family: "Poor Story", cursive;
     font-size: 3.1vh;
-    /* border: 1px dashed black; */       /* Delete later. It's for checking... I donknow */
     text-align: center;
 }
 
@@ -14,23 +14,17 @@ If I set a vh for width: if 2:3 => width: 66.66vh (not a good solution because v
 try: via padding, https://www.w3schools.com/howto/howto_css_aspect_ratio.asp
 
 Make a landscape style later. Perhaps.
-
 */
 
-
-
-
-/* NAV-/ADRESS-BAR PROBLEMS. Maybe hide and show elements according to state of fullscreen mode. */
-
-/*@media only screen and (display-mode: fullscreen or standalone or minimal-ui) {*/
-@media only screen and (display-mode:fullscreen), (display-mode:standalone), (display-mode: minimal-ui) {
-    .hide-in-fullscreen { display: none; }
-    .show-in-fullscreen-only { display: block; }
-}
 @media only screen and (display-mode: browser) {
     .hide-in-fullscreen { display: block; }
     .show-in-fullscreen-only { display: none; }
 }
+@media only screen and (display-mode:fullscreen), (display-mode:standalone), (display-mode: minimal-ui) {
+    .hide-in-fullscreen { display: none; }
+    .show-in-fullscreen-only { display: block; }
+}
+
 
 html {
     /* COLOR VARS: */
@@ -38,7 +32,7 @@ html {
     --black: black;
     --dark1: #333;
     --dark2: #666;
-    --dark3: #888;
+    --dark3: #777;
     --dark4: #999;
     --white: white;
     --light1: hsl(0, 0%, 95%);
@@ -84,7 +78,7 @@ body {  /* stretch body to viewable area of the window or screen. */
     flex-direction: column;
     align-items: center;
     justify-content: space-between;
-    height: 100%;
+    height: 100%; 	/* DONT FORGET TO SET BACK TO 100%; */
     width: 100%;
 }
 
@@ -105,23 +99,27 @@ body {  /* stretch body to viewable area of the window or screen. */
     background-color: lightgrey;
     z-index: 2;
 }
-#mobile-browser-offset {        /* for adjusting. nav bar and address bar of Chrome and system. */
-    margin: 0;
-    height: 12.5vh;      /* 240p bei 1920p*/
-    width: 100%;
-    position: relative;
-    background-color: var(--dark4);
+.slider-container {
+    position: fixed;
+    background-color: var(--dark2);
+    bottom: 0px;
+    left: 20%;
+    width: 60%;
+    z-index: 2;
 }
-#mobile-browser-offset p {  /* nav- and address-bar of Android+Chrome */
-    margin: 0 10%;
-    position: absolute;
-    top: 50%;
-    text-align: left;
-    line-height: 1;
-    transform: translateY(-50%);
-    font: 50% monospace;
+.slider {
+    width: 98%;
+    margin-bottom: 2%;
+    cursor: pointer;
 }
-
+#show-height {
+    font: 0.45rem sans-serif;
+}
+/* 
+#adjust-height {
+    border-bottom: 2px solid red;
+}
+ */
 /*===============================================*/
 /* INFO WINDOW (Intro, Settings, GameOver-Screen */
 /*===============================================*/
@@ -200,15 +198,18 @@ body {  /* stretch body to viewable area of the window or screen. */
 /*============================*/
 
 #game-field {
-    display: none;
-    position: static;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-around;
+    /* position: static; */
     margin: 0 2.5% 0;
     width: 95%;
+    height: 93.2%;
 }
 #game-field h3 { font-size: 1rem; }
 
 #furball-name {
-    margin: 0 0 1.8%;         /* 1.8% 0 if I remove 1st div of .container  */
+    margin-bottom: 1.8%;
     font: 1.3rem "Coiny", cursive;
     height: 1.7rem;
     overflow-y: hidden;
@@ -233,24 +234,19 @@ body {  /* stretch body to viewable area of the window or screen. */
 .conditions {
     text-align: left;
     width: 100%;
-}
-.conditions > div {
-    /* position: relative; */
     display: flex;
     flex-direction: column;
     justify-content: flex-end;
     
     padding: 0 5% 0;
-    margin: 1% 0;
-    font-size: 70%;
-    height: 8rem;
+    margin-top: 1%;
+    font-size: 0.7em;
+    height: 7rem;
 }
 .health {
-    font-size: 1rem;
-    /* position: absolute; */
-    /* bottom: 0; */
+    font-size: 0.9rem;
     width: 100%;
-    margin: 2.9% 0 2%;
+    margin: 1% 0 0;
 }
 .health-bar {
     position: relative;
@@ -267,7 +263,7 @@ body {  /* stretch body to viewable area of the window or screen. */
 .condition-bar {
     width: 100%;
     height: 0.4em;
-    margin-bottom: 2%;
+    margin-bottom: 0.5em;
     border-radius: 0.2em;
     overflow: hidden;
 }
@@ -281,17 +277,18 @@ body {  /* stretch body to viewable area of the window or screen. */
 /*========================================*/
 
 .cage-container {
+    padding-left: 15%;
+    padding-right: 5%;
     display: flex;
-    justify-content: space-around;
-    flex-direction: row-reverse
-    /*border: 1px solid grey;*/
+    justify-content: space-between;
+    flex-direction: row;
 }
 
 .cage { display: inline-block; }
 
 .furball {
-    width: 10em;
-    height: 10em;
+    height: 9.5em;
+    width: auto;
 }
 
 .buttons {
@@ -302,12 +299,11 @@ body {  /* stretch body to viewable area of the window or screen. */
 .actionBtns {
     font: 1em "Poor Story", cursive;
     display: block;
-    width: 2.7em;
-    height: 2.7em;
+    width: 2.65em;
+    height: 2.65em;
     padding: 10%;
     border: none;
-    color: white;
-    border-radius: 50%;        /* or 10px */
+    border-radius: 50%;
     background-image: linear-gradient(to bottom right, var(--green2), var(--green1));
     color: var(--white, white);
     cursor: pointer;
@@ -337,9 +333,9 @@ body {  /* stretch body to viewable area of the window or screen. */
 /*============================*/
 
 .furball-statement {
-    margin: 5% 0;
+    margin: 1% 0 2%;
     font-size: 0.95rem;
-    height: 1rem;
+    height: 1.2rem;
     /* For slim mobile phones (e. g. iPhoneX) element will probably break into 2 lines. */
 }
 
@@ -348,7 +344,7 @@ body {  /* stretch body to viewable area of the window or screen. */
 /*============================*/
 
 .items-container {
-    margin-top: 10%;
+    /* margin-top: 10%; */
     
     display: flex;
     flex-direction: row;
@@ -465,27 +461,29 @@ body {  /* stretch body to viewable area of the window or screen. */
 
 /*============================*/
 
-.win-a-special {
+#win-a-special {
     float: right;
-    margin-top: 2vh;
+    margin-top: 10%;
     /* border: 2px solid var(--colorC1);
     border-radius: 8px;
     outline: 2px dotted var(--colorC1);
     outline-offset: 2px;*/
     border: 0.28rem solid transparent;
-    border-image: url(./icons/waS-border_Animation.gif) 50 round;
+    border-image: url(./icons/waS-border1.gif) 50 round;
     display: flex;
     flex-direction: row;
     padding: 0.25rem;
 }
-.win-a-special > div {
+#win-a-special > div {
     position: relative;
     min-width: 1.5rem;
     height: 1.5rem;
+    display: flex;
+    align-items: center;
 }
-.win-a-special img { height: 1.5rem; }
+#win-a-special img { height: 1.5rem; }
 
-.win-a-special > div:nth-child(2) {
+#waS-box {
     width: 3rem;
     display: flex;
     align-items: center;
