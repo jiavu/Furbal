@@ -372,14 +372,14 @@ body {  /* stretch body to viewable area of the window or screen. */
     height: 1.83rem;
     /* width: 100%; */
 }
-.buy-button {
+.buy-button, #buy-ticket {
     position: absolute;
     right: 0;
     height: 1.5rem;
     cursor: pointer;
     transition-duration: 0.040s;
 }
-.buy-button:hover {
+.buy-button:hover, #buy-ticket:hover {
     height: 1.3rem;
     right: 0.1rem;
 }
@@ -387,6 +387,12 @@ body {  /* stretch body to viewable area of the window or screen. */
     height: 1rem;
     right: 0.25rem;
     opacity: 0.8;
+}
+
+#buy-ticket:active {
+    height: 0.1rem;
+    right: 0.7rem;
+    opacity: 0;
 }
 
 /*============================*/
@@ -487,6 +493,7 @@ body {  /* stretch body to viewable area of the window or screen. */
     width: 3rem;
     display: flex;
     align-items: center;
+    justify-content: center;
     font: 0.65rem/1 "Coiny", cursive;
     color: var(--colorC1);
     text-shadow: 0 0 0.02rem var(--dark1), 0 0 0.14rem var(--colorA1);

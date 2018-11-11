@@ -77,6 +77,8 @@ const specialItems = document.getElementById("special-items");
 
 const winASpecial = document.getElementById("win-a-special");
 const waSBox = document.getElementById("waS-box");
+const buyTicket = document.getElementById("buy-ticket");
+const clover = document.getElementById("clover");
 
 const infoWindow = document.getElementById("info-window");
 const gameField = document.getElementById("game-field");
@@ -201,7 +203,7 @@ let prioAction = false;
 let satShown = true;            // so conditions won't be displayed for ever.
 let funShown = true;
 let secShown = true;
-const cooldownCond = 1500;
+const cooldownCond = 4500;
 let countSatShown = 0;
 let countFunShown = 0;
 let countSecShown = 0;
@@ -218,14 +220,14 @@ let timeElapsedTemp = 0;
 
 function letJump(element) {
     TweenMax.to(element, 0.2, {
-        fontSize: "130%",
+        /* fontSize: "130%", */
         scaleX: 1.05,
         scaleY:1.05,
         //transformOrigin: "35% 50%",
         ease: Power2.easeInOut,
         onComplete: ()=>
             TweenMax.to(element, 0.2, {
-                fontSize: "100%",
+                /* fontSize: "100%", */
                 scaleX: 1,
                 scaleY: 1,
                 //transformOrigin: "35% 50%",
@@ -234,33 +236,47 @@ function letJump(element) {
         });
 }
 
-function letShrink (element) {
+function letJump2(element) {
     TweenMax.to(element, 0.2, {
-        fontSize: "80%",
-        //scaleX: 0.7,
-        //scaleY: 0.7,
-        ease: Power2.easeInOut,
-        onComplete: ()=>
-            TweenMax.to(element, 0.2, {
-                fontSize: "100%",
-                //scaleX: 1,
-                //scaleY: 1,
-                ease: Power2.easeInOut
-            })
-        });
-}
-
-function letShrink2 (element) {     // check if used
-    TweenMax.to(element, 0.2, {
-        scaleX: 0.9,
-        scaleY: 0.9,
-        transformOrigin: "35% 50%",
+        scaleX: 1.4,
+        scaleY:1.4,
         ease: Power2.easeInOut,
         onComplete: ()=>
             TweenMax.to(element, 0.2, {
                 scaleX: 1,
                 scaleY: 1,
-                transformOrigin: "35% 50%",
+                ease: Power2.easeInOut,
+            })
+        });
+}
+
+
+function letShrink (element) {
+    TweenMax.to(element, 0.2, {
+        /* fontSize: "80%", */
+        scaleX: 0.7,
+        scaleY: 0.7,
+        ease: Power2.easeInOut,
+        onComplete: ()=>
+            TweenMax.to(element, 0.2, {
+                /* fontSize: "100%", */
+                scaleX: 1,
+                scaleY: 1,
+                ease: Power2.easeInOut
+            })
+        });
+}
+
+function letShrink2 (element) {
+    TweenMax.to(element, 0.2, {
+        scaleX: 0.95,
+        scaleY: 0.95,
+        ease: Power2.easeInOut,
+        onComplete: ()=>
+            TweenMax.to(element, 0.2, {
+                /* fontSize: "100%", */
+                scaleX: 1,
+                scaleY: 1,
                 ease: Power2.easeInOut
             })
         });
@@ -320,10 +336,17 @@ function gameInit() {
     // If no cookies, "I couldn't find your progress. Did you delete the browser cookies?"
     // (and go to newGame).
 
+    furballName.innerHTML = myFurball.name;
+    userName.innerHTML = player.name;
+    clover.style.display = "none";
+    waSBox.innerHTML = "Win Special";
+
+    buyFood.check();
+    buyToy.check();
+    slotMachine.check();
+
     $(function() {
-        furballName.innerHTML = myFurball.name;
         $("#name-in-health").text(myFurball.name);
-        userName.innerHTML = player.name;
 
         reqAnimF = requestAnimationFrame(loop);
 
@@ -380,7 +403,6 @@ function gameOver() {
         + secondsMs + " seconds.");
 
 };
-
 
 function switchPause() {
     pause = !pause;
@@ -573,7 +595,7 @@ function play() {
             letShrink(toy);
             satShown = true;
             TweenMax.to(satiation, fadeInTime, {opacity:1});
-            letShrink(satiation);
+            letShrink2(satiation);
         }
 
     }
@@ -639,11 +661,12 @@ function pet() {
 }
 
 
-function buyFood(mode) {
+const buyFood = {
     // I need costs AND buyable food to be positive integers....
 
-    function buy() {
-        check();
+    buy() {
+        const maxbuyableFood = foodPowerMax/(foodPrice*foodPowerMax)*Math.ceil(foodPrice*foodPowerMax);
+
         if (player.credits) {
             if (player.credits < Math.ceil(foodPrice*foodPowerMax)) {
                 if (player.credits >= Math.ceil(foodPrice*foodPowerMin)) {
@@ -654,27 +677,29 @@ function buyFood(mode) {
                 player.food += Math.round(maxbuyableFood);
                 player.credits -= Math.ceil(foodPrice*foodPowerMax);
             }
-            letShrink(credits);
-        }
-        slotMachine.check();
-    }
 
-    function check() {
+            letShrink(credits);
+            letJump2(food);
+        }
+
+        buyFood.check(); // this.check() doesn't work?
+        buyToy.check();
+        slotMachine.check();
+    },
+
+    check() {
         !( player.credits >= Math.ceil(foodPrice*foodPowerMin) )?
             jQuery(function($) { greyout($("#buy-food"), "add"); } ) :
             jQuery(function($) { greyout($("#buy-food"), "remove"); } );
     }
-
-    const maxbuyableFood = foodPowerMax/(foodPrice*foodPowerMax)*Math.ceil(foodPrice*foodPowerMax);
-
-    mode == "check"? check() : buy();
 }
 
 
-function buyToy(mode) {
+const buyToy = {
 
-    function buy() {
-        check();
+    buy() {
+        const maxbuyableToy = toyPowerMax/(toyPrice*toyPowerMax)*Math.ceil(toyPrice*toyPowerMax);
+
         if (player.credits) {
             if (player.credits < Math.ceil(toyPrice*toyPowerMax)) {
                 if (player.credits >= Math.ceil(toyPrice*toyPowerMin)) {
@@ -686,25 +711,35 @@ function buyToy(mode) {
                 player.credits -= Math.ceil(toyPrice*toyPowerMax);
             }
             letShrink(credits);
+            letJump2(toy);
         }
+        buyToy.check();
+        buyFood.check();
         slotMachine.check();
-    }
+    },
     
-    function check() {
+    check() {
         !(player.credits >= Math.ceil(toyPrice*toyPowerMin) )?
             jQuery(function($) { greyout($("#buy-toy"), "add") }) :
             jQuery(function($) { greyout($("#buy-toy"), "remove") });
-
     }
-
-    const maxbuyableToy = toyPowerMax/(toyPrice*toyPowerMax)*Math.ceil(toyPrice*toyPowerMax);
-
-    mode == "check"? check() : buy();
 }
 
 const slotMachine = {
+
+    pay() {
+        console.log("here");
+        TweenMax.set(buyTicket, {
+            delay: 0.04,
+            opacity: 0,
+            pointerEvents: "none"
+        });
+        waSBox.innerHTML = "";
+        clover.style.display = "block";
+    },
     
     play() {
+
         TweenMax.set(waSBox.firstChild, { rotationY:0 });
         TweenMax.set(winASpecial, { borderImageSource: "url(./icons/waS-border_Animation.gif)" });
         TweenMax.to(waSBox.firstChild, 4, {
@@ -1103,11 +1138,6 @@ function draw() {
     feedBtn.disabled = !player.food? true : false;
     playBtn.disabled = !player.toy? true : false;
     
-    if (player.credits) {
-        buyFood("check");
-        buyToy("check");
-    }
-
     // check special items:
     specialItem("check", "strawberry");
     specialItem("check", "lemon");
@@ -1202,9 +1232,10 @@ goToSettings.addEventListener("click", settings);
 jQuery(function($) {
     $("#toggle-fScreen").click(toggleFullScreen);
 
-    $("#buy-food").click( ()=> buyFood("buy") );
-    $("#buy-toy").click( ()=> buyToy("buy") );
+    $("#buy-food").click( buyFood.buy );
+    $("#buy-toy").click( buyToy.buy );
     $("#buy-ticket").click( slotMachine.play );
+    $("#clover").click( slotMachine.play );
 
     $("#strawberry").click( ()=> specialItem("give", "strawberry") ); // fuck you jQuery
     $("#lemon").click( ()=> specialItem("give", "lemon") );   // You are causing bugs
