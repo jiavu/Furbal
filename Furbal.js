@@ -76,7 +76,7 @@ const toy = document.getElementById("toy");
 const specialItems = document.getElementById("special-items");
 
 const winASpecial = document.getElementById("win-a-special");
-const waSBox = document.getElementById("waS-box");
+const waSBoxText = document.getElementById("waS-box-text");
 const buyTicket = document.getElementById("buy-ticket");
 const clover = document.getElementById("clover");
 
@@ -92,30 +92,10 @@ const toggleFScreen = document.getElementById("toggle-fScreen");
 //////////////////////////////////////////////////
 //////////////////////////////////////////////////
 
-// Furball:
-const myFurball = {
-/*     name : "Wully",
-    isDead : false,
-    health : 100,
-    satiation : 20,
-    fun : 20,
-    secureness : 30 */
-};
+const myFurball = {};
+const player = {};
+// empty objects, keys will be set in initialization / when reading cookies.
 
-// Player:
-const player = {            // empty object because keys will be set in initialization / when reading cookies.
-    /* name : "Master J.",
-    gameInProgress : false,
-    points : 9999,
-    credits : 9999,
-    food : 1000,
-    toy : 1000,
-    specialItems : {
-        "carrot": 2,
-        "lemon": 1,
-        "strawberry": 2
-    }*/
-};
 
 //////////////////////////////////////////////////
 //////////////////////////////////////////////////
@@ -156,6 +136,7 @@ const petPowerMin = 1;
 const foodPrice = 1;
 const toyPrice = 1.2;
 const ticketPrice = 20;
+const winMoney = 100;
 
 const carrotPower = 40;
 const lemonPower = 40;
@@ -282,9 +263,10 @@ function letShrink2 (element) {
         });
 }
 
-function greyout(element, toggle) {
-    if (toggle==="add") { element.addClass("greyscaled"); }
-    else { element.removeClass("greyscaled"); }
+const greyout = {
+    add(element) { element.addClass("greyscaled"); },
+
+    remove(element ) { element.removeClass("greyscaled"); }
 }
 
 //////////////////////////////////////////////////
@@ -297,27 +279,27 @@ function startWindow() {
     // Let user enter names...
 
     newGame();
-};
+}
 
 function newGame() {
 
     myFurball.name = "My Furball";   // Let user insert a name in startWindow()...
     myFurball.isDead = false;
-    myFurball.health = 50;
+    myFurball.health = 60;
     myFurball.satiation = 50;
-    myFurball.fun = 50;
-    myFurball.secureness = 50;
+    myFurball.fun = 80;
+    myFurball.secureness = 80;
 
     player.name = "Player";    // let user insert a name in startWindow()...
     player.gameInProgress = true;
     player.points = 0;
-    player.credits = 100;
-    player.food = 50;
+    player.credits = 200;
+    player.food = 100;
     player.toy = 50;
     player.specialItems = {
-        "carrot": 2,
-        "lemon": 2,
-        "strawberry": 3
+        "carrot": 1,
+        "lemon": 1,
+        "strawberry": 1
     };
 
     // last page of start window, confirm to start game, close start window.
@@ -338,12 +320,12 @@ function gameInit() {
 
     furballName.innerHTML = myFurball.name;
     userName.innerHTML = player.name;
-    clover.style.display = "none";
-    waSBox.innerHTML = "Win Special";
-
+    slotMachine.reset();    // is also checking credits for buy-ticket.
     buyFood.check();
     buyToy.check();
-    slotMachine.check();
+    specialItem.check("strawberry");
+    specialItem.check("lemon");
+    specialItem.check("carrot");
 
     $(function() {
         $("#name-in-health").text(myFurball.name);
@@ -402,7 +384,7 @@ function gameOver() {
         + minutes + " minutes, "
         + secondsMs + " seconds.");
 
-};
+}
 
 function switchPause() {
     pause = !pause;
@@ -689,8 +671,8 @@ const buyFood = {
 
     check() {
         !( player.credits >= Math.ceil(foodPrice*foodPowerMin) )?
-            jQuery(function($) { greyout($("#buy-food"), "add"); } ) :
-            jQuery(function($) { greyout($("#buy-food"), "remove"); } );
+            jQuery(function($) { greyout.add($("#buy-food")); } ) :
+            jQuery(function($) { greyout.remove($("#buy-food")); } );
     }
 }
 
@@ -720,47 +702,116 @@ const buyToy = {
     
     check() {
         !(player.credits >= Math.ceil(toyPrice*toyPowerMin) )?
-            jQuery(function($) { greyout($("#buy-toy"), "add") }) :
-            jQuery(function($) { greyout($("#buy-toy"), "remove") });
+            jQuery(function($) { greyout.add($("#buy-toy")) }) :
+            jQuery(function($) { greyout.remove($("#buy-toy")) });
     }
 }
 
 const slotMachine = {
 
-    pay() {
-        console.log("here");
+    prize : "nothing",
+
+    reset() {
+        waSBoxText.innerText = "Win Special";
+        
+        clover.style.display = "none";
+        TweenMax.set("#win-a-special img", { display: "none" });
         TweenMax.set(buyTicket, {
-            delay: 0.04,
-            opacity: 0,
-            pointerEvents: "none"
+            display: "inline",
+            scale: 1
+        })
+        slotMachine.check();
+    },
+
+    pay() {
+        buyTicket.style.pointerEvents = "none";
+        TweenMax.to(buyTicket, 0.5, {
+            transformOrigin: "left",
+            scale: 0
         });
-        waSBox.innerHTML = "";
-        clover.style.display = "block";
+
+        player.credits -= ticketPrice;
+
+        waSBoxText.innerText = "";
+        clover.style.display = "inline";
     },
     
     play() {
-
-        TweenMax.set(waSBox.firstChild, { rotationY:0 });
+        clover.style.display = "none";
+        waSBoxText.innerText = "Good Luck!";
+        TweenMax.set(waSBoxText, { rotationY:0 });
         TweenMax.set(winASpecial, { borderImageSource: "url(./icons/waS-border_Animation.gif)" });
-        TweenMax.to(waSBox.firstChild, 4, {
+        TweenMax.to(waSBoxText, 4, {
             /* onStart: ()=> winASpecial.style.borderImageSource = "url(./icons/waS-border_Animation.gif)", */
             rotationY:360,
-            onComplete: ()=> winASpecial.style.borderImageSource = "url(./icons/waS-border1.gif)",
+            onComplete: slotMachine.raffle
         });
+    },
+
+    raffle() {
+        winASpecial.style.borderImageSource = "url(./icons/waS-border1.gif)";
+
+        let r = Math.floor(Math.random()*2);
+        if (r) {
+            let x = Math.floor(Math.random()*4);
+
+            switch(x) {
+                case 1:
+                    this.prize = "carrot";
+                    break;
+                case 2:
+                    this.prize = "lemon";
+                    break;
+                case 3:
+                    this.prize = "strawberry";
+                    break;
+                default: this.prize = "credits";
+            }
+
+            (this.prize == "credits")?
+                player.credits += winMoney : player.specialItems[this.prize]++;
+
+            console.log("won: " + this.prize);
+
+            TweenMax.set("#won-"+this.prize, { display: "inline-block" });
+            waSBoxText.innerText = "You win!";
+            TweenMax.to(waSBoxText, 0.5, {
+                scale: 1.2,
+                ease: Power4.easeInOut,
+                repeat: 1,
+                yoyo: true,
+                onComplete: ()=> setTimeout( ()=> {
+                    specialItem.check(this.prize);
+                    letJump2( "#" + this.prize ) ;
+                    slotMachine.reset();
+                }, 500)
+            });
         
+        } else {
+            this.prize = "nothing";
+            waSBoxText.innerText = "You lose.";
+
+            console.log("won: " + this.prize);
+
+            TweenMax.to("#won-nothing", 0.2, { display: "inline-block" });
+            setTimeout(slotMachine.reset, 1000);
+        }
     },
 
     check() {
         !(player.credits >= ticketPrice)?
-        jQuery(function($) { greyout($("#buy-ticket"), "add") }) :
-        jQuery(function($) { greyout($("#buy-ticket"), "remove") });
+        jQuery(function($) { greyout.add($("#buy-ticket")) }) :
+        jQuery(function($) {
+            greyout.remove($("#buy-ticket"));
+            buyTicket.style.pointerEvents = "auto";
+        });
     }
 }
 
 
-function specialItem(mode, item) {
+const specialItem = {
 
-    function give() {
+    give(item) {
         switch (item) {
             case "strawberry":
                 player.specialItems.strawberry -= 1;
@@ -772,6 +823,8 @@ function specialItem(mode, item) {
                 if (myFurball.secureness > 100) myFurball.secureness = 100;
                 
                 if (myFurball.secureness > criticalSec) secureness.style.color = "var(--black)";
+
+                // fire a furball statement!
                 
                 TweenMax.to(secureness, fadeInTime, {opacity:1});
                 letJump(secureness);
@@ -789,6 +842,8 @@ function specialItem(mode, item) {
                 
                 if (myFurball.fun > criticalFun) fun.style.color = "var(--black)";
 
+                // fire a furball statement!
+
                 TweenMax.to(fun, fadeInTime, {opacity:1});
                 letJump(fun);
                 funShown = true;
@@ -805,14 +860,18 @@ function specialItem(mode, item) {
                 
                 if (myFurball.satiation > criticalSat) satiation.style.color = "var(--black)";
 
+                // fire a furball statement!
+
                 TweenMax.to(satiation, fadeInTime, {opacity:1});
                 letJump(satiation);
                 satShown = true;
                 break;
         }
-    }
 
-    function check() {
+        specialItem.check(item);
+    },
+
+    check(item) {
         if (player.specialItems[item] <= 0) {
             jQuery(function($) {
                 $("#"+item).addClass("hide");
@@ -824,14 +883,7 @@ function specialItem(mode, item) {
             });
         }
     }
-
-
-    //mode == "give"? give() : check();
-    (mode == "give" && player.specialItems[item] > 0)? give() : check();
-                // jQUERY SYNTAX ERROR ?      ^
-    //Uncaught Error: Syntax error, unrecognized expression: #[object HTMLDivElement]
-    //when using addEventListener: 
-}   // Furbal.js:767 Uncaught TypeError: Cannot read property 'carrot' of undefined at specialItem
+}
 
 
 //////////////////////////////////////////////////
@@ -1128,7 +1180,6 @@ function draw() {
     credits.innerHTML = player.credits;
     food.innerHTML = player.food;
     toy.innerHTML = player.toy;
-    //specialItems.innerHTML = "O";/* player.specialItems; */
 
     !player.credits? credits.style.color = "var(--red)" : credits.style.color = "var(--black)";
     !player.food? food.style.color = "var(--red)" : food.style.color = "var(--black)";
@@ -1137,11 +1188,7 @@ function draw() {
     // Disable Buttons:
     feedBtn.disabled = !player.food? true : false;
     playBtn.disabled = !player.toy? true : false;
-    
-    // check special items:
-    specialItem("check", "strawberry");
-    specialItem("check", "lemon");
-    specialItem("check", "carrot");
+
 
     // draw condition bars and write Furballs statements
 
@@ -1234,12 +1281,12 @@ jQuery(function($) {
 
     $("#buy-food").click( buyFood.buy );
     $("#buy-toy").click( buyToy.buy );
-    $("#buy-ticket").click( slotMachine.play );
+    $("#buy-ticket").click( slotMachine.pay );
     $("#clover").click( slotMachine.play );
 
-    $("#strawberry").click( ()=> specialItem("give", "strawberry") ); // fuck you jQuery
-    $("#lemon").click( ()=> specialItem("give", "lemon") );   // You are causing bugs
-    $("#carrot").click( ()=> specialItem("give", "carrot") );         //  ..
+    $("#strawberry").click( ()=> specialItem.give("strawberry") ); // fuck you jQuery
+    $("#lemon").click( ()=> specialItem.give("lemon") );   // You are causing bugs
+    $("#carrot").click( ()=> specialItem.give("carrot") );         //  ..
 });
 
 sizeHeight.oninput = function() {       // for layout adjusting

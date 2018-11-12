@@ -390,8 +390,8 @@ body {  /* stretch body to viewable area of the window or screen. */
 }
 
 #buy-ticket:active {
-    height: 0.1rem;
-    right: 0.7rem;
+    /* height: 0.1rem;
+    right: 0.7rem; */
     opacity: 0;
 }
 
@@ -487,9 +487,15 @@ body {  /* stretch body to viewable area of the window or screen. */
     display: flex;
     align-items: center;
 }
-#win-a-special img { height: 1.5rem; }
+#win-a-special img {
+    height: 1.5rem;
+    /* display: none; */
+}
+#won-nothing {
+    height: 1rem;
+}
 
-#waS-box {
+#win-a-special > div:nth-child(2) {
     width: 3rem;
     display: flex;
     align-items: center;
@@ -502,6 +508,7 @@ body {  /* stretch body to viewable area of the window or screen. */
     margin: 0 0.25rem;
     padding: 0 0.25rem;
 }
+#clover:hover { height: 1.35rem; }
 
 /*============================*/
 /* FOOTER AND ICONS */
@@ -577,6 +584,19 @@ body {  /* stretch body to viewable area of the window or screen. */
     animation-duration: .8s;
     animation-iteration-count: infinite;
     animation-timing-function: linear;
+    animation-direction: alternate;
+}
+
+@keyframes pulse {
+    from { transform: scale(0.9) }
+    to { transform: scale(1.05) }
+}
+
+.pulse {
+    animation-name: pulse;
+    animation-duration: 1s;
+    animation-iteration-count: infinite;
+    animation-timing-function: ease-out;
     animation-direction: alternate;
 }
 
