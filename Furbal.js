@@ -719,8 +719,8 @@ const slotMachine = {
         TweenMax.set(buyTicket, {
             display: "inline",
             scale: 1
-        })
-        slotMachine.check();
+        });
+        slotMachine.check();           // why does this.check() not work? error: "this.check is not a function"
     },
 
     pay() {
@@ -743,12 +743,12 @@ const slotMachine = {
         TweenMax.set(winASpecial, { borderImageSource: "url(./icons/waS-border_Animation.gif)" });
         TweenMax.to(waSBoxText, 4, {
             /* onStart: ()=> winASpecial.style.borderImageSource = "url(./icons/waS-border_Animation.gif)", */
-            rotationY:360,
-            onComplete: slotMachine.raffle
+            rotationY: 360,
+            onComplete: slotMachine.prizeGenerator
         });
     },
 
-    raffle() {
+    prizeGenerator() {
         winASpecial.style.borderImageSource = "url(./icons/waS-border1.gif)";
 
         let r = Math.floor(Math.random()*2);
