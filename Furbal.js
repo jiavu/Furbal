@@ -109,6 +109,7 @@ let v_timeElapsed = 0;          // COOKIE !!! UPDATE by Cookie-Import or reset t
 let counter = 0;    // Counts the number of loops made since game was started.
 let pause = false;
 let pauseTime;
+let timeoutCredits = 0;
 
 
 // Balancing powers of decrease/increase:
@@ -137,6 +138,13 @@ const foodPrice = 1;
 const toyPrice = 1.2;
 const ticketPrice = 20;
 const winMoney = 100;
+const creditsInterval = 10000/gameSpeed     //ms
+const pointsInterval = 5000;
+let timeoutGainPntsHealth = pointsInterval;
+let timeoutGainPntsSat = pointsInterval;
+let timeoutGainPntsFun = pointsInterval;
+let timeoutGainPntsSec = pointsInterval;
+
 
 const carrotPower = 40;
 const lemonPower = 40;
@@ -285,21 +293,21 @@ function newGame() {
 
     myFurball.name = "My Furball";   // Let user insert a name in startWindow()...
     myFurball.isDead = false;
-    myFurball.health = 60;
-    myFurball.satiation = 50;
-    myFurball.fun = 80;
-    myFurball.secureness = 80;
+    myFurball.health = 100;
+    myFurball.satiation = 100;
+    myFurball.fun = 100;
+    myFurball.secureness = 100;
 
     player.name = "Player";    // let user insert a name in startWindow()...
     player.gameInProgress = true;
     player.points = 0;
-    player.credits = 200;
-    player.food = 100;
-    player.toy = 50;
+    player.credits = 0;
+    player.food = 0;
+    player.toy = 0;
     player.specialItems = {
-        "carrot": 1,
-        "lemon": 1,
-        "strawberry": 1
+        "carrot": 0,
+        "lemon": 0,
+        "strawberry": 5
     };
 
     // last page of start window, confirm to start game, close start window.
@@ -886,6 +894,88 @@ const specialItem = {
 }
 
 
+function incomeCredits() {
+    timeoutCredits = 0;
+
+    let avgLoopSp = v_timeElapsed / counter;
+    let lostSatiation = Math.ceil(naturalDecreaseOfSatiation * creditsInterval / avgLoopSp);
+    let lostFun = Math.ceil(naturalDecreaseOfFun * creditsInterval / avgLoopSp);
+    
+    // maybe calculate creditsInterval / avgLoopSp and make it fix?
+    
+    /* 
+    console.log("Get credits for food now.");
+    console.log("Lost fun (natural loss):");
+    console.log(lostFun);
+    console.log("should get credits for toy: ", lostFun * toyPrice);
+    console.log("=========");
+     */
+
+    /*
+    - calculate natural decreases per creditsInterval
+        -> Math.ceil(naturalDecreaseOf... * creditsIntervall / averageLoopSpeed)
+
+            (averageLoopSpeed = v_timeElapsed / counter;)
+
+    - multiply by ressource costs (foodPrice, toyPrice)
+    - add up results.
+    - add some extra money for slotMachine ;)
+
+    => that will be the basic income the player gets every time this function is called.
+
+    Maybe the player gets additional money depening on his points.
+    */
+   player.credits += Math.round(lostSatiation*foodPrice + lostFun*toyPrice);    // maybe ceil to be fair
+   letJump2(credits);
+
+   buyFood.check();
+   buyToy.check();
+   slotMachine.check();
+
+
+}
+
+
+function incomePoints(progress) {
+
+    if (myFurball.health >= 95) {
+        if (timeoutGainPntsHealth >= pointsInterval) {
+            player.points += 200;
+            timeoutGainPntsHealth = 0;
+        } else { timeoutGainPntsHealth += progress; }
+    } else { timeoutGainPntsHealth = 0; }
+
+
+    if (myFurball.satiation >= 95) {
+        if (timeoutGainPntsSat >= pointsInterval) {
+            player.points += 50;
+            timeoutGainPntsSat = 0;
+        } else { timeoutGainPntsSat += progress; }
+    } else { timeoutGainPntsSat = 0; }
+
+
+    if (myFurball.fun >= 95) {
+        if (timeoutGainPntsFun >= pointsInterval) {
+            player.points += 50;
+            timeoutGainPntsFun = 0;
+        } else { timeoutGainPntsFun += progress; }
+    } else { timeoutGainPntsFun = 0; }
+
+    if (myFurball.secureness >= 95) {
+        if (timeoutGainPntsSec >= pointsInterval) {
+            player.points += 50;
+            timeoutGainPntsSec = 0;
+        } else { timeoutGainPntsSec += progress; }
+    } else { timeoutGainPntsSec = 0; }
+
+
+    /*
+    - feeding, playing and petting should give some points.
+    - v_timeElapsed (game progress) after 5 minutes, 10 minutes --> big extra points.
+    */
+}
+
+
 //////////////////////////////////////////////////
 
 function update(progress) {
@@ -1107,6 +1197,14 @@ function update(progress) {
     
     /////////////////////////////////////////////////////////
     /////////////////////////////////////////////////////////
+
+    // get points
+    incomePoints(progress);
+
+    // get credits
+    timeoutCredits >= creditsInterval?
+        incomeCredits() :
+        timeoutCredits += progress;
 
     // Natural decrease and increase of Furballs conditions:
     myFurball.satiation -= naturalDecreaseOfSatiation * gameSpeed;                                                      // + character trait
