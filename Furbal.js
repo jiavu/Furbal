@@ -170,7 +170,7 @@ or Bypass CORS by disabling web-security. */
 //If all files are saved to and accessed via request to server I can use:
 //import furbalStates from "./furbal_says.js";
 //Otherwise paste object here and don't forget to remove type="module":
-const infoText = {startWindow:{go:"<div class='alignCenter'><h1>Furball</h1><h3>Are you ready for it?</h3><button type='button' id='go'>YES!</button></div>"},finishScreen:{gameOverT1:"<div class='alignCenter'><h2>Game Over</h2><p>"/*insert gameOverInfo*/,gameOverT2:"</p><button type='button' id='again'>GIMME A NEW FURBALL!</button></div>"},settingsScreen:"<div class='alignCenter'><h2>Options</h2><p><button class='smaller-button' id='restart-game'>Restart game</button></p><p><a href='https://goo.gl/forms/ktww9CI6E7xlP4vj1' target='_blank'>Give Feedback</a></p><button type='button' id='continue'>Continue</button></div>"};
+const infoText = {intro:{1:"Once there was a Furball.",2:"A Furball is a small pet with big button-eyes and a thick and furry fur living in a website.",3:"You have to feed your Furball. If you forget to feed it, it will die.",4:"Play with your Furball. If you forget to play with your Furball, it is going to die of boredom.",5:"You also have to pet your pet. If you don't give it your affection, it will be lonely and is going to lose it's joy for living.",6:"Pay attention to Furball's level of secureness. If your Furball is lonely, it won't eat and play anymore.",7:"If your Furball is sad or ill, it will lose it's color.<br>Critical levels of Furballs conditions will weaken it. Be aware - Furbals fitness won't recover!",8:"So... what was your name again?",9:", right!",10:", which name do you want to give your Furball?",11:", what a beautiful name!!!<br>Let me ask one last question, "},startWindow:{go:"<div class='alignCenter'><h1>Furball</h1><h3>Are you ready for it?</h3><button type='button' id='go'>YES!</button></div>"},finishScreen:{gameOverT1:"<div class='alignCenter'><h2>Game Over</h2><p>"/*insert gameOverInfo*/,gameOverT2:"</p><button type='button' id='again'>GIMME A NEW FURBALL!</button></div>"},settingsScreen:"<div class='alignCenter'><h2>Options</h2><p><button class='smaller-button' id='restart-game'>Restart game</button></p><p><a href='https://goo.gl/forms/ktww9CI6E7xlP4vj1' target='_blank'>Give Feedback</a></p><button type='button' id='continue'>Continue</button></div>"};
 
 const furbalStates = {toFeeding:{95:"Salad. Not again.",90:"I'm so full.",85:"I am good, thanks.",1:"Can I have a dessert?",2:"Tastes good, thanks.",3:"Is it food or...",4:"Yummy!",5:"* munch crunch chomp *"},toPlaying:{95:"I don't want to play anymore. You can have it.",90:"Yeay. Toys. :/",85:"I already had a lot of them.",1:"It's my dolly! Play with your own one!",2:"Oh, toys!",3:"Yippee!",4:"Catch me! Haha, catch me!!!"},toPetting:{95:"Leave me some space, okay?",85:"Come on, you're squeezing me.",1:"Huuug!",2:"I love you mama!",3:"You are the sunshine of my live.",4:"It's so good to have you.",5:"Rrrrrrrr!"},health:{90:"Oh, happy day!",50:"Could be better.",40:"I am not feeling so well.",30:"Why do you let me die?",20:"I declare that this is my last will and testament.",10:"I am feeling so cold.",5:"I think it's over.",0:"I'm dead."},satiation:{75:"I could maybe eat something.",60:"I want candy, now!",50:"Can I have cookie?",40:"I am so hungry.",30:"Can I eat stones?",20:"I am starving...",10:"My stomache hurts.",},fun:{90:"Live is fun!",75:"Let's play something!",50:"Boring!!!",40:"* YAWN *",30:"* snooze *",20:"Deadly boring."},secureness:{85:"It's so good to have you.",60:"Where are you?",50:"I am so lonley.",40:"I am afraid all alone!",noPlay:"I am so alone and sad. I don't want to play.",noEat:"I am so alone and sad. I don't want to eat."}};
 
@@ -281,22 +281,68 @@ const greyout = {
 //////////////////////////////////////////////////
 
 function startWindow() {
-    jQuery(function($) { $("#game-field").hide() });
-    TweenMax.set(goToSettings, {display:"none"});
-    // Insert Intro pages here...
-    // Let user enter names...
 
+    jQuery(function($) {
+        $("#game-field").hide();
+
+        TweenMax.set(goToSettings, {display:"none"});
+
+        /*
+        // Insert Intro pages here...
+        // Let user enter names...
+        let introPage = 0;
+
+        const intro = ()=> {
+            switch (introPage) {
+                case 0:
+                    $("#info-window").fadeIn(1500).html(infoText.intro[0]);
+                    $("#enter-game").click( ()=> {
+                        introPage++;
+                        intro();
+                    });
+                    break;
+                case 1:
+                    
+                    break;
+                case 2:
+                    break;
+                case 3:
+                    break;
+                case 4:
+                    break;
+                case 5:
+                    break;
+                case 6:
+                    break;
+                case 7:
+                    break;
+                case 8:
+                    break;
+                case 9:
+                    break;
+                case 10:
+                    break;
+                case 11:
+                    break;
+            }
+        };
+        */
+
+
+    });
+    
     newGame();
+    
 }
 
 function newGame() {
 
     myFurball.name = "My Furball";   // Let user insert a name in startWindow()...
     myFurball.isDead = false;
-    myFurball.health = 100;
-    myFurball.satiation = 100;
-    myFurball.fun = 100;
-    myFurball.secureness = 100;
+    myFurball.health = 21;
+    myFurball.satiation = 50;
+    myFurball.fun = 90;
+    myFurball.secureness = 90;
 
     player.name = "Player";    // let user insert a name in startWindow()...
     player.gameInProgress = true;
@@ -939,31 +985,31 @@ function incomeCredits() {
 function incomePoints(progress) {
 
     if (myFurball.health >= 95) {
-        if (timeoutGainPntsHealth >= pointsInterval) {
-            player.points += 200;
+        if (!timeoutGainPntsHealth) { player.points += 200; }
+        else if (timeoutGainPntsHealth >= pointsInterval) {
             timeoutGainPntsHealth = 0;
         } else { timeoutGainPntsHealth += progress; }
     } else { timeoutGainPntsHealth = 0; }
 
 
     if (myFurball.satiation >= 95) {
-        if (timeoutGainPntsSat >= pointsInterval) {
-            player.points += 50;
+        if (!timeoutGainPntsSat) { player.points += 50; }
+        else if (timeoutGainPntsSat >= pointsInterval) {
             timeoutGainPntsSat = 0;
         } else { timeoutGainPntsSat += progress; }
     } else { timeoutGainPntsSat = 0; }
 
 
     if (myFurball.fun >= 95) {
-        if (timeoutGainPntsFun >= pointsInterval) {
-            player.points += 50;
+        if (!timeoutGainPntsFun) { player.points += 50; }
+        else if (timeoutGainPntsFun >= pointsInterval) {
             timeoutGainPntsFun = 0;
         } else { timeoutGainPntsFun += progress; }
     } else { timeoutGainPntsFun = 0; }
 
     if (myFurball.secureness >= 95) {
-        if (timeoutGainPntsSec >= pointsInterval) {
-            player.points += 50;
+        if (!timeoutGainPntsSec) { player.points += 50; }
+        else if (timeoutGainPntsSec >= pointsInterval) {
             timeoutGainPntsSec = 0;
         } else { timeoutGainPntsSec += progress; }
     } else { timeoutGainPntsSec = 0; }
