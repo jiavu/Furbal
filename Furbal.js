@@ -54,6 +54,8 @@ const sizeHeight = document.getElementById("size-height");
 const showHeight = document.getElementById("show-height");
 const adjustHeight = document.getElementById("adjust-height");
 
+const loadingScreen = document.getElementById("loading-screen");
+
 // Game elements:
 const healthHeading = document.getElementsByClassName("health")[0];
 const health = document.getElementById("health");
@@ -138,7 +140,7 @@ const foodPrice = 1;
 const toyPrice = 1.2;
 const ticketPrice = 20;
 const winMoney = 100;
-const creditsInterval = 10000/gameSpeed     //ms
+const creditsInterval = 20000/gameSpeed     //ms
 const pointsInterval = 5000;
 let timeoutGainPntsHealth = pointsInterval;
 let timeoutGainPntsSat = pointsInterval;
@@ -170,7 +172,7 @@ or Bypass CORS by disabling web-security. */
 //If all files are saved to and accessed via request to server I can use:
 //import furbalStates from "./furbal_says.js";
 //Otherwise paste object here and don't forget to remove type="module":
-const infoText = {intro:{1:"Once there was a Furball.",2:"A Furball is a small pet with big button-eyes and a thick and furry fur living in a website.",3:"You have to feed your Furball. If you forget to feed it, it will die.",4:"Play with your Furball. If you forget to play with your Furball, it is going to die of boredom.",5:"You also have to pet your pet. If you don't give it your affection, it will be lonely and is going to lose it's joy for living.",6:"Pay attention to Furball's level of secureness. If your Furball is lonely, it won't eat and play anymore.",7:"If your Furball is sad or ill, it will lose it's color.<br>Critical levels of Furballs conditions will weaken it. Be aware - Furbals fitness won't recover!",8:"So... what was your name again?",9:", right!",10:", which name do you want to give your Furball?",11:", what a beautiful name!!!<br>Let me ask one last question, "},startWindow:{go:"<div class='alignCenter'><h1>Furball</h1><h3>Are you ready for it?</h3><button type='button' id='go'>YES!</button></div>"},finishScreen:{gameOverT1:"<div class='alignCenter'><h2>Game Over</h2><p>"/*insert gameOverInfo*/,gameOverT2:"</p><button type='button' id='again'>GIMME A NEW FURBALL!</button></div>"},settingsScreen:"<div class='alignCenter'><h2>Options</h2><p><button class='smaller-button' id='restart-game'>Restart game</button></p><p><a href='https://goo.gl/forms/ktww9CI6E7xlP4vj1' target='_blank'>Give Feedback</a></p><button type='button' id='continue'>Continue</button></div>"};
+const infoText = {intro:{0:"<div class='alignCenter pulse'><h1 id='enter-game'>Furball</h1>",1:"<p>Once there was a Furball.</p>",2:"<p>A Furball is a small pet with big button eyes and a thick and furry fur living in a website.</p>",3:"<p>You have to feed your Furball. If you forget to feed it, it will die.</p>",4:"<p>Play with your Furball. If you forget to play with your Furball, it is going to die of boredom.</p>",5:"<p>You also have to pet your pet. If you don't give it your affection, it will be lonely and is going to lose it's joy for living.</p>",6:"<p>Pay attention to Furball's level of secureness. If your Furball is lonely, it won't eat and play anymore.</p>",7:"<p>If your Furball is sad or ill, it will lose it's color.<br>Critical levels of Furballs conditions will weaken it. Be aware - Furbals fitness won't recover!</p>",8:"<p>So... what was your name again?</p>",9:", right!</p>",10:", which name do you want to give your Furball?</p>",11:", what a beautiful name!!!<br>Let me ask you one last question, ",skipIntro:"<div type='button' id='skip-intro'>Skip Intro &gt;&gt;</div>",next:"<br><div id='next-page'>&gt;&gt;</div>",player:"<input type='text' value='Player' id='enter-player-name'>",furbal:"<input type='text' value='My Furball' id='enter-furbal-name'>"},startWindow:{go:"<div class='alignCenter'><h1>Furball</h1><h3>Are you ready for it?</h3><button type='button' id='go'>YES!</button></div>"},finishScreen:{gameOverT1:"<div class='alignCenter'><h2>Game Over</h2><p>"/*insert gameOverInfo*/,gameOverT2:"</p><button type='button' id='again'>GIMME A NEW FURBALL!</button></div>"},settingsScreen:"<div class='alignCenter'><h2>Options</h2><p><button class='smaller-button' id='restart-game'>Restart game</button></p><p><a href='https://goo.gl/forms/ktww9CI6E7xlP4vj1' target='_blank'>Give Feedback</a></p><button type='button' id='continue'>Continue</button></div>"};
 
 const furbalStates = {toFeeding:{95:"Salad. Not again.",90:"I'm so full.",85:"I am good, thanks.",1:"Can I have a dessert?",2:"Tastes good, thanks.",3:"Is it food or...",4:"Yummy!",5:"* munch crunch chomp *"},toPlaying:{95:"I don't want to play anymore. You can have it.",90:"Yeay. Toys. :/",85:"I already had a lot of them.",1:"It's my dolly! Play with your own one!",2:"Oh, toys!",3:"Yippee!",4:"Catch me! Haha, catch me!!!"},toPetting:{95:"Leave me some space, okay?",85:"Come on, you're squeezing me.",1:"Huuug!",2:"I love you mama!",3:"You are the sunshine of my live.",4:"It's so good to have you.",5:"Rrrrrrrr!"},health:{90:"Oh, happy day!",50:"Could be better.",40:"I am not feeling so well.",30:"Why do you let me die?",20:"I declare that this is my last will and testament.",10:"I am feeling so cold.",5:"I think it's over.",0:"I'm dead."},satiation:{75:"I could maybe eat something.",60:"I want candy, now!",50:"Can I have cookie?",40:"I am so hungry.",30:"Can I eat stones?",20:"I am starving...",10:"My stomache hurts.",},fun:{90:"Live is fun!",75:"Let's play something!",50:"Boring!!!",40:"* YAWN *",30:"* snooze *",20:"Deadly boring."},secureness:{85:"It's so good to have you.",60:"Where are you?",50:"I am so lonley.",40:"I am afraid all alone!",noPlay:"I am so alone and sad. I don't want to play.",noEat:"I am so alone and sad. I don't want to eat."}};
 
@@ -282,57 +284,144 @@ const greyout = {
 
 function startWindow() {
 
-    jQuery(function($) {
-        $("#game-field").hide();
-
-        TweenMax.set(goToSettings, {display:"none"});
-
-        /*
-        // Insert Intro pages here...
-        // Let user enter names...
-        let introPage = 0;
-
-        const intro = ()=> {
-            switch (introPage) {
-                case 0:
-                    $("#info-window").fadeIn(1500).html(infoText.intro[0]);
-                    $("#enter-game").click( ()=> {
+    function intro() {
+        switch (introPage) {
+            case 0:
+                loadingScreen.innerHTML = infoText.intro[0];
+                $("#enter-game").click( ()=> {
+                    introPage++;
+                    intro();
+                });
+                break;
+            case 1:
+                loadingScreen.style.display = "none";
+                $("#info-window").fadeIn(1500).html(
+                    "<div class='alignCenter'>" +
+                    infoText.intro[1] +
+                    infoText.intro.next +
+                    infoText.intro.skipIntro +
+                    "</div>");
+                $("#skip-intro").click( ()=> { newGame(); });
+                $("#next-page").click( ()=> {
+                    introPage++;
+                    intro();
+                });
+                break;
+            case 2:
+                $("#info-window").fadeOut(500, ()=> {
+                    $("#info-window").html(
+                    "<div class='alignCenter'>" +
+                    infoText.intro[2] +
+                    infoText.intro.next +
+                    "</div>"
+                    );
+                    $("#next-page").click( ()=> {
                         introPage++;
                         intro();
                     });
-                    break;
-                case 1:
-                    
-                    break;
-                case 2:
-                    break;
-                case 3:
-                    break;
-                case 4:
-                    break;
-                case 5:
-                    break;
-                case 6:
-                    break;
-                case 7:
-                    break;
-                case 8:
-                    break;
-                case 9:
-                    break;
-                case 10:
-                    break;
-                case 11:
-                    break;
-            }
-        };
-        */
+                }).fadeIn(1500);
+                break;
+            case 3:
+                $("#info-window").fadeOut(500, ()=> {
+                    $("#info-window").html(
+                    "<div class='alignCenter'>" +
+                    infoText.intro[3] +
+                    infoText.intro.next +
+                    "</div>"
+                    );
+                    $("#next-page").click( ()=> {
+                        introPage++;
+                        intro();
+                    });
+                }).fadeIn(1500);
+                break;
+            case 4:
+                $("#info-window").fadeOut(500, ()=> {
+                    $("#info-window").html(
+                    "<div class='alignCenter'>" +
+                    infoText.intro[4] +
+                    infoText.intro.next +
+                    "</div>"
+                    );
+                    $("#next-page").click( ()=> {
+                        introPage++;
+                        intro();
+                    });
+                }).fadeIn(1500);
+                break;
+            case 5:
+                $("#info-window").fadeOut(500, ()=> {
+                    $("#info-window").html(
+                    "<div class='alignCenter'>" +
+                    infoText.intro[5] +
+                    infoText.intro.next +
+                    "</div>"
+                    );
+                    $("#next-page").click( ()=> {
+                        introPage++;
+                        intro();
+                    });
+                }).fadeIn(1500);
+                break;
+            case 6:
+                $("#info-window").fadeOut(500, ()=> {
+                    $("#info-window").html(
+                    "<div class='alignCenter'>" +
+                    infoText.intro[6] +
+                    infoText.intro.next +
+                    "</div>"
+                    );
+                    $("#next-page").click( ()=> {
+                        introPage++;
+                        intro();
+                    });
+                }).fadeIn(1500);
+                break;
+            case 7:
+                $("#info-window").fadeOut(500, ()=> {
+                    $("#info-window").html(
+                    "<div class='alignCenter'>" +
+                    infoText.intro[7] +
+                    infoText.intro.next +
+                    "</div>"
+                    );
+                    $("#next-page").click( ()=> {
+                        introPage++;
+                        intro();
+                    });
+                }).fadeIn(1500);
+                break;
+            case 8:
+                $("#info-window").fadeOut(500, ()=> {
+                    $("#info-window").html(
+                    "<div class='alignCenter'>" +
+                    infoText.intro[8] +
+                    infoText.intro.next +
+                    "</div>"
+                    );
+                    $("#next-page").click( ()=> {
+                        introPage++;
+                        intro();
+                    });
+                }).fadeIn(1500);
+                break;
+            case 9:
+                break;
+            case 10:
+                break;
+            case 11:
 
+                newGame();
+                break;
+        }
+    }
+    
+    let introPage = 0;
 
-    });
-    
-    newGame();
-    
+    window.addEventListener("load", function() {
+        $("#game-field").hide();
+        intro();
+    })
 }
 
 function newGame() {
@@ -972,6 +1061,8 @@ function incomeCredits() {
     Maybe the player gets additional money depening on his points.
     */
    player.credits += Math.round(lostSatiation*foodPrice + lostFun*toyPrice);    // maybe ceil to be fair
+   player.credits += ticketPrice * 2;
+
    letJump2(credits);
 
    buyFood.check();
@@ -985,31 +1076,31 @@ function incomeCredits() {
 function incomePoints(progress) {
 
     if (myFurball.health >= 95) {
-        if (!timeoutGainPntsHealth) { player.points += 200; }
-        else if (timeoutGainPntsHealth >= pointsInterval) {
+        if (!timeoutGainPntsHealth) player.points += 200;
+        if (timeoutGainPntsHealth >= pointsInterval) {
             timeoutGainPntsHealth = 0;
         } else { timeoutGainPntsHealth += progress; }
     } else { timeoutGainPntsHealth = 0; }
 
 
     if (myFurball.satiation >= 95) {
-        if (!timeoutGainPntsSat) { player.points += 50; }
-        else if (timeoutGainPntsSat >= pointsInterval) {
+        if (!timeoutGainPntsSat) player.points += 50;
+        if (timeoutGainPntsSat >= pointsInterval) {
             timeoutGainPntsSat = 0;
         } else { timeoutGainPntsSat += progress; }
     } else { timeoutGainPntsSat = 0; }
 
 
     if (myFurball.fun >= 95) {
-        if (!timeoutGainPntsFun) { player.points += 50; }
-        else if (timeoutGainPntsFun >= pointsInterval) {
+        if (!timeoutGainPntsFun) player.points += 50;
+        if (timeoutGainPntsFun >= pointsInterval) {
             timeoutGainPntsFun = 0;
         } else { timeoutGainPntsFun += progress; }
     } else { timeoutGainPntsFun = 0; }
 
     if (myFurball.secureness >= 95) {
-        if (!timeoutGainPntsSec) { player.points += 50; }
-        else if (timeoutGainPntsSec >= pointsInterval) {
+        if (!timeoutGainPntsSec) player.points += 50;
+        if (timeoutGainPntsSec >= pointsInterval) {
             timeoutGainPntsSec = 0;
         } else { timeoutGainPntsSec += progress; }
     } else { timeoutGainPntsSec = 0; }
@@ -1428,9 +1519,9 @@ jQuery(function($) {
     $("#buy-ticket").click( slotMachine.pay );
     $("#clover").click( slotMachine.play );
 
-    $("#strawberry").click( ()=> specialItem.give("strawberry") ); // fuck you jQuery
-    $("#lemon").click( ()=> specialItem.give("lemon") );   // You are causing bugs
-    $("#carrot").click( ()=> specialItem.give("carrot") );         //  ..
+    $("#strawberry").click( ()=> specialItem.give("strawberry") );
+    $("#lemon").click( ()=> specialItem.give("lemon") );
+    $("#carrot").click( ()=> specialItem.give("carrot") );
 });
 
 sizeHeight.oninput = function() {       // for layout adjusting
@@ -1440,5 +1531,7 @@ sizeHeight.oninput = function() {       // for layout adjusting
 showHeight.oninput = function() {
     adjustHeight.style.height = this.value + "px";
 }
+
+TweenMax.set(goToSettings, {display:"none"});
 
 player.gameInProgress? gameInit() : startWindow();

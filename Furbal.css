@@ -49,8 +49,10 @@ html {
 * {
     margin: 0;
     box-sizing: border-box;
+    user-select: none;
     /* border: 0.1px solid green; */
 }
+
 body {  /* stretch body to viewable area of the window or screen. */
     position: fixed;
     top: 0; left: 0; right: 0; bottom: 0;
@@ -123,6 +125,13 @@ body {  /* stretch body to viewable area of the window or screen. */
 /*===============================================*/
 /* INFO WINDOW (Intro, Settings, GameOver-Screen */
 /*===============================================*/
+
+#enter-game {
+    font: 1.5rem "Coiny", cursive;
+    cursor: pointer;
+}
+#enter-game:hover { font-size: 1.7rem; }
+
 #info-window {
     display: none;
     position: absolute;
@@ -181,14 +190,21 @@ body {  /* stretch body to viewable area of the window or screen. */
     color: var(--colorB1);
 }
 #info-window .smaller-button {
-    font-size: 0.8rem;
+    font-size: 0.7rem;
     margin: 3%;
     padding: 1.5% 2%;
-    box-shadow: -0.02rem 0.04rem 0.05rem var(--dark2);
+    /* box-shadow: -0.02rem 0.04rem 0.05rem var(--dark2); */
+    box-shadow: none;
 }
 #info-window .smaller-button:hover {
     font-size: 0.75rem;
 }
+#skip-intro {
+    float: right;
+    font-size: 0.6rem;
+}
+#skip-intro:hover { font-size: 0.7rem }
+#next-page:hover { font-size: 1rem; }
 
 /*============================*/
 /*============================*/

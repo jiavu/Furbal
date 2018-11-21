@@ -14,13 +14,15 @@
         <!-- (A better option is to use the Web App Manifest. -->
 
         <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Amatic+SC|Caveat|Coiny|Indie+Flower|Open+Sans|Poor+Story|Source+Sans+Pro">
-        <link rel="stylesheet" type="text/css" media="screen" href="Furbal.css" >
+        <link rel="stylesheet" type="text/css" media="screen" href="Furbal.css">
         <!-- Maybe preload stylesheets: rel="preload" as="style". Error when using it. -->
     </head>
     <body>
-        <!-- Deactivate later: -->
+
+        <div id="loading-screen" style="z-index:3;background-color:white;position:fixed;top:0;left:0;height:100%;width:100%;display:flex;align-items:center;justify-content:center">Loading...</div>
         
-        <div class="test-monitor">  <!--  style="display: none" -->
+        <!-- Deactivate later: -->
+        <div class="test-monitor" style="display: none">  <!--   -->
                 <h4>Control Monitor</h4>
                 <div id="timeElapsed"></div>
                 <div id="loopSpeed"></div>
@@ -169,14 +171,23 @@
 
         
         <!-- Loading scripts: -->
+
         <!-- <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script> -->
         <script src="./jquery-3.3.1.js"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/2.0.2/TweenMax.min.js"></script>
-        <script src="./furbal_says.js"></script>
         <script src="./Furbal.js"></script>
         <!--
         <script type="module" src="./furbal_says.js"></script>
         <script type="module" src="./Furbal.js"></script>
+        -->
+
+        <!--
+        <script>
+            const loadingScreen = document.getElementById("loading-screen");
+            window.addEventListener("load", function() {
+                loadingScreen.style.display = "none";
+            })
+        </script>
         -->
         
     </body>
