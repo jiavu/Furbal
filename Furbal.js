@@ -53,6 +53,8 @@ const other3 = document.getElementById("other3");
 const sizeHeight = document.getElementById("size-height");
 const showHeight = document.getElementById("show-height");
 const adjustHeight = document.getElementById("adjust-height");
+const containerHeight = document.getElementById("container-height");
+const containerWidth = document.getElementById("container-width");
 
 const loadingScreen = document.getElementById("loading-screen");
 
@@ -94,8 +96,8 @@ const toggleFScreen = document.getElementById("toggle-fScreen");
 //////////////////////////////////////////////////
 //////////////////////////////////////////////////
 
-const myFurball = {};
-const player = {};
+const myFurball = { name: "My Furball" };
+const player = { name: "Player" };
 // empty objects, keys will be set in initialization / when reading cookies.
 
 
@@ -105,20 +107,20 @@ const player = {};
 // Gameloop parameter:
 const gameSpeed = 1;
 
-let lastRender = 0;
-let progress = 0;
-let v_timeElapsed = 0;          // COOKIE !!! UPDATE by Cookie-Import or reset to zero.
-let counter = 0;    // Counts the number of loops made since game was started.
-let pause = false;
+let lastRender;
+let progress;
+let v_timeElapsed;          // COOKIE !!! UPDATE by Cookie-Import or reset to zero.
+let counter;    // Counts the number of loops made since game was started.
+let pause = true;
 let pauseTime;
-let timeoutCredits = 0;
+let timeoutCredits;
 
 
 // Balancing powers of decrease/increase:
 let healthUpdate;
 const naturalDecreaseOfSatiation = 0.015;
 const satiationPower = 0.0015;               // = influence to health
-const naturalDecreaseOfFun = 0.0078;
+const naturalDecreaseOfFun = 0.009;
 const funPower = 0.001;                    // = influence to health
 const naturalDecreaseOfSecureness = 0.013;
 const securenessPower = 0.0006;             // = influence to health
@@ -176,35 +178,35 @@ const infoText = {intro:{0:"<div class='alignCenter pulse'><h1 id='enter-game'>F
 
 const furbalStates = {toFeeding:{95:"Salad. Not again.",90:"I'm so full.",85:"I am good, thanks.",1:"Can I have a dessert?",2:"Tastes good, thanks.",3:"Is it food or...",4:"Yummy!",5:"* munch crunch chomp *"},toPlaying:{95:"I don't want to play anymore. You can have it.",90:"Yeay. Toys. :/",85:"I already had a lot of them.",1:"It's my dolly! Play with your own one!",2:"Oh, toys!",3:"Yippee!",4:"Catch me! Haha, catch me!!!"},toPetting:{95:"Leave me some space, okay?",85:"Come on, you're squeezing me.",1:"Huuug!",2:"I love you mama!",3:"You are the sunshine of my live.",4:"It's so good to have you.",5:"Rrrrrrrr!"},health:{90:"Oh, happy day!",50:"Could be better.",40:"I am not feeling so well.",30:"Why do you let me die?",20:"I declare that this is my last will and testament.",10:"I am feeling so cold.",5:"I think it's over.",0:"I'm dead."},satiation:{75:"I could maybe eat something.",60:"I want candy, now!",50:"Can I have cookie?",40:"I am so hungry.",30:"Can I eat stones?",20:"I am starving...",10:"My stomache hurts.",},fun:{90:"Live is fun!",75:"Let's play something!",50:"Boring!!!",40:"* YAWN *",30:"* snooze *",20:"Deadly boring."},secureness:{85:"It's so good to have you.",60:"Where are you?",50:"I am so lonley.",40:"I am afraid all alone!",noPlay:"I am so alone and sad. I don't want to play.",noEat:"I am so alone and sad. I don't want to eat."}};
 
-let furballSaying = "";
-let saysFeed = false;       // for statement cooldowns so statements won't be displayed for ever.
-let saysPlay = false;
-let saysPet = false;
+let furballSaying;
+let saysFeed;       // for statement cooldowns so statements won't be displayed for ever.
+let saysPlay;
+let saysPet;
 let saysHealth;
 let saysSatiation;
 let saysFun;
 let saysSecureness;
 
-let secCritical = false;        // prioritize Furball's statments (warningSystem).
-let prioAction = false;
+const cooldownStatement = 2000;      // Cooldown for Furball's statements. Update statement only after cooldown time.
+let timeElapsedTemp;
+
+let secCritical;        // prioritize Furball's statments (warningSystem).
+let prioAction;
 
 
 // For displaying elements and jQuery animations:
 
-let satShown = true;            // so conditions won't be displayed for ever.
-let funShown = true;
-let secShown = true;
+let satShown;            // so conditions won't be displayed for ever.
+let funShown;
+let secShown;
 const cooldownCond = 4500;
-let countSatShown = 0;
-let countFunShown = 0;
-let countSecShown = 0;
+let countSatShown;
+let countFunShown;
+let countSecShown;
 
 const fadeInTime = 0.2;         //jQuery reads ms, gsap reads s.
 const fadeOutTime = 0.8;
 const fadeEasing = "linear";    // default: "swing"     //probably unused after replacing jQuery fades with gsap.
-
-const cooldownStatement = 2000;      // Cooldown for Furball's statements. Update statement only after cooldown time.
-let timeElapsedTemp = 0;
 
 
 // Animation:
@@ -212,8 +214,8 @@ let timeElapsedTemp = 0;
 function letJump(element) {
     TweenMax.to(element, 0.2, {
         /* fontSize: "130%", */
-        scaleX: 1.05,
-        scaleY:1.05,
+        scaleX: 1.04,
+        scaleY:1.04,
         //transformOrigin: "35% 50%",
         ease: Power2.easeInOut,
         onComplete: ()=>
@@ -260,8 +262,8 @@ function letShrink (element) {
 
 function letShrink2 (element) {
     TweenMax.to(element, 0.2, {
-        scaleX: 0.95,
-        scaleY: 0.95,
+        scaleX: 0.97,
+        scaleY: 0.97,
         ease: Power2.easeInOut,
         onComplete: ()=>
             TweenMax.to(element, 0.2, {
@@ -407,9 +409,7 @@ function startWindow() {
                 }).fadeIn(1000);
                 break;
             case 9:
-                player.name = ( $('#enter-player-name').prop("value") )?
-                    $('#enter-player-name').prop("value") :
-                    "Player";
+                if ( $('#enter-player-name').prop("value") ) player.name = $('#enter-player-name').prop("value");
 
                 $("#info-window").fadeOut(500, ()=> {
                     $("#info-window").html(
@@ -429,9 +429,7 @@ function startWindow() {
                 }).fadeIn(1000);
                 break;
             case 10:
-                myFurball.name = ( $('#enter-furbal-name').prop("value") )?
-                    $('#enter-furbal-name').prop("value") :
-                    "My Furball";
+                if ($('#enter-furbal-name').prop("value") ) myFurball.name = $('#enter-furbal-name').prop("value");
 
                 $("#info-window").fadeOut(500, ()=> {
                     $("#info-window").html(
@@ -479,9 +477,9 @@ function newGame() {
     player.food = 0;
     player.toy = 0;
     player.specialItems = {
-        "carrot": 0,
-        "lemon": 0,
-        "strawberry": 5
+        "carrot": 1,
+        "lemon": 1,
+        "strawberry": 2
     };
 
     // last page of start window, confirm to start game, close start window.
@@ -496,9 +494,38 @@ function newGame() {
 
 function gameInit() {
     // Load cookies here...
-    v_timeElapsed = 0;                      // COOKIE   // THIS WOULD BE A RESET !!!
     // If no cookies, "I couldn't find your progress. Did you delete the browser cookies?"
     // (and go to newGame).
+
+    // RESETTING VARIABLES:
+
+    v_timeElapsed = 0;                      // COOKIE   // THIS WOULD BE A RESET !!!
+    
+    lastRender = 0;
+    progress = 0;
+    counter = 0;
+    pauseTime = undefined;
+    timeoutCredits = 0;
+
+    furballSaying = "";
+    saysFeed = false;       // for statement cooldowns so statements won't be displayed for ever.
+    saysPlay = false;
+    saysPet = false;
+    saysHealth = false;
+    saysSatiation = false;
+    saysFun = false;
+    saysSecureness = false;
+    timeElapsedTemp = 0;
+
+    secCritical = false;
+    prioAction = false;
+
+    satShown = true;
+    funShown = true;
+    secShown = true;
+    countSatShown = 0;
+    countFunShown = 0;
+    countSecShown = 0;
 
     furballName.innerHTML = myFurball.name;
     userName.innerHTML = player.name;
@@ -512,7 +539,7 @@ function gameInit() {
     $(function() {
         $("#name-in-health").text(myFurball.name);
 
-        reqAnimF = requestAnimationFrame(loop);
+        switchPause();
 
         $("#game-field").fadeIn(1500, function() {
             $(this).css("pointerEvents", "auto");
@@ -541,6 +568,7 @@ function gameOver() {
 
     TweenMax.set(gameField, {pointerEvents:"none"});
     TweenMax.set(goToSettings, {display:"none"});
+    pause = true;
 
     $(function(){
         $("#satiation,#fun,#secureness").removeClass("flash").fadeIn(200,
@@ -1100,8 +1128,8 @@ function incomeCredits() {
 
     Maybe the player gets additional money depening on his points.
     */
-   player.credits += Math.round(lostSatiation*foodPrice + lostFun*toyPrice);    // maybe ceil to be fair
-   player.credits += ticketPrice * 2;
+   player.credits += Math.round(lostSatiation*foodPrice + lostFun*toyPrice);
+   player.credits += ticketPrice;
 
    letJump2(credits);
 
@@ -1115,8 +1143,12 @@ function incomeCredits() {
 
 function incomePoints(progress) {
 
-    if (myFurball.health >= 95) {
-        if (!timeoutGainPntsHealth) player.points += 200;
+    if (myFurball.health >= 90) {
+        if (!timeoutGainPntsHealth) {
+            player.points += 200;
+            letJump($("#health-container"));
+            letJump2(credits);
+        }
         if (timeoutGainPntsHealth >= pointsInterval) {
             timeoutGainPntsHealth = 0;
         } else { timeoutGainPntsHealth += progress; }
@@ -1399,7 +1431,7 @@ function update(progress) {
         // f(x) = -(x/25) + 1       // for x=-100 factor will be 5
     };
 
-    other0.innerHTML = "Other0: " + factor(myFurball.satiation, criticalSat);   // test monitor
+    // other0.innerHTML = "Other0: " + factor(myFurball.satiation, criticalSat);   // test monitor
 
     /* Update Furballs health: Newtons Law of Cooling: u'(t) = -k(u(t)-a) */
     healthUpdate = -satiationPower *factor(myFurball.satiation, criticalSat) * (myFurball.health-myFurball.satiation)
@@ -1430,9 +1462,9 @@ function update(progress) {
     }
 
     //Test: DELETE / DEACTIVATE !!!
-    //myFurball.satiation = 30;
-    //myFurball.fun = 30;
-    //myFurball.secureness = 30;
+    // myFurball.satiation = 30;
+    // myFurball.fun = 30;
+    // myFurball.secureness = 30;
     //myFurball.health = 100;
     //if (v_timeElapsed >= 8000) { myFurball.isDead = true } // Control values after a certain time. Delete later.
     //if (myFurball.satiation <= 0) myFurball.isDead = true;  // time check. Delete later!
@@ -1445,10 +1477,14 @@ function draw() {
     timeElapsed.innerHTML = "Time elapsed: " + Math.round(v_timeElapsed) + "ms";
     loopSpeed.innerHTML = "Loop Speed: " + Math.round(progress) + "ms/loop";
     gSpeed.innerHTML = "Game Speed: " + gameSpeed;
-    //other0.innerHTML = "Other0: " + myFurball.health;
+    other0.innerHTML = "Other0: " + myFurball.health;
     other1.innerHTML = "Other1: " + myFurball.satiation;
     other2.innerHTML = "Other2: " + myFurball.fun;
     other3.innerHTML = "Other3: " + myFurball.secureness;
+    // slider for adjusting height (my layout tool):
+    containerHeight.innerHTML = "Height: " + $("#adjust-height").innerHeight();
+    containerWidth.innerHTML = "Width: " + $("#adjust-height").innerWidth();
+
 
     // user and items:
     points.innerHTML = player.points;
@@ -1564,13 +1600,17 @@ jQuery(function($) {
     $("#carrot").click( ()=> specialItem.give("carrot") );
 });
 
-sizeHeight.oninput = function() {       // for layout adjusting
+
+// Layout adjusting: height:
+sizeHeight.oninput = function() {
     adjustHeight.style.height = this.value + "px";
     showHeight.value = sizeHeight.value;
 }
 showHeight.oninput = function() {
     adjustHeight.style.height = this.value + "px";
 }
+
+
 
 TweenMax.set(goToSettings, {display:"none"});
 

@@ -22,7 +22,7 @@
         <div id="loading-screen" style="z-index:3;background-color:white;position:fixed;top:0;left:0;height:100%;width:100%;display:flex;align-items:center;justify-content:center">Loading...</div>
         
         <!-- Deactivate later: -->
-        <div class="test-monitor" style="display: none">  <!--   -->
+        <div class="test-monitor" style="display: none">  <!-- -->
                 <h4>Control Monitor</h4>
                 <div id="timeElapsed"></div>
                 <div id="loopSpeed"></div>
@@ -39,8 +39,12 @@
             Android info bar, mobile Chrome header, bottom navigation bar.
             viewable area in my mobile Chrome browser: 1080 x 1536 px
         -->
-        <div class="slider-container" style="display: none">
-            <input type="text" id="show-height">
+        <div class="slider-container" style="display: none">    <!-- -->
+            <div>
+                <div id="container-height"></div>
+                <input type="text" id="show-height">
+                <div id="container-width"></div>
+            </div>
             <input type="range" min="480" max="1920" value="1536" class="slider" id="size-height">
         </div>
 
@@ -74,7 +78,7 @@
                             <div></div>
                         </div>
                     </div>
-                    <div class="health">
+                    <div class="health" id="health-container">
                         <p class="hide-in-fullscreen" id="name-in-health"></p>
                         <p class="show-in-fullscreen-only">HEALTH</p>  <!--(ENERGY)-->
                         <div class="health-bar" id="health">
@@ -86,7 +90,7 @@
 
                 <div class="cage-container">
                     <div class="cage">
-                        <img class="furball" src="HN-4592-2.jpg" alt="Furball inspiration">
+                        <img class="furball" src="furb_0.jpg" alt="Furball inspiration">
                     </div>
                     <div class="buttons">
                         <button type="button" class="actionBtns" id="petBtn">pet</button>
