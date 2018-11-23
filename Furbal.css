@@ -59,6 +59,7 @@ body {  /* stretch body to viewable area of the window or screen. */
     height: 100%;
     width: 100%;
     font-size: 0.9rem;
+    
 }
 @media (min-aspect-ratio: 2/3) {
     body {
@@ -151,7 +152,10 @@ body {  /* stretch body to viewable area of the window or screen. */
 }
 
 #info-window div.alignCenter { text-align: center; }
-#info-window h1 { font: 1.5rem "Coiny", cursive; }
+#info-window h1 {
+    font: 1.5rem "Coiny", cursive;
+    padding-bottom: 0.25rem;
+}
 #info-window h2 { margin-bottom: 0.5em; }
 #info-window button {
     font: 0.9rem "Poor Story", cursive;
@@ -175,7 +179,7 @@ body {  /* stretch body to viewable area of the window or screen. */
     box-shadow: -0.01rem 0.02rem 0.04rem var(--dark4);
     transform: translate(-0.03rem, 0.07rem);
 }
-#info-window button:focus { outline: none;}
+#info-window button:focus { outline: none; }
 #info-window button:disabled {
     font-size: 1rem;
     pointer-events: none;
@@ -205,6 +209,19 @@ body {  /* stretch body to viewable area of the window or screen. */
 }
 #skip-intro:hover { font-size: 0.7rem }
 #next-page:hover { font-size: 1rem; }
+
+#info-window input[type=text] {
+    margin: 0.5rem;
+    padding: 0.2rem 0.4rem;
+    width: 50%;
+    font: 0.8rem "Poor Story", cursive;
+    border-radius: 10px;
+    border: 2px solid var(--dark3);
+    outline: none;
+}
+#info-window input[type=text]:focus {
+    border: 2px solid var(--dark2);
+}
 
 /*============================*/
 /*============================*/
