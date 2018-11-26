@@ -9,9 +9,9 @@ const infoText = {
         6 : "<p>Pay attention to Furball's level of secureness.<br>If your Furball is lonely, it won't eat and play anymore.</p>",
         7 : "<p>If your Furball is sad or ill, it will lose it's color.<br>Critical levels of Furballs conditions will weaken it.<br>Be aware - Furbals fitness won't recover!</p>",
         8 : "<p>So... what was your name again?</p>",
-        9 : ", right!</p>", // 9 with 10 together
+        9 : ", right!<br><br></p>", // 9 with 10 together
         10 : ", which name do you want to give your Furball?</p>",
-        11 : ", what a beautiful name!!!<br>Let me ask you one last question, ",
+        11 : ", what a beautiful name!!!<br><br>Let me ask you one last question, ",
         skipIntro : "<div id='skip-intro'>Skip Intro &gt;&gt;</div>",
         next : "<br><div id='next-page'>&gt;&gt;</div>",   // https://www.w3schools.com/HTML/html_entities.asp
         player : "<input type='text' placeholder='Player' id='enter-player-name'>", // entry fields

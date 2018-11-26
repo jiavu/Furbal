@@ -322,8 +322,11 @@ body {  /* stretch body to viewable area of the window or screen. */
 
 .cage { display: inline-block; }
 
-.furball {
+.furball-pic-container {
     height: 9.5em;
+}
+.furball-pic {
+    height: 100%;
     width: auto;
 }
 

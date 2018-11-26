@@ -65,6 +65,8 @@ const satiation = document.getElementById("satiation");
 const fun = document.getElementById("fun");
 const secureness = document.getElementById("secureness");
 
+const mOverFurball = document.getElementById("m-over-furball");
+
 const furballStatement = document.getElementById("furball-says");
 const furballName = document.getElementById("furball-name");
 
@@ -174,7 +176,7 @@ or Bypass CORS by disabling web-security. */
 //If all files are saved to and accessed via request to server I can use:
 //import furbalStates from "./furbal_says.js";
 //Otherwise paste object here and don't forget to remove type="module":
-const infoText = {intro:{0:"<div class='alignCenter pulse'><h1 id='enter-game'>Furball</h1>",1:"<p>Once there was a Furball.</p>",2:"<p>A Furball is a small pet with big button eyes and a thick and furry fur living in a website.</p>",3:"<p>You have to feed your Furball.<br>If you forget to feed it, it will die.</p>",4:"<p>Play with your Furball.<br>If you forget to play with your Furball, it is going to die of boredom.</p>",5:"<p>You also have to pet your pet.<br>If you don't give it your affection, it will be lonely and is going to lose it's joy for living.</p>",6:"<p>Pay attention to Furball's level of secureness.<br>If your Furball is lonely, it won't eat and play anymore.</p>",7:"<p>If your Furball is sad or ill, it will lose it's color.<br>Critical levels of Furballs conditions will weaken it.<br>Be aware - Furbals fitness won't recover!</p>",8:"<p>So... what was your name again?</p>",9:", right!</p>",10:", which name do you want to give your Furball?</p>",11:", what a beautiful name!!!<br>Let me ask you one last question, ",skipIntro:"<div id='skip-intro'>Skip Intro &gt;&gt;</div>",next:"<br><div id='next-page'>&gt;&gt;</div>",player:"<input type='text' placeholder='Player' id='enter-player-name'>",furbal:"<input type='text' placeholder='My Furball' id='enter-furbal-name'>"},startWindow:{go:"<div class='alignCenter'><h1>Furball</h1><h3>Are you ready for it?</h3><button type='button' id='go'>YES!</button></div>"},finishScreen:{gameOverT1:"<div class='alignCenter'><h2>Game Over</h2><p>"/*insert gameOverInfo*/,gameOverT2:"</p><button type='button' id='again'>GIMME A NEW FURBALL!</button></div>"},settingsScreen:"<div class='alignCenter'><h2>Options</h2><p><button class='smaller-button' id='restart-game'>Restart game</button></p><p><a href='https://goo.gl/forms/ktww9CI6E7xlP4vj1' target='_blank'>Give Feedback</a></p><button type='button' id='continue'>Continue</button></div>"};
+const infoText = {intro:{0:"<div class='alignCenter pulse'><h1 id='enter-game'>Furball</h1>",1:"<p>Once there was a Furball.</p>",2:"<p>A Furball is a small pet with big button eyes and a thick and furry fur living in a website.</p>",3:"<p>You have to feed your Furball.<br>If you forget to feed it, it will die.</p>",4:"<p>Play with your Furball.<br>If you forget to play with your Furball, it is going to die of boredom.</p>",5:"<p>You also have to pet your pet.<br>If you don't give it your affection, it will be lonely and is going to lose it's joy for living.</p>",6:"<p>Pay attention to Furball's level of secureness.<br>If your Furball is lonely, it won't eat and play anymore.</p>",7:"<p>If your Furball is sad or ill, it will lose it's color.<br>Critical levels of Furballs conditions will weaken it.<br>Be aware - Furbals fitness won't recover!</p>",8:"<p>So... what was your name again?</p>",9:", right!<br><br></p>",10:", which name do you want to give your Furball?</p>",11:", what a beautiful name!!!<br><br>Let me ask you one last question, ",skipIntro:"<div id='skip-intro'>Skip Intro &gt;&gt;</div>",next:"<br><div id='next-page'>&gt;&gt;</div>",player:"<input type='text' placeholder='Player' id='enter-player-name'>",furbal:"<input type='text' placeholder='My Furball' id='enter-furbal-name'>"},startWindow:{go:"<div class='alignCenter'><h1>Furball</h1><h3>Are you ready for it?</h3><button type='button' id='go'>YES!</button></div>"},finishScreen:{gameOverT1:"<div class='alignCenter'><h2>Game Over</h2><p>"/*insert gameOverInfo*/,gameOverT2:"</p><button type='button' id='again'>GIMME A NEW FURBALL!</button></div>"},settingsScreen:"<div class='alignCenter'><h2>Options</h2><p><button class='smaller-button' id='restart-game'>Restart game</button></p><p><a href='https://goo.gl/forms/ktww9CI6E7xlP4vj1' target='_blank'>Give Feedback</a></p><button type='button' id='continue'>Continue</button></div>"};
 
 const furbalStates = {toFeeding:{95:"Salad. Not again.",90:"I'm so full.",85:"I am good, thanks.",1:"Can I have a dessert?",2:"Tastes good, thanks.",3:"Is it food or...",4:"Yummy!",5:"* munch crunch chomp *"},toPlaying:{95:"I don't want to play anymore. You can have it.",90:"Yeay. Toys. :/",85:"I already had a lot of them.",1:"It's my dolly! Play with your own one!",2:"Oh, toys!",3:"Yippee!",4:"Catch me! Haha, catch me!!!"},toPetting:{95:"Leave me some space, okay?",85:"Come on, you're squeezing me.",1:"Huuug!",2:"I love you mama!",3:"You are the sunshine of my live.",4:"It's so good to have you.",5:"Rrrrrrrr!"},health:{90:"Oh, happy day!",50:"Could be better.",40:"I am not feeling so well.",30:"Why do you let me die?",20:"I declare that this is my last will and testament.",10:"I am feeling so cold.",5:"I think it's over.",0:"I'm dead."},satiation:{75:"I could maybe eat something.",60:"I want candy, now!",50:"Can I have cookie?",40:"I am so hungry.",30:"Can I eat stones?",20:"I am starving...",10:"My stomache hurts.",},fun:{90:"Live is fun!",75:"Let's play something!",50:"Boring!!!",40:"* YAWN *",30:"* snooze *",20:"Deadly boring."},secureness:{85:"It's so good to have you.",60:"Where are you?",50:"I am so lonley.",40:"I am afraid all alone!",noPlay:"I am so alone and sad. I don't want to play.",noEat:"I am so alone and sad. I don't want to eat."}};
 
@@ -207,6 +209,8 @@ let countSecShown;
 const fadeInTime = 0.2;         //jQuery reads ms, gsap reads s.
 const fadeOutTime = 0.8;
 const fadeEasing = "linear";    // default: "swing"     //probably unused after replacing jQuery fades with gsap.
+
+let clickOnFurbal = false;
 
 
 // Animation:
@@ -463,12 +467,14 @@ function startWindow() {
 
 function newGame() {
 
+    console.log("v_timeElapsed in newGame(): " + v_timeElapsed);
+
     //myFurball.name = "My Furball";   // Let user insert a name in startWindow()...
     myFurball.isDead = false;
-    myFurball.health = 21;
-    myFurball.satiation = 50;
-    myFurball.fun = 90;
-    myFurball.secureness = 90;
+    myFurball.health = 21;          // should be >20
+    myFurball.satiation = 50;       // should be 50
+    myFurball.fun = 90;             // should be <91
+    myFurball.secureness = 90;      // should be <91
 
     //player.name = "Player";    // let user insert a name in startWindow()...
     player.gameInProgress = true;
@@ -500,6 +506,7 @@ function gameInit() {
     // RESETTING VARIABLES:
 
     v_timeElapsed = 0;                      // COOKIE   // THIS WOULD BE A RESET !!!
+    console.log("v_timeElapsed in gameInit(): " + v_timeElapsed);
     
     lastRender = 0;
     progress = 0;
@@ -540,7 +547,7 @@ function gameInit() {
         $("#name-in-health").text(myFurball.name);
 
         switchPause();
-
+        
         $("#game-field").fadeIn(1500, function() {
             $(this).css("pointerEvents", "auto");
             TweenMax.set(goToSettings, {display:"inline-block"});
@@ -568,6 +575,7 @@ function gameOver() {
 
     TweenMax.set(gameField, {pointerEvents:"none"});
     TweenMax.set(goToSettings, {display:"none"});
+    
     pause = true;
 
     $(function(){
@@ -597,6 +605,9 @@ function gameOver() {
 }
 
 function switchPause() {
+
+    console.log("v_timeElapsed in switchPause(): " + v_timeElapsed);
+
     pause = !pause;
     pause? TweenMax.set(gameField, {pointerEvents:"none", opacity: 0.4} )
            : TweenMax.set(gameField, {pointerEvents:"auto", opacity: 1} );
@@ -693,7 +704,7 @@ function feed() {
         satShown = true;
 
         // Animation:
-        TweenMax.to(satiation, fadeInTime, {opacity:1});
+        if (satiationIncrease) TweenMax.to(satiation, fadeInTime, {opacity:1});
 
         if (satiationIncrease > 0) {
             letJump(satiation);
@@ -712,6 +723,7 @@ function feed() {
 
 
 function play() {
+
     let funIncrease = ( (-(toyPowerMax-toyPowerMin)/100 *myFurball.fun) + toyPowerMax ) * (myFurball.secureness/100 -secToFunThreshold);   // the less secureness, the less myFurball will play.
     
     /* If player doesn't have enough toy for 1 toy portion, Furball gets what player has.
@@ -776,28 +788,28 @@ function play() {
         let a = funIncrease > 0? true : false;
         let b = funIncrease < 0? true : false;
 
-        if (a) satiation.style.color = "var(--red)";
-        if (b) fun.style.color = "var(--red)";
-        
-        // Animation:
-        TweenMax.to(fun, fadeInTime, {opacity:1});
-
         if (a) {
+            myFurball.satiation -= playToSat * funIncrease; // PLAYING MAKES FURBALL HUNGRY!
+
+            satiation.style.color = "var(--red)";
             letJump(fun);
             letShrink(toy);
             satShown = true;
             TweenMax.to(satiation, fadeInTime, {opacity:1});
             letShrink2(satiation);
-        }
 
+        } else if (b) {
+            fun.style.color = "var(--red)";
+
+            funIncrease *= -1;
+        }
+        
+        // Update players toy box:
+        player.toy -= funIncrease;
+
+        if (funIncrease) TweenMax.to(fun, fadeInTime, {opacity:1});
     }
     
-    if (funIncrease > 0) {
-        myFurball.satiation -= playToSat * funIncrease; // PLAYING MAKES FURBALL HUNGRY!
-    } else if (funIncrease < 0) { funIncrease *= -1; }
-    
-    // Update players toy box:
-    player.toy -= funIncrease;
 
     if (myFurball.fun > 100) myFurball.fun = 100;
 
@@ -852,6 +864,54 @@ function pet() {
     
 }
 
+function petBySwipe() {
+
+    let securenessIncrease = ( ((petPowerMax-petPowerMin)/100 *myFurball.secureness) + petPowerMin )/20;
+     // the less secureness, the less increase. LOST CONFIDENCE!
+    
+    // That's how petting will increase Furballs secureness:
+    (myFurball.secureness < 0)?
+        myFurball.secureness = securenessIncrease :
+        myFurball.secureness += securenessIncrease;
+    if (myFurball.secureness > 100) myFurball.secureness = 100;
+
+
+    // Reset color:
+    furballStatement.style.color = "var(--black)";
+    if (myFurball.secureness > criticalSec) secureness.style.color = "var(--black)";
+
+
+    // reset prio:
+    secCritical = false;
+    prioAction = true;
+
+
+    // Get Furballs statements about petting:
+    if (myFurball.secureness >= 95) {
+        saysPet = furbalStates.toPetting[95];
+    } else if (myFurball.secureness >= 85) {
+        saysPet = furbalStates.toPetting[85];
+    } else if (!saysPet) {
+        timeElapsedTemp = 0;
+        let r = Math.floor(Math.random()*5);
+        saysPlay = false;
+        saysFeed = false;
+        saysPet = furbalStates.toPetting[r+1];
+    }
+    if (myFurball.health > 20) furballSaying = saysPet;
+
+
+    // Fade in html element (Furballs secureness):
+
+    countSecShown = 0;
+    secShown = true;
+
+    if (saysPet) {
+        TweenMax.to(secureness, fadeInTime, {opacity:1});
+        //letJump(secureness);                              // would be nice if it could jump once and again.
+    }
+    
+}
 
 const buyFood = {
     // I need costs AND buyable food to be positive integers....
@@ -1600,6 +1660,12 @@ jQuery(function($) {
     $("#carrot").click( ()=> specialItem.give("carrot") );
 });
 
+// petting Furball by swiping over Furball:
+mOverFurball.onmousedown = ()=> clickOnFurbal = true;
+mOverFurball.onmouseup = ()=> clickOnFurbal = false;
+mOverFurball.onmousemove = function() {
+    if (clickOnFurbal) petBySwipe();   // replace with new petting function
+};
 
 // Layout adjusting: height:
 sizeHeight.oninput = function() {
