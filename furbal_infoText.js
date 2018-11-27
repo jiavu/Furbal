@@ -4,7 +4,7 @@ const infoText = {
         1 : "<p>Once there was a Furball.</p>",
         2 : "<p>A Furball is a small pet with big button eyes and a thick and furry fur living in a website.</p>",
         3 : "<p>You have to feed your Furball.<br>If you forget to feed it, it will die.</p>",
-        4 : "<p>Play with your Furball.<br>If you forget to play with your Furball, it is going to die of boredom.</p>",
+        4 : "<p>Play with your Furball.<br>If you forget to play with your Furball, it is going to die of boredom.<br><br>Pay attention: Playing makes your Furball hungry!</p>",
         5 : "<p>You also have to pet your pet.<br>If you don't give it your affection, it will be lonely and is going to lose it's joy for living.</p>",
         6 : "<p>Pay attention to Furball's level of secureness.<br>If your Furball is lonely, it won't eat and play anymore.</p>",
         7 : "<p>If your Furball is sad or ill, it will lose it's color.<br>Critical levels of Furballs conditions will weaken it.<br>Be aware - Furbals fitness won't recover!</p>",
