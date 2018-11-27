@@ -977,6 +977,7 @@ const buyToy = {
     }
 }
 
+
 const slotMachine = {
 
     prize : "nothing",
@@ -1662,10 +1663,13 @@ jQuery(function($) {
 
 // petting Furball by swiping over Furball:
 mOverFurball.onmousedown = ()=> clickOnFurbal = true;
+//mOverFurball.ontouchstart = ()=> clickOnFurbal = true;
 mOverFurball.onmouseup = ()=> clickOnFurbal = false;
+//mOverFurball.ontouchend = ()=> clickOnFurbal = false;
 mOverFurball.onmousemove = function() {
     if (clickOnFurbal) petBySwipe();   // replace with new petting function
 };
+mOverFurball.ontouchmove = petBySwipe();
 
 // Layout adjusting: height:
 sizeHeight.oninput = function() {
