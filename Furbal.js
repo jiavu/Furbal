@@ -17,6 +17,32 @@ function toggleFullScreen() {   // supported by Safari?
     } else { cancelFullScreen.call(doc)};
 }
 
+
+function displayEverything() {
+
+    jQuery(function($) {
+
+        if ( window.screen.height / $("#adjust-height").height() > 1.17 ) {
+            $(".show-in-fullscreen").each(function() {
+                $(this).hide();
+            });
+            $(".hide-in-fullscreen").each(function() {
+                $(this).show();
+            });
+        
+        } else {
+            $(".show-in-fullscreen").each(function() {
+                $(this).show();
+            });
+            $(".hide-in-fullscreen").each(function() {
+                $(this).css("display", "none");
+                $(this).hide();
+            });
+        }
+        
+    });
+}
+
 /*
 MODULES:
 colorMaps, infoText, furbalStates
@@ -60,6 +86,7 @@ const loadingScreen = document.getElementById("loading-screen");
 
 // Game elements:
 const healthHeading = document.getElementsByClassName("health")[0];
+const fitness = document.getElementById("fitness");
 const health = document.getElementById("health");
 const satiation = document.getElementById("satiation");
 const fun = document.getElementById("fun");
@@ -92,22 +119,20 @@ const gameField = document.getElementById("game-field");
 const goToSettings = document.getElementById("go-to-settings");
 const toggleFScreen = document.getElementById("toggle-fScreen");
 
-//const carrot = document.getElementById("carrot"); // will continue using jQuery for the moment.
-
 
 //////////////////////////////////////////////////
 //////////////////////////////////////////////////
 
 const myFurball = { name: "My Furball" };
 const player = { name: "Player" };
-// empty objects, keys will be set in initialization / when reading cookies.
+// keys will be set in initialization / when reading cookies.
 
 
 //////////////////////////////////////////////////
 //////////////////////////////////////////////////
 
 // Gameloop parameter:
-const gameSpeed = 1.5;
+const gameSpeed = 1;
 
 let lastRender;
 let progress;
@@ -131,6 +156,16 @@ const criticalSat = 40;                 // if satiation is critical or lower, in
 const criticalFun = 30;
 const criticalSec = 30;
 
+const satToFitness = 0.002;                 // if conditions are beneath critical value, fitness will decrease!
+const funToFitness = 0.0016;
+const secToFitness = 0.0015;
+
+const playToSat = 0.3;           // Example: playToSat = 0.1; 10 toy consumed via play() will decrease satiation by 1. (PLAYING MAKES IT HUNGRY!)
+const healthToFun = 0.01;      // the less health, the higher fun decrease. Use: -(healthToFun/100)*health + healthToFun
+const healthToSec = 0.0110;     // the less health, the higher secureness decrease.
+
+const secToFunThreshold = 0.12;   // in %. If security is 25% (or less), Furball won't play (and even lose fun by playing!).
+
 // positive integers only! {
 const foodPowerMax = 10;    // if Furbals satiation is 0, Furbal will eat maximum (1 portion).
 const foodPowerMin = 1;     // if Furbals satiation is 100, Furbal will eat minimum (1 bite).
@@ -144,23 +179,18 @@ const foodPrice = 1;
 const toyPrice = 1.2;
 const ticketPrice = 20;
 const winMoney = 100;
-const creditsInterval = 20000/gameSpeed     //ms
-const pointsInterval = 5000;
+const creditsInterval = 20000/gameSpeed     // this two variables
+const pointsInterval = 5000/gameSpeed;      // will be changed dynamically later.
 let timeoutGainPntsHealth = pointsInterval;
 let timeoutGainPntsSat = pointsInterval;
 let timeoutGainPntsFun = pointsInterval;
 let timeoutGainPntsSec = pointsInterval;
 
-
+// Power of special items:
 const carrotPower = 40;
 const lemonPower = 40;
 const strawberryPower = 40;
 
-const playToSat = 0.3;           // example: playToSat = 0.1; 10 toy consumed via play() will decrease satiation by 1. (PLAYING MAKES IT HUNGRY!)
-const healthToFun = 0.01;      // the less health, the higher fun decrease. Use: -(healthToFun/100)*health + healthToFun
-const healthToSec = 0.0110;     // the less health, the higher secureness decrease.
-
-const secToFunThreshold = 0.12;   // in %. If security is 25% (or less), Furball won't play (and even lose fun by playing!).
 
 // Later: Character traits (stats) will influence the amounts of all power variables.
 
@@ -176,7 +206,7 @@ or Bypass CORS by disabling web-security. */
 //If all files are saved to and accessed via request to server I can use:
 //import furbalStates from "./furbal_says.js";
 //Otherwise paste object here and don't forget to remove type="module":
-const infoText = {intro:{0:"<div class='alignCenter pulse'><h1 id='enter-game'>Furball</h1>",1:"<p>Once there was a Furball.</p>",2:"<p>A Furball is a small pet with big button eyes and a thick and furry fur living in a website.</p>",3:"<p>You have to feed your Furball.<br>If you forget to feed it, it will die.</p>",4:"<p>Play with your Furball.<br>If you forget to play with your Furball, it is going to die of boredom.<br><br>Pay attention: Playing makes your Furball hungry!</p>",5:"<p>You also have to pet your pet.<br>If you don't give it your affection, it will be lonely and is going to lose it's joy for living.</p>",6:"<p>Pay attention to Furball's level of secureness.<br>If your Furball is lonely, it won't eat and play anymore.</p>",7:"<p>If your Furball is sad or ill, it will lose it's color.<br>Critical levels of Furballs conditions will weaken it.<br>Be aware - Furbals fitness won't recover!</p>",8:"<p>So... what was your name again?</p>",9:", right!<br><br></p>",10:", which name do you want to give your Furball?</p>",11:", what a beautiful name!!!<br><br>Let me ask you one last question, ",skipIntro:"<div id='skip-intro'>Skip Intro &gt;&gt;</div>",next:"<br><div id='next-page'>&gt;&gt;</div>",player:"<input type='text' placeholder='Player' id='enter-player-name'>",furbal:"<input type='text' placeholder='My Furball' id='enter-furbal-name'>"},startWindow:{go:"<div class='alignCenter'><h1>Furball</h1><h3>Are you ready for it?</h3><button type='button' id='go'>YES!</button></div>"},finishScreen:{gameOverT1:"<div class='alignCenter'><h2>Game Over</h2><p>"/*insert gameOverInfo*/,gameOverT2:"</p><button type='button' id='again'>GIMME A NEW FURBALL!</button></div>"},settingsScreen:"<div class='alignCenter'><h2>Options</h2><p><button class='smaller-button' id='restart-game'>Restart game</button></p><p><a href='https://goo.gl/forms/ktww9CI6E7xlP4vj1' target='_blank'>Give Feedback</a></p><button type='button' id='continue'>Continue</button></div>"};
+const infoText = {intro:{0:"<div class='alignCenter pulse'><h1 id='enter-game'>Furball</h1>",1:"<p>Once there was a Furball.</p>",2:"<p>A Furball is a small pet with big button eyes and a thick and furry fur living in a website.</p>",3:"<p>You have to feed your Furball.<br>If you forget to feed it, it will die.</p>",4:"<p>Play with your Furball.<br>If you forget to play with your Furball, it is going to die of boredom.<br><br>Pay attention: Playing makes your Furball hungry!</p>",5:"<p>You also have to pet your pet.<br>If you don't give it your affection, it will be lonely and is going to lose it's joy for living.</p>",6:"<p>Pay attention to Furball's level of secureness.<br>If your Furball is lonely, it won't eat and play anymore.</p>",7:"<p>If your Furball is sad or ill, it will lose it's color.<br>Critical levels of Furballs conditions will weaken it.<br><br>Be aware - Furbals fitness won't recover!</p>",8:"<p>So... what was your name again?</p>",9:", right!<br><br></p>",10:", which name do you want to give your Furball?</p>",11:", what a beautiful name!!!<br><br>Let me ask you one last question, ",skipIntro:"<div id='skip-intro'>Skip Intro &gt;&gt;</div>",next:"<br><div id='next-page'>&gt;&gt;</div>",player:"<input type='text' placeholder='Player' maxlength='26' id='enter-player-name'>",furbal:"<input type='text' placeholder='My Furball' maxlength='26' id='enter-furbal-name'>"},startWindow:{go:"<div class='alignCenter'><h1>Furball</h1><h3>Are you ready for it?</h3><button type='button' id='go'>YES!</button></div>"},finishScreen:{gameOverT1:"<div class='alignCenter'><h2>Game Over</h2><p>"/*insert gameOverInfo*/,gameOverT2:"</p><button type='button' id='again'>GIMME A NEW FURBALL!</button></div>"},settingsScreen:"<div class='alignCenter'><h2>Options</h2><p><button class='smaller-button' id='restart-game'>Restart game</button></p><p><a href='https://goo.gl/forms/ktww9CI6E7xlP4vj1' target='_blank'>Give Feedback</a></p><button type='button' id='continue'>Continue</button></div>"};
 
 const furbalStates = {toFeeding:{95:"Salad. Not again.",90:"I'm so full.",85:"I am good, thanks.",1:"Can I have a dessert?",2:"Tastes good, thanks.",3:"Is it food or...",4:"Yummy!",5:"* munch crunch chomp *"},toPlaying:{95:"I don't want to play anymore. You can have it.",90:"Yeay. Toys. :/",85:"I already had a lot of them.",1:"It's my dolly! Play with your own one!",2:"Oh, toys!",3:"Yippee!",4:"Catch me! Haha, catch me!!!"},toPetting:{95:"Leave me some space, okay?",85:"Come on, you're squeezing me.",1:"Huuug!",2:"I love you mama!",3:"You are the sunshine of my live.",4:"It's so good to have you.",5:"Rrrrrrrr!"},health:{90:"Oh, happy day!",50:"Could be better.",40:"I am not feeling so well.",30:"Why do you let me die?",20:"I declare that this is my last will and testament.",10:"I am feeling so cold.",5:"I think it's over.",0:"I'm dead."},satiation:{75:"I could maybe eat something.",60:"I want candy, now!",50:"Can I have cookie?",40:"I am so hungry.",30:"Can I eat stones?",20:"I am starving...",10:"My stomache hurts.",},fun:{90:"Live is fun!",75:"Let's play something!",50:"Boring!!!",40:"* YAWN *",30:"* snooze *",20:"Deadly boring."},secureness:{85:"It's so good to have you.",60:"Where are you?",50:"I am so lonley.",40:"I am afraid all alone!",noPlay:"I am so alone and sad. I don't want to play.",noEat:"I am so alone and sad. I don't want to eat."}};
 
@@ -292,19 +322,19 @@ function startWindow() {
 
     function intro() {
         switch (introPage) {
-            case 0:
+            case 0:                             // still loading screen
                 loadingScreen.innerHTML = infoText.intro[0];
                 $("#enter-game").click( ()=> {
                     introPage++;
                     intro();
                 });
                 break;
-            case 1:
+            case 1:                             // once there was a Furball.
                 loadingScreen.style.display = "none";
                 $("#info-window").fadeIn(1500).html(
-                    //"<div class='alignCenter'>" +
                     "<div>" +
                     infoText.intro[1] +
+                    "</div><div class='alignCenter'>" +
                     infoText.intro.next +
                     infoText.intro.skipIntro +
                     "</div>");
@@ -319,6 +349,7 @@ function startWindow() {
                     $("#info-window").html(
                         "<div>" +
                         infoText.intro[2] +
+                        "</div><div style='text-align:right'>" +
                         infoText.intro.next +
                         "</div>"
                     );
@@ -333,6 +364,7 @@ function startWindow() {
                     $("#info-window").html(
                         "<div>" +
                         infoText.intro[3] +
+                        "</div><div style='text-align:right'>" +
                         infoText.intro.next +
                         "</div>"
                     );
@@ -347,6 +379,7 @@ function startWindow() {
                     $("#info-window").html(
                         "<div>" +
                         infoText.intro[4] +
+                        "</div><div style='text-align:right'>" +
                         infoText.intro.next +
                         "</div>"
                     );
@@ -361,6 +394,7 @@ function startWindow() {
                     $("#info-window").html(
                         "<div>" +
                         infoText.intro[5] +
+                        "</div><div style='text-align:right'>" +
                         infoText.intro.next +
                         "</div>"
                     );
@@ -375,6 +409,7 @@ function startWindow() {
                     $("#info-window").html(
                         "<div>" +
                         infoText.intro[6] +
+                        "</div><div style='text-align:right'>" +
                         infoText.intro.next +
                         "</div>"
                     );
@@ -389,6 +424,7 @@ function startWindow() {
                     $("#info-window").html(
                         "<div>" +
                         infoText.intro[7] +
+                        "</div><div style='text-align:right'>" +
                         infoText.intro.next +
                         "</div>"
                     );
@@ -398,12 +434,13 @@ function startWindow() {
                     });
                 }).fadeIn(1000);
                 break;
-            case 8:
+            case 8:                             // insert player's name
                 $("#info-window").fadeOut(500, ()=> {
                     $("#info-window").html(
                         "<div class='alignCenter'>" +
                         infoText.intro[8] +
                         infoText.intro.player +
+                        "</div><div style='text-align:right'>" +
                         infoText.intro.next +
                         "</div>"
                     );
@@ -413,8 +450,9 @@ function startWindow() {
                     });
                 }).fadeIn(1000);
                 break;
-            case 9:
-                if ( $('#enter-player-name').prop("value") ) player.name = $('#enter-player-name').prop("value");
+            case 9:                             // insert Furball's name
+                if ( $('#enter-player-name').prop("value") )
+                    player.name = $('#enter-player-name').prop("value").trim(); // seems that trim() isn't necessary
 
                 $("#info-window").fadeOut(500, ()=> {
                     $("#info-window").html(
@@ -424,6 +462,7 @@ function startWindow() {
                         "<p>" + player.name +
                         infoText.intro[10] +
                         infoText.intro.furbal +
+                        "</div><div style='text-align:right'>" +
                         infoText.intro.next +
                         "</div>"
                     );
@@ -433,15 +472,17 @@ function startWindow() {
                     });
                 }).fadeIn(1000);
                 break;
-            case 10:
-                if ($('#enter-furbal-name').prop("value") ) myFurball.name = $('#enter-furbal-name').prop("value");
+            case 10:                            // last question...
+                if ($('#enter-furbal-name').prop("value") )
+                    myFurball.name = $('#enter-furbal-name').prop("value").trim(); // seems that trim() isn't necessary
 
                 $("#info-window").fadeOut(500, ()=> {
                     $("#info-window").html(
                         "<div>" +
-                        "<p>" + myFurball.name + 
+                        "<p>" + myFurball.name +
                         infoText.intro[11] +
-                        player.name + "...</p>" + 
+                        player.name + "...</p>" +
+                        "</div><div style='text-align:right'>" +
                         infoText.intro.next +
                         "</div>"
                     );
@@ -462,6 +503,7 @@ function startWindow() {
 
     window.addEventListener("load", function() {
         $("#game-field").hide();
+        displayEverything();
         intro();
     })
 }
@@ -472,7 +514,8 @@ function newGame() {
 
     //myFurball.name = "My Furball";   // Let user insert a name in startWindow()...
     myFurball.isDead = false;
-    myFurball.health = 21;          // should be >20
+    myFurball.health = 41;          // should be >20. Should also not fire statements directly after starting game.
+    myFurball.fitness = 100;
     myFurball.satiation = 50;       // should be 50
     myFurball.fun = 90;             // should be <91
     myFurball.secureness = 90;      // should be <91
@@ -481,12 +524,12 @@ function newGame() {
     player.gameInProgress = true;
     player.points = 0;
     player.credits = 0;
-    player.food = 0;
-    player.toy = 0;
+    player.food = 50;
+    player.toy = 50;
     player.specialItems = {
         "carrot": 1,
         "lemon": 1,
-        "strawberry": 2
+        "strawberry": 1
     };
 
     // last page of start window, confirm to start game, close start window.
@@ -636,12 +679,15 @@ function settings() {
 
 //////////////////////////////////////////////////
 
+// ACTIONS: feed, play, pet // buying things // gambling:
+
 function feed() {
     let satiationIncrease;
 
     (myFurball.secureness < 0)?
         satiationIncrease = 0 :
-        satiationIncrease = ( (-(foodPowerMax-foodPowerMin)/100 *myFurball.satiation) + foodPowerMax ) * myFurball.secureness/100;
+        //satiationIncrease = ( (-(foodPowerMax-foodPowerMin)/100 *myFurball.satiation) + foodPowerMax ) * myFurball.secureness/100;
+        satiationIncrease = ( (-(foodPowerMax-foodPowerMin)/myFurball.fitness *myFurball.satiation) + foodPowerMax ) * myFurball.secureness/100;
         // the less secureness, the less myFurball will eat.
 
 
@@ -712,20 +758,22 @@ function feed() {
             letShrink(food);
         }
         
-        
     }
 
     // Update players food box:
-    player.food -= satiationIncrease;    
+    player.food -= satiationIncrease;
+    feedBtn.disabled = !player.food? true : false;
 
-    if (myFurball.satiation > 100) myFurball.satiation = 100;
+    //if (myFurball.satiation > myFurball.fitness) myFurball.satiation = myFurball.fitness;
+    // i am sure it had to be moved to update().
 
 }
 
 
 function play() {
 
-    let funIncrease = ( (-(toyPowerMax-toyPowerMin)/100 *myFurball.fun) + toyPowerMax ) * (myFurball.secureness/100 -secToFunThreshold);   // the less secureness, the less myFurball will play.
+    //let funIncrease = ( (-(toyPowerMax-toyPowerMin)/100 *myFurball.fun) + toyPowerMax ) * (myFurball.secureness/100 -secToFunThreshold);   // the less secureness, the less myFurball will play.
+    let funIncrease = ( (-(toyPowerMax-toyPowerMin)/myFurball.fitness *myFurball.fun) + toyPowerMax ) * (myFurball.secureness/100 -secToFunThreshold);
     
     /* If player doesn't have enough toy for 1 toy portion, Furball gets what player has.
         If player has no toys, Furball gets no toys. */
@@ -807,12 +855,13 @@ function play() {
         
         // Update players toy box:
         player.toy -= funIncrease;
+        playBtn.disabled = !player.toy? true : false;
 
         if (funIncrease) TweenMax.to(fun, fadeInTime, {opacity:1});
     }
     
-
-    if (myFurball.fun > 100) myFurball.fun = 100;
+    //if (myFurball.fun > myFurball.fitness) myFurball.fun = myFurball.fitness;
+    // i am sure it had to be moved to update().
 
 }
 
@@ -825,7 +874,8 @@ function pet() {
     (myFurball.secureness < 0)?
         myFurball.secureness = securenessIncrease :
         myFurball.secureness += securenessIncrease;
-    if (myFurball.secureness > 100) myFurball.secureness = 100;
+    //if (myFurball.secureness > myFurball.fitness) myFurball.secureness = myFurball.fitness;
+    // i am sure it had to be moved to update().
 
 
     // Reset color:
@@ -874,7 +924,8 @@ function petBySwipe() {
     (myFurball.secureness < 0)?
         myFurball.secureness = securenessIncrease :
         myFurball.secureness += securenessIncrease;
-    if (myFurball.secureness > 100) myFurball.secureness = 100;
+    //if (myFurball.secureness > myFurball.fitness) myFurball.secureness = myFurball.fitness;
+    // i am sure it had to be moved to update().
 
 
     // Reset color:
@@ -941,6 +992,8 @@ const buyFood = {
     },
 
     check() {
+        feedBtn.disabled = !player.food? true : false;
+
         !( player.credits >= Math.ceil(foodPrice*foodPowerMin) )?
             jQuery(function($) { greyout.add($("#buy-food")); } ) :
             jQuery(function($) { greyout.remove($("#buy-food")); } );
@@ -972,6 +1025,8 @@ const buyToy = {
     },
     
     check() {
+        playBtn.disabled = !player.toy? true : false;
+
         !(player.credits >= Math.ceil(toyPrice*toyPowerMin) )?
             jQuery(function($) { greyout.add($("#buy-toy")) }) :
             jQuery(function($) { greyout.remove($("#buy-toy")) });
@@ -1093,7 +1148,8 @@ const specialItem = {
                     strawberryPower
                 :   myFurball.secureness + strawberryPower;
 
-                if (myFurball.secureness > 100) myFurball.secureness = 100;
+                //if (myFurball.secureness > myFurball.fitness) myFurball.secureness = myFurball.fitness;
+                //moved to update()
                 
                 if (myFurball.secureness > criticalSec) secureness.style.color = "var(--black)";
 
@@ -1111,7 +1167,8 @@ const specialItem = {
                     lemonPower
                 :   myFurball.fun + lemonPower;
 
-                if (myFurball.fun > 100) myFurball.fun = 100;
+                //if (myFurball.fun > myFurball.fitness) myFurball.fun = myFurball.fitness;
+                //moved to update()
                 
                 if (myFurball.fun > criticalFun) fun.style.color = "var(--black)";
 
@@ -1129,7 +1186,8 @@ const specialItem = {
                     carrotPower
                 :   myFurball.satiation + carrotPower;
                 
-                if (myFurball.satiation > 100) myFurball.satiation = 100;
+                //if (myFurball.satiation > myFurball.fitness) myFurball.satiation = myFurball.fitness;
+                //moved to update()
                 
                 if (myFurball.satiation > criticalSat) satiation.style.color = "var(--black)";
 
@@ -1217,7 +1275,7 @@ function incomePoints(progress) {
     } else { timeoutGainPntsHealth = 0; }
 
 
-    if (myFurball.satiation >= 95) {
+    if (myFurball.satiation >= 95 && myFurball.health < 90) {
         if (!timeoutGainPntsSat) player.points += 50;
         if (timeoutGainPntsSat >= pointsInterval) {
             timeoutGainPntsSat = 0;
@@ -1225,14 +1283,14 @@ function incomePoints(progress) {
     } else { timeoutGainPntsSat = 0; }
 
 
-    if (myFurball.fun >= 95) {
+    if (myFurball.fun >= 95 && myFurball.health < 90) {
         if (!timeoutGainPntsFun) player.points += 50;
         if (timeoutGainPntsFun >= pointsInterval) {
             timeoutGainPntsFun = 0;
         } else { timeoutGainPntsFun += progress; }
     } else { timeoutGainPntsFun = 0; }
 
-    if (myFurball.secureness >= 95) {
+    if (myFurball.secureness >= 95 && myFurball.health < 90) {
         if (!timeoutGainPntsSec) player.points += 50;
         if (timeoutGainPntsSec >= pointsInterval) {
             timeoutGainPntsSec = 0;
@@ -1482,7 +1540,7 @@ function update(progress) {
     myFurball.fun -= (naturalDecreaseOfFun + -healthToFun/100*myFurball.health + healthToFun) * gameSpeed;              // + character trait
     myFurball.secureness -= (naturalDecreaseOfSecureness + -healthToSec/100*myFurball.health + healthToSec) * gameSpeed;// + character trait
 
-    /* Decrease power to health if condition falls below critical threshold */
+    /* Increase power to health if condition falls below critical threshold */
     let factor = (condition, critical) => {
         return condition <= critical?
             -(condition-critical)/25 + 1 : 1;
@@ -1491,9 +1549,23 @@ function update(progress) {
         // f(x) = -(x/50) + 1       // for x=-100 factor will be 3
         // f(x) = -(x/33.33) + 1    // for x=-100 factor will be 4
         // f(x) = -(x/25) + 1       // for x=-100 factor will be 5
+        // f(x) = -(x/20) + 1       // for x=-100 factor will be 6
+        // f(x) = -(x/11.11) + 1    // for x=-100 factor will be 10
+        // f(x) = -(x/10) + 1       // for x=-100 factor will be 11
+    };
+    // other0.innerHTML = "Other0: " + factor(myFurball.satiation, criticalSat);   // test monitor
+
+
+    // Fitness update:
+    let factor2 = (condition, critical) => {
+        return condition <= critical?
+            -(condition-critical)/10 + 1 : 0;
     };
 
-    // other0.innerHTML = "Other0: " + factor(myFurball.satiation, criticalSat);   // test monitor
+    myFurball.fitness -= factor2(myFurball.satiation, criticalSat) * satToFitness
+                        + factor2(myFurball.fun, criticalFun) * funToFitness
+                        + factor2(myFurball.secureness, criticalSec) * secToFitness;
+
 
     /* Update Furballs health: Newtons Law of Cooling: u'(t) = -k(u(t)-a) */
     healthUpdate = -satiationPower *factor(myFurball.satiation, criticalSat) * (myFurball.health-myFurball.satiation)
@@ -1502,7 +1574,11 @@ function update(progress) {
     
     myFurball.health += healthUpdate * gameSpeed;
 
-    if (myFurball.health >= 100) myFurball.health = 100;
+    if (myFurball.satiation > myFurball.fitness) myFurball.satiation = myFurball.fitness;
+    if (myFurball.fun > myFurball.fitness) myFurball.fun = myFurball.fitness;
+    if (myFurball.secureness > myFurball.fitness) myFurball.secureness = myFurball.fitness;
+
+    if (myFurball.health >= myFurball.fitness) myFurball.health = myFurball.fitness;
     if (myFurball.health <= 0) myFurball.isDead = true;
 
     warningSystem();
@@ -1524,9 +1600,9 @@ function update(progress) {
     }
 
     //Test: DELETE / DEACTIVATE !!!
-    // myFurball.satiation = 30;
-    // myFurball.fun = 30;
-    // myFurball.secureness = 30;
+    //myFurball.satiation = 30;
+    //myFurball.fun = 30;
+    //myFurball.secureness = 30;
     //myFurball.health = 100;
     //if (v_timeElapsed >= 8000) { myFurball.isDead = true } // Control values after a certain time. Delete later.
     //if (myFurball.satiation <= 0) myFurball.isDead = true;  // time check. Delete later!
@@ -1544,8 +1620,8 @@ function draw() {
     other2.innerHTML = "Other2: " + myFurball.fun;
     other3.innerHTML = "Other3: " + myFurball.secureness;
     // slider for adjusting height (my layout tool):
-    containerHeight.innerHTML = "Height: " + $("#adjust-height").innerHeight();
-    containerWidth.innerHTML = "Width: " + $("#adjust-height").innerWidth();
+    containerHeight.innerHTML = "Height: " + $("#adjust-height").height();
+    containerWidth.innerHTML = "Width: " + $("#adjust-height").width();
 
 
     // user and items:
@@ -1558,16 +1634,13 @@ function draw() {
     !player.food? food.style.color = "var(--red)" : food.style.color = "var(--black)";
     !player.toy? toy.style.color = "var(--red)" : toy.style.color = "var(--black)";
 
-    // Disable Buttons:
-    feedBtn.disabled = !player.food? true : false;
-    playBtn.disabled = !player.toy? true : false;
-
 
     // draw condition bars and write Furballs statements
 
-    health.children[0].style.width = myFurball.health*100/90 + "%";
-    health.children[0].style.backgroundColor = "#" + colorMap[Math.round(myFurball.health-1)]; // There is no index -1
-    health.style.borderColor = "#" + colorMap[Math.round(myFurball.health-1)];
+    fitness.style.width = myFurball.fitness -10 + "%";
+    health.style.width = myFurball.health*100/(myFurball.fitness-10) + "%";
+    health.style.backgroundColor = "#" + colorMap[Math.round(myFurball.health-1)]; // There is no index -1
+    fitness.style.borderColor = "#" + colorMap[Math.round(myFurball.health-1)];
 
     furballStatement.innerHTML = furballSaying;
 
@@ -1675,7 +1748,11 @@ function handleMove(event) {
     petBySwipe();
 }
 
+// if height of gameField is tall enough, show Furballs name as heading.
+window.addEventListener("resize", displayEverything);
 
+
+/*
 // Layout adjusting: height:
 sizeHeight.oninput = function() {
     adjustHeight.style.height = this.value + "px";
@@ -1684,7 +1761,7 @@ sizeHeight.oninput = function() {
 showHeight.oninput = function() {
     adjustHeight.style.height = this.value + "px";
 }
-
+*/
 
 
 TweenMax.set(goToSettings, {display:"none"});

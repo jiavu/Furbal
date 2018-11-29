@@ -7,15 +7,15 @@ const infoText = {
         4 : "<p>Play with your Furball.<br>If you forget to play with your Furball, it is going to die of boredom.<br><br>Pay attention: Playing makes your Furball hungry!</p>",
         5 : "<p>You also have to pet your pet.<br>If you don't give it your affection, it will be lonely and is going to lose it's joy for living.</p>",
         6 : "<p>Pay attention to Furball's level of secureness.<br>If your Furball is lonely, it won't eat and play anymore.</p>",
-        7 : "<p>If your Furball is sad or ill, it will lose it's color.<br>Critical levels of Furballs conditions will weaken it.<br>Be aware - Furbals fitness won't recover!</p>",
+        7 : "<p>If your Furball is sad or ill, it will lose it's color.<br>Critical levels of Furballs conditions will weaken it.<br><br>Be aware - Furbals fitness won't recover!</p>",
         8 : "<p>So... what was your name again?</p>",
         9 : ", right!<br><br></p>", // 9 with 10 together
         10 : ", which name do you want to give your Furball?</p>",
         11 : ", what a beautiful name!!!<br><br>Let me ask you one last question, ",
         skipIntro : "<div id='skip-intro'>Skip Intro &gt;&gt;</div>",
         next : "<br><div id='next-page'>&gt;&gt;</div>",   // https://www.w3schools.com/HTML/html_entities.asp
-        player : "<input type='text' placeholder='Player' id='enter-player-name'>", // entry fields
-        furbal : "<input type='text' placeholder='My Furball' id='enter-furbal-name'>"
+        player : "<input type='text' placeholder='Player' maxlength='26' id='enter-player-name'>", // entry fields
+        furbal : "<input type='text' placeholder='My Furball' maxlength='26' id='enter-furbal-name'>"
     },
     startWindow : {
         go : "<div class='alignCenter'><h1>Furball</h1>\
@@ -46,3 +46,20 @@ const infoText = {
 };
 
 export default infoText;
+
+/*
+Maximum health: endurance, capacity, fitness, stamina
+
+===
+
+Add:
+
+Some last things:
+(ul)
+- The more points you earn, the more game credits you get.
+- You need to buy {your Furball}'s food and toy with your game credits.
+- If {your Furball} survives xx minutes, you win and {your Furball} will be immortal.
+or:
+- If you earn xxxx points, you win and {your Furball} will be immortal.
+
+*/

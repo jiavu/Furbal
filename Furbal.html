@@ -34,6 +34,7 @@
                 <input type="button" id="pause" value="Pause">
             </div>
 
+
         <!--
             (moto G5 | 1080x1920p)
             Android info bar, mobile Chrome header, bottom navigation bar.
@@ -48,16 +49,18 @@
             <input type="range" min="480" max="1920" value="1536" class="slider" id="size-height">
         </div>
 
+
         <div class="container" id="adjust-height">
 
             <div id="info-window"></div>
             
             <div></div> <!-- For flexbox, pushes footer to bottom.-->
 
+
             <div id="game-field">
 
                 <!-- <h1>Furball</h1> or: -->
-                <h1 id="furball-name" class="show-in-fullscreen-only"></h1>
+                <h1 id="furball-name" class="show-in-fullscreen"></h1>
         
                 <div class="conditions clearfix">
                     <div id="secureness">
@@ -80,9 +83,9 @@
                     </div>
                     <div class="health" id="health-container">
                         <p class="hide-in-fullscreen" id="name-in-health"></p>
-                        <p class="show-in-fullscreen-only">HEALTH</p>  <!--(ENERGY)-->
-                        <div class="health-bar" id="health">
-                            <div></div>
+                        <p class="show-in-fullscreen">HEALTH</p>  <!--(ENERGY)-->
+                        <div class="health-bar" id="fitness">
+                            <div id="health"></div>
                         </div>
                     </div>
                 </div>
@@ -168,7 +171,7 @@
             
             <footer class="my-credits">
                 <p>developed by <a href="https://github.com/jiavu" target="_blank"> Jan-Patrick Tyra</a></p>
-                <p>Version: 1.beta - Oct 2018</p>
+                <p>Version: 1.2beta - Nov 2018</p>
                 <img src="./icons/expand_1.svg" onerror="this.src='https://image.flaticon.com/icons/svg/158/158783.svg'" alt="FS" id="toggle-fScreen">
                 <img src="./icons/settings2.svg" onerror="this.src='https://image.flaticon.com/icons/svg/158/158866.svg'" alt="S" id="go-to-settings">
 

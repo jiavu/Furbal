@@ -16,15 +16,20 @@ try: via padding, https://www.w3schools.com/howto/howto_css_aspect_ratio.asp
 Make a landscape style later. Perhaps.
 */
 
+/* 
+Not used anymore.
+Missing support of some browsers (?):
+Managed by JS now.
+
 @media only screen and (display-mode: browser) {
     .hide-in-fullscreen { display: block; }
-    .show-in-fullscreen-only { display: none; }
+    .show-in-fullscreen { display: none; }
 }
 @media only screen and (display-mode:fullscreen), (display-mode:standalone), (display-mode: minimal-ui) {
     .hide-in-fullscreen { display: none; }
-    .show-in-fullscreen-only { display: block; }
+    .show-in-fullscreen { display: block; }
 }
-
+*/
 
 html {
     /* COLOR VARS: */
@@ -69,10 +74,6 @@ body {  /* stretch body to viewable area of the window or screen. */
         margin: auto;
     }
 }
-
-/* body > div > * {
-    border: 1px solid green;
-} */
 
 .container {
     min-width: 320px;       /* 320px*/
@@ -214,7 +215,7 @@ body {  /* stretch body to viewable area of the window or screen. */
 #next-page:hover { font-size: 1rem; }
 
 #info-window input[type=text] {
-    margin: 0.5rem;
+    margin-top: 0.5rem;
     padding: 0.2rem 0.4rem;
     width: 50%;
     font: 0.8rem "Poor Story", cursive;
@@ -286,7 +287,6 @@ body {  /* stretch body to viewable area of the window or screen. */
 }
 .health-bar {
     position: relative;
-    width: 90%;
     height: 0.9em;
     margin-bottom: 2%;
     border: 1px solid red;
@@ -469,6 +469,7 @@ body {  /* stretch body to viewable area of the window or screen. */
     display: none;
 }
 
+
 /*============================*/
 
 .to-right-side {
@@ -487,7 +488,7 @@ body {  /* stretch body to viewable area of the window or screen. */
     max-width: 6rem;
 }
 /* displays user name: */
-.user > h3 {
+.user > h3 {                /* unused atm */
     height: 1.1rem;
     font-size: 0.4rem;
     overflow-y: hidden;
