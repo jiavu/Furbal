@@ -119,3 +119,27 @@ https://www.flaticon.com/free-icon/strawberry_135717#term=strawberry&page=1&posi
 Clover leaf		-> USED
 https://www.flaticon.com/free-icon/clover_508385#term=clover%20leaf&page=1&position=52
 <div>Icons made by <a href="https://www.freepik.com" title="Freepik">Freepik</a> from <a href="https://www.flaticon.com/" title="Flaticon">www.flaticon.com</a> is licensed by <a href="http://creativecommons.org/licenses/by/3.0/" title="Creative Commons BY 3.0" target="_blank">CC 3.0 BY</a></div>
+
+----------------
+----------------
+MISC
+----------------
+
+Santa hat (hat.svg)	-> USED
+https://www.flaticon.com/free-icon/hat_744546#term=santa%20hat&page=1&position=43
+(img-link: https://image.flaticon.com/icons/svg/744/744546.svg)
+<div>Icons made by <a href="https://www.flaticon.com/authors/vectors-market" title="Vectors Market">Vectors Market</a> from <a href="https://www.flaticon.com/" title="Flaticon">www.flaticon.com</a> is licensed by <a href="http://creativecommons.org/licenses/by/3.0/" title="Creative Commons BY 3.0" target="_blank">CC 3.0 BY</a></div>
+
+----------------
+
+santa-hat.svg
+https://www.flaticon.com/free-icon/santa-hat_892824#term=santa%20hat&page=1&position=33
+(img-link: https://image.flaticon.com/icons/svg/892/892824.svg)
+<div>Icons made by <a href="https://www.flaticon.com/authors/pixel-perfect" title="Pixel perfect">Pixel perfect</a> from <a href="https://www.flaticon.com/" title="Flaticon">www.flaticon.com</a> is licensed by <a href="http://creativecommons.org/licenses/by/3.0/" title="Creative Commons BY 3.0" target="_blank">CC 3.0 BY</a></div>
+
+----------------
+
+christmal-hat.svg
+https://www.flaticon.com/free-icon/christmas-hat_1231339#term=santa%20hat&page=1&position=28
+(img-link: https://image.flaticon.com/icons/svg/1231/1231339.svg)
+<div>Icons made by <a href="https://www.freepik.com/" title="Freepik">Freepik</a> from <a href="https://www.flaticon.com/" title="Flaticon">www.flaticon.com</a> is licensed by <a href="http://creativecommons.org/licenses/by/3.0/" title="Creative Commons BY 3.0" target="_blank">CC 3.0 BY</a></div>

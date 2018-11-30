@@ -10,8 +10,9 @@
         If page added to home screen, it should load to fullscreen when opening from home screen.
         (Safari/iOS and Chrome/Android:) -->
         <meta name="apple-mobile-web-app-capable" content="yes">
-        <meta name="mobile-web-app-capable" content="yes">
+        <!-- <meta name="mobile-web-app-capable" content="yes"> -->
         <!-- (A better option is to use the Web App Manifest. -->
+        <link rel="manifest" href="/manifest.json">
 
         <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Amatic+SC|Caveat|Coiny|Indie+Flower|Open+Sans|Poor+Story|Source+Sans+Pro">
         <link rel="stylesheet" type="text/css" media="screen" href="Furbal.css" id="cssheet">
@@ -94,7 +95,7 @@
                 <div class="cage-container">
                     <div class="cage">
                         <div class="furball-pic-container" id="m-over-furball">
-                            <img class="furball-pic" src="furb_00.jpg" alt="Furball inspiration" draggable="false">
+                            <img class="furball-pic" src="furb_00_c.jpg" alt="Furball inspiration" draggable="false">
                         </div>
                     </div>
                     <div class="buttons">

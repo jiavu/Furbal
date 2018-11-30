@@ -34,8 +34,9 @@ const infoText = {
     },
     settingsScreen : "<div class='alignCenter'> \
                         <h1>Options</h1>\
-                        <p><button type='button' class='smaller-button' id='restart-game'>Restart game</button></p> \
+                        <p><button type='button' class='smaller-button' id='restart-game'>Restart Game</button></p> \
                         <p><a href='https://goo.gl/forms/ktww9CI6E7xlP4vj1' target='_blank' class='smaller-button'>Give Feedback</a></p> \
+                        <p><button type='button' class='smaller-button' id='install-app'>Get App</button></p> \
                         <button type='button' id='continue'>Continue</button> \
                     </div>",
     catIpsum : 

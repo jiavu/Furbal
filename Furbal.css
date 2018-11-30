@@ -147,7 +147,7 @@ body {  /* stretch body to viewable area of the window or screen. */
     z-index: 1;
     background-color: var(--light1);
     text-align: left;
-    font-size: 0.9rem;
+    font-size: 1rem;
     padding: 4vmin 5vmin;
     border-radius: 10px;
     border: 1px solid var(--dark2);
@@ -196,6 +196,7 @@ body {  /* stretch body to viewable area of the window or screen. */
     box-shadow: none;
     transform: translate(-0.04rem, 0.09rem);
 }
+
 #info-window .smaller-button {
     font-size: 0.7rem;
     margin: 2%;
@@ -206,13 +207,15 @@ body {  /* stretch body to viewable area of the window or screen. */
 #info-window .smaller-button:hover {
     font-size: 0.75rem;
 }
+#install-app:disabled { display: none; }
+
 #skip-intro {
     float: right;
-    font-size: 0.7rem;
+    font-size: 0.8rem;
     cursor: pointer;
 }
-#skip-intro:hover { font-size: 0.7rem }
-#next-page:hover { font-size: 1rem; }
+#skip-intro:hover { font-size: 0.85rem }
+#next-page:hover { font-size: 1.3rem; }
 
 #info-window input[type=text] {
     margin-top: 0.5rem;
