@@ -147,7 +147,7 @@ body {  /* stretch body to viewable area of the window or screen. */
     z-index: 1;
     background-color: var(--light1);
     text-align: left;
-    font-size: 0.8rem;
+    font-size: 0.9rem;
     padding: 4vmin 5vmin;
     border-radius: 10px;
     border: 1px solid var(--dark2);
@@ -158,13 +158,16 @@ body {  /* stretch body to viewable area of the window or screen. */
 #info-window div.alignCenter { text-align: center; }
 #info-window h1 {
     font: 1.5rem "Coiny", cursive;
-    padding-bottom: 0.25rem;
+    margin-bottom: 0.5rem;
 }
-#info-window h2 { margin-bottom: 0.5em; }
-#info-window button {
+#info-window h2 {
+    margin-bottom: 0.5em;
+}
+#info-window a { text-decoration: none; }
+#info-window button, #info-window a {
     font: 0.9rem "Poor Story", cursive;
     display: inline-block;
-    margin: 5% 0 0;
+    margin-top: 6%;
     padding: 3%;
     border: none solid var(--dark1);
     border-radius: 10px;
@@ -174,16 +177,16 @@ body {  /* stretch body to viewable area of the window or screen. */
     text-decoration: none;
     box-shadow: -0.04rem 0.09rem 0.1rem var(--dark2);
 }
-#info-window button:hover {
+#info-window button:hover, #info-window a:hover {
     font-size: 1rem;
     background-image: linear-gradient(to bottom right, var(--white), var(--light3));
 }
-#info-window button:active {
+#info-window button:active, #info-window a:active {
     background-image: linear-gradient(to bottom right, var(--white), var(--light2));
     box-shadow: -0.01rem 0.02rem 0.04rem var(--dark4);
     transform: translate(-0.03rem, 0.07rem);
 }
-#info-window button:focus { outline: none; }
+#info-window button:focus, #info-window a:focus { outline: none; }
 #info-window button:disabled {
     font-size: 1rem;
     pointer-events: none;
@@ -193,13 +196,9 @@ body {  /* stretch body to viewable area of the window or screen. */
     box-shadow: none;
     transform: translate(-0.04rem, 0.09rem);
 }
-#info-window a {
-    text-decoration: none;
-    color: var(--colorB1);
-}
 #info-window .smaller-button {
     font-size: 0.7rem;
-    margin: 3%;
+    margin: 2%;
     padding: 1.5% 2%;
     /* box-shadow: -0.02rem 0.04rem 0.05rem var(--dark2); */
     box-shadow: none;
@@ -209,7 +208,8 @@ body {  /* stretch body to viewable area of the window or screen. */
 }
 #skip-intro {
     float: right;
-    font-size: 0.6rem;
+    font-size: 0.7rem;
+    cursor: pointer;
 }
 #skip-intro:hover { font-size: 0.7rem }
 #next-page:hover { font-size: 1rem; }
@@ -336,11 +336,11 @@ body {  /* stretch body to viewable area of the window or screen. */
     justify-content: space-around;
 }
 .actionBtns {
-    font: 1em "Poor Story", cursive;
+    font: 1.15em "Poor Story", cursive;
     display: block;
-    width: 2.65em;
-    height: 2.65em;
-    padding: 10%;
+    width: 2.675em;
+    height: 2.675em;
+    padding: 11%;
     border: none;
     border-radius: 50%;
     background-image: linear-gradient(to bottom right, var(--green2), var(--green1));
