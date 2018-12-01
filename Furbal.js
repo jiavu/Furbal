@@ -352,6 +352,8 @@ const greyout = {
 //////////////////////////////////////////////////
 //////////////////////////////////////////////////
 
+// Game stages:
+
 function startWindow() {
 
     function intro() {
@@ -1754,8 +1756,6 @@ function loop(timestamp) {
     } 
     
     progress = timestamp - lastRender;
-    //if (progress > 30) console.log("!!!-------------!!!");        // For debugging. Issue: Sometimes loop times are longer.
-    //console.log(progress);
     v_timeElapsed += progress;
 
     update(progress);
