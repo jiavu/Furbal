@@ -164,7 +164,9 @@ const player = { name: "Player" };
 //////////////////////////////////////////////////
 
 // Gameloop parameter:
-const gameSpeed = 1;
+let gameSpeed;              // starts with 1, ends with 2
+const calibrate = 16.694;   // When I did balancing and set the constant time variables I had an average loop speed of 16.694.
+let averageLoopSpeed;
 
 let lastRender;
 let progress;
@@ -176,12 +178,15 @@ let pauseTime;
 
 
 // Balancing powers of decrease/increase:
+
+const winGame = 2000;   // player wins game with 2000 points (level 10).
+
 let healthUpdate;
 const naturalDecreaseOfSatiation = 0.015;
 const satiationPower = 0.0015;               // = influence to health
-const naturalDecreaseOfFun = 0.009;
+const naturalDecreaseOfFun = 0.0098;
 const funPower = 0.001;                    // = influence to health
-const naturalDecreaseOfSecureness = 0.013;
+const naturalDecreaseOfSecureness = 0.014;
 const securenessPower = 0.0006;             // = influence to health
 
 const criticalSat = 40;                 // if satiation is critical or lower, influence to health will rise.
@@ -208,12 +213,13 @@ const petPowerMin = 1;
 // } positive integers only!
 
 const foodPrice = 1;
-const toyPrice = 1.2;
+const toyPrice = 1.5;
 const ticketPrice = 20;
+
 const winMoney = 100;
 let slotMachineActive;
-const creditsInterval = 20000/gameSpeed     // this two variables
-const pointsInterval = 10000/gameSpeed;      // will be changed dynamically later.
+const creditsInterval = 20000;     // this two variables
+const pointsInterval = 10000;      // will be changed dynamically later.
 let timeoutCredits;
 let timeoutGainPntsHealth;
 let timeoutGainPntsSat;
@@ -240,7 +246,7 @@ or Bypass CORS by disabling web-security. */
 //If all files are saved to and accessed via request to server I can use:
 //import furbalStates from "./furbal_says.js";
 //Otherwise paste object here and don't forget to remove type="module":
-const infoText = {intro:{0:"<div class='alignCenter pulse'><h1 id='enter-game'>Furball</h1>",1:"<p>Once there was a Furball.</p>",2:"<p>A Furball is a small pet with big button eyes and a thick and furry fur living in a website.</p>",3:"<p>You have to feed your Furball.<br>If you forget to feed it, it will die.</p>",4:"<p>Play with your Furball.<br>If you forget to play with your Furball, it is going to die of boredom.<br><br>Pay attention: Playing makes your Furball hungry!</p>",5:"<p>You also have to pet your pet.<br>If you don't give it your affection, it will be lonely and is going to lose it's joy for living.</p>",6:"<p>Pay attention to Furball's level of secureness.<br>If your Furball is lonely, it won't eat and play anymore.</p>",7:"<p>If your Furball is sad or ill, it will lose it's color.<br>Critical levels of Furballs conditions will weaken it.<br><br>Be aware - Furbals fitness won't recover!</p>",8:"<p>So... what was your name again?</p>",9:", right!<br><br></p>",10:", which name do you want to give your Furball?</p>",11:", what a beautiful name!!!<br><br>Let me ask you one last question, ",skipIntro:"<div id='skip-intro'>Skip Intro &gt;&gt;</div>",next:"<br><div id='next-page'>&gt;&gt;</div>",player:"<input type='text' placeholder='Player' maxlength='26' id='enter-player-name'>",furbal:"<input type='text' placeholder='My Furball' maxlength='26' id='enter-furbal-name'>"},startWindow:{go:"<div class='alignCenter'><h1>Furball</h1><h3>Are you ready for it?</h3><button type='button' id='go'>YES!</button></div>"},finishScreen:{gameOverT1:"<div class='alignCenter'><h1>Game Over</h1><p>"/*insert gameOverInfo*/,gameOverT2:"</p><button type='button' id='again'>GIMME A NEW FURBALL!</button></div>"},settingsScreen:"<div class='alignCenter'><h1>Options</h1><p><button class='smaller-button' id='restart-game'>Restart Game</button></p><p><a href='https://goo.gl/forms/ktww9CI6E7xlP4vj1' target='_blank' class='smaller-button'>Give Feedback</a></p><p><button type='button' class='smaller-button' id='install-app'>Get App</button></p><button type='button' id='continue'>Continue</button></div>"};
+const infoText = {intro:{0:"<div class='alignCenter pulse'><h1 id='enter-game'>Furball</h1>",1:"<p>Once there was a Furball.</p>",2:"<p>A Furball is a small pet with big button eyes and a thick and furry fur living in a website.</p>",3:"<p>You have to feed your Furball.<br>If you forget to feed it, it will die.</p>",4:"<p>Play with your Furball.<br>If you forget to play with your Furball, it is going to die of boredom.<br><br>Pay attention: Playing makes your Furball hungry!</p>",5:"<p>You also have to pet your pet.<br>If you don't give it your affection, it will be lonely and is going to lose it's joy for living.</p>",6:"<p>Pay attention to Furball's level of secureness.<br>If your Furball is lonely, it won't eat and play anymore.</p>",7:"<p>If your Furball is sad or ill, it will lose it's color.<br>Critical levels of Furballs conditions will weaken it.<br><br>Be aware - Furbals fitness won't recover!</p>",8:"<p>So... what was your name again?</p>",9:", right!<br><br></p>",10:", which name do you want to give your Furball?</p>",11:", what a beautiful name!!!<br><br>Let me ask you one last question, ",skipIntro:"<div id='skip-intro'>Skip Intro &gt;&gt;</div>",next:"<br><div><span id='next-page'>&gt;&gt;</span></div>",player:"<input type='text' placeholder='Player' maxlength='26' id='enter-player-name'>",furbal:"<input type='text' placeholder='My Furball' maxlength='26' id='enter-furbal-name'>"},startWindow:{go:"<div class='alignCenter'><h1>Furball</h1><h3>Are you ready for it?</h3><button type='button' id='go'>YES!</button></div>"},finishScreen:{gameOverT1:"<div class='alignCenter'><h1>Game Over</h1><p>"/*insert gameOverInfo*/,gameOverT2:"</p><button type='button' id='again'>GIMME A NEW FURBALL!</button></div>"},settingsScreen:"<div class='alignCenter'><h1>Options</h1><p><button class='smaller-button' id='restart-game'>Restart Game</button></p><p><a href='https://goo.gl/forms/ktww9CI6E7xlP4vj1' target='_blank' class='smaller-button'>Give Feedback</a></p><p><button type='button' class='smaller-button' id='install-app'>Get App</button></p><button type='button' id='continue'>Continue</button></div>"};
 
 const furbalStates = {toFeeding:{95:"Salad. Not again.",90:"I'm so full.",85:"I am good, thanks.",1:"Can I have a dessert?",2:"Tastes good, thanks.",3:"Is it food or...",4:"Yummy!",5:"* munch crunch chomp *"},toPlaying:{95:"I don't want to play anymore. You can have it.",90:"Yeay. Toys. :/",85:"I already had a lot of them.",1:"It's my dolly! Play with your own one!",2:"Oh, toys!",3:"Yippee!",4:"Catch me! Haha, catch me!!!"},toPetting:{95:"Leave me some space, okay?",85:"Come on, you're squeezing me.",1:"Huuug!",2:"I love you mama!",3:"You are the sunshine of my live.",4:"It's so good to have you.",5:"Rrrrrrrr!"},health:{90:"Oh, happy day!",50:"Could be better.",40:"I am not feeling so well.",30:"Why do you let me die?",20:"I declare that this is my last will and testament.",10:"I am feeling so cold.",5:"I think it's over.",0:"I'm dead."},satiation:{75:"I could maybe eat something.",60:"I want candy, now!",50:"Can I have cookie?",40:"I am so hungry.",30:"Can I eat stones?",20:"I am starving...",10:"My stomache hurts.",},fun:{90:"Live is fun!",75:"Let's play something!",50:"Boring!!!",40:"* YAWN *",30:"* snooze *",20:"Deadly boring."},secureness:{85:"It's so good to have you.",60:"Where are you?",50:"I am so lonley.",40:"I am afraid all alone!",noPlay:"I am so alone and sad. I don't want to play.",noEat:"I am so alone and sad. I don't want to eat."}};
 
@@ -546,8 +552,6 @@ function startWindow() {
 
 function newGame() {
 
-    console.log("v_timeElapsed in newGame(): " + v_timeElapsed);
-
     //myFurball.name = "My Furball";   // Let user insert a name in startWindow()...
     myFurball.isDead = false;
     myFurball.health = 41;          // should be >20. Should also not fire statements directly after starting game. ->41
@@ -559,6 +563,7 @@ function newGame() {
     player.gameInProgress = true;
     player.points = 0;
     player.credits = 0;
+    player.level = 1;
     player.food = 50;
     player.toy = 20;
     player.specialItems = {
@@ -584,10 +589,11 @@ function gameInit() {
 
     // RESETTING VARIABLES:
 
+    gameSpeed = 1;
     v_timeElapsed = 0;                      // if using cookies... THIS WOULD BE A RESET !!!
-    console.log("v_timeElapsed in gameInit(): " + v_timeElapsed);
+    averageLoopSpeed = calibrate;
     
-    lastRender = 0;
+    lastRender = null;
     progress = 0;
     counter = 0;
     countForCredits = 0;
@@ -595,12 +601,12 @@ function gameInit() {
 
     slotMachineActive = false;
 
-    timeoutCredits = creditsInterval;
+    timeoutCredits = creditsInterval/gameSpeed;     // I can delete the "/gameSpeeds" if initial gameSpeed keeps beeing 1.
 
-    timeoutGainPntsHealth = pointsInterval;
-    timeoutGainPntsSat = pointsInterval;
-    timeoutGainPntsFun = pointsInterval;
-    timeoutGainPntsSec = pointsInterval;
+    timeoutGainPntsHealth = pointsInterval/gameSpeed;
+    timeoutGainPntsSat = pointsInterval/gameSpeed;
+    timeoutGainPntsFun = pointsInterval/gameSpeed;
+    timeoutGainPntsSec = pointsInterval/gameSpeed;
     
     furballSaying = "";
     saysFeed = false;       // for statement cooldowns so statements won't be displayed for ever.
@@ -648,7 +654,6 @@ function gameInit() {
 function gameOver() {
     furballStatement.innerHTML = furbalStates.health[0];    //"I'm dead.";
 
-    const averageLoopSpeed = v_timeElapsed / counter;
     const hours = Math.floor(v_timeElapsed/3600000);
     const minutes = Math.floor(v_timeElapsed/60000 %60);
     const secondsMs = Math.round(v_timeElapsed)/1000 %60;
@@ -695,8 +700,6 @@ function gameOver() {
 }
 
 function switchPause() {
-
-    console.log("v_timeElapsed in switchPause(): " + v_timeElapsed);
 
     pause = !pause;
     pause? TweenMax.set(gameField, {pointerEvents:"none", opacity: 0.4} )
@@ -967,7 +970,7 @@ function pet() {
 
 function petBySwipe() {
 
-    let securenessIncrease = gameSpeed * ( ((petPowerMax-petPowerMin)/100 *myFurball.secureness) + petPowerMin )/20;
+    let securenessIncrease = gameSpeed/(averageLoopSpeed/calibrate) * ( ((petPowerMax-petPowerMin)/100 *myFurball.secureness) + petPowerMin )/20;
      // the less secureness, the less increase. LOST CONFIDENCE!
     
     // That's how petting will increase Furballs secureness:
@@ -1014,7 +1017,7 @@ function petBySwipe() {
     }
 
     // gain points for petting:
-    if (pettingTime >= 1000/gameSpeed) {
+    if (pettingTime >= 1000/gameSpeed *averageLoopSpeed/calibrate) {
         player.points++;
         pettingTime = 0;
     } else { pettingTime += progress; }
@@ -1124,7 +1127,7 @@ const slotMachine = {
         waSBoxText.innerText = "Good Luck!";
         TweenMax.set(waSBoxText, { rotationY:0 });
         TweenMax.set(winASpecial, { borderImageSource: "url(./icons/waS-border_Animation.gif)" });
-        TweenMax.to(waSBoxText, 4/gameSpeed, {
+        TweenMax.to(waSBoxText, 4/gameSpeed *averageLoopSpeed/calibrate, {
             /* onStart: ()=> winASpecial.style.borderImageSource = "url(./icons/waS-border_Animation.gif)", */
             rotationY: 360,
             onComplete: slotMachine.prizeGenerator
@@ -1155,7 +1158,7 @@ const slotMachine = {
 
             TweenMax.set("#won-"+this.prize, { display: "inline-block" });
             waSBoxText.innerText = "You win!";
-            TweenMax.to(waSBoxText, 0.5/gameSpeed, {
+            TweenMax.to(waSBoxText, 0.5/gameSpeed *averageLoopSpeed/calibrate, {
                 scale: 1.2,
                 ease: Power4.easeInOut,
                 repeat: 1,
@@ -1171,7 +1174,7 @@ const slotMachine = {
                     specialItem.check(this.prize);
                     letJump2( "#" + this.prize ) ;
                     slotMachine.reset();
-                }, 500/gameSpeed)
+                }, 500/gameSpeed *averageLoopSpeed/calibrate)
             });
         
         } else {
@@ -1181,14 +1184,14 @@ const slotMachine = {
             console.log("won: " + this.prize);
 
             TweenMax.to("#won-nothing", 0.2, { display: "inline-block" });
-            setTimeout(slotMachine.reset, 1000/gameSpeed);
+            setTimeout(slotMachine.reset, 1000/gameSpeed *averageLoopSpeed/calibrate);
         }
     },
 
     check() {
         // deactivate the hole until player has enough points!
 
-        if (player.points < 200) {
+        if (player.points < 500) {
             jQuery(function($) { greyout.add($("#win-a-special")) });
         } else {
             jQuery(function($) { greyout.remove($("#win-a-special")) });
@@ -1288,17 +1291,24 @@ function incomeCredits() {
 
     timeoutCredits = 0;
 
-    //let avgLoopSp = v_timeElapsed / counter;
-    // between 17 and 18ms .... no. on my mobile the loop changes between 17 and 33ms...
-    
-    // Deprecated. avgLoopSp variies and v_timeElapsed resets currently don't work:
-    // let lostSatiation = Math.ceil(naturalDecreaseOfSatiation * creditsInterval / avgLoopSp);
-    // let lostFun = Math.ceil(naturalDecreaseOfFun * creditsInterval / avgLoopSp);
-    let lostSatiation = Math.ceil(naturalDecreaseOfSatiation * countForCredits);
-    let lostFun = Math.ceil(naturalDecreaseOfFun * countForCredits);
-    
-    // BASIC SECURITY INCOME (it's too much. You can't lose.)
-    player.credits += Math.round(lostSatiation*foodPrice + lostFun*toyPrice);
+    if (countForCredits === 1) {
+        player.credits += 20;
+
+    } else {
+        //let avgLoopSp = v_timeElapsed / counter;
+        // between 17 and 18ms .... no. on my mobile the loop changes between 17 and 33ms...
+        // So...    
+        // deprecated. avgLoopSp variies and v_timeElapsed resets currently don't work:
+        //let lostSatiation = Math.ceil(naturalDecreaseOfSatiation * creditsInterval / avgLoopSp);
+        //let lostFun = Math.ceil(naturalDecreaseOfFun * creditsInterval / avgLoopSp);
+        // new:
+        let lostSatiation = Math.ceil(naturalDecreaseOfSatiation * countForCredits * gameSpeed/(averageLoopSpeed/calibrate) );
+        let lostFun = Math.ceil(naturalDecreaseOfFun * countForCredits * gameSpeed/(averageLoopSpeed/calibrate) );
+        
+        // BASIC SECURITY INCOME (it's too much. You can't lose.)
+        player.credits += Math.round(lostSatiation*foodPrice + lostFun*toyPrice);
+    }
+
 
     // add later if points are enough:
     //player.credits += ticketPrice;
@@ -1310,7 +1320,7 @@ function incomeCredits() {
     slotMachine.check();
 
     countForCredits = 0;
-   
+
 }
 
 
@@ -1322,7 +1332,7 @@ function incomePoints(progress) {
             letJump($("#health-container"));
             letJump2(credits);
         }
-        if (timeoutGainPntsHealth >= pointsInterval) {
+        if (timeoutGainPntsHealth >= pointsInterval/gameSpeed * averageLoopSpeed/calibrate) {
             timeoutGainPntsHealth = 0;
         } else { timeoutGainPntsHealth += progress; }
     } else { timeoutGainPntsHealth = 0; }
@@ -1330,7 +1340,7 @@ function incomePoints(progress) {
     
     if (myFurball.satiation >= myFurball.fitness-5 && myFurball.health < myFurball.fitness-10) {
         if (!timeoutGainPntsSat) player.points += Math.round(20 * (myFurball.fitness-5) / 95);      // for satiation=95: 20 points.
-        if (timeoutGainPntsSat >= pointsInterval) {
+        if (timeoutGainPntsSat >= pointsInterval/gameSpeed * averageLoopSpeed/calibrate) {
             timeoutGainPntsSat = 0;
         } else { timeoutGainPntsSat += progress; }
     } else { timeoutGainPntsSat = 0; }
@@ -1338,14 +1348,14 @@ function incomePoints(progress) {
 
     if (myFurball.fun >= myFurball.fitness-5 && myFurball.health < myFurball.fitness-10) {
         if (!timeoutGainPntsFun) player.points += Math.round(20 * (myFurball.fitness-5) / 95);      // for fun=95: 20 points.
-        if (timeoutGainPntsFun >= pointsInterval) {
+        if (timeoutGainPntsFun >= pointsInterval/gameSpeed * averageLoopSpeed/calibrate) {
             timeoutGainPntsFun = 0;
         } else { timeoutGainPntsFun += progress; }
     } else { timeoutGainPntsFun = 0; }
 
     if (myFurball.secureness >= myFurball.fitness-5 && myFurball.health < myFurball.fitness-10) {
         if (!timeoutGainPntsSec) player.points += Math.round(10 * (myFurball.fitness-5) / 95);      // for secureness=95: 10 points.
-        if (timeoutGainPntsSec >= pointsInterval) {
+        if (timeoutGainPntsSec >= pointsInterval/gameSpeed * averageLoopSpeed/calibrate) {
             timeoutGainPntsSec = 0;
         } else { timeoutGainPntsSec += progress; }
     } else { timeoutGainPntsSec = 0; }
@@ -1353,7 +1363,7 @@ function incomePoints(progress) {
 
     // v_timeElapsed (game progress) after 5 minutes, 10 minutes --> extra points?
 
-    if (!slotMachineActive && player.points >= 200) {
+    if (!slotMachineActive && player.points >= 500) {
         
         // activate slotMachine! :D
         slotMachineActive = true;
@@ -1363,6 +1373,38 @@ function incomePoints(progress) {
         slotMachine.play();
     }
      
+    // leveling up:
+    if (player.points >= 50 && player.points < 200) {
+        gameSpeed = 1.1;
+    } else if (player.points >= 200 && player.points < 400) {
+        player.level = 2;
+        gameSpeed = 1.2;
+    } else if (player.points >= 400 && player.points < 600) {
+        player.level = 3;
+        gameSpeed = 1.3;
+    } else if (player.points >= 600 && player.points < 800) {
+        player.level = 4;
+        gameSpeed = 1.4;
+    } else if (player.points >= 800 && player.points < 1000) {
+        player.level = 5;
+        gameSpeed = 1.5;
+    } else if (player.points >= 1000 && player.points < 1200) {
+        player.level = 6;
+        gameSpeed = 1.6;
+    } else if (player.points >= 1200 && player.points < 1400) {
+        player.level = 7;
+        gameSpeed = 1.7;
+    } else if (player.points >= 1400 && player.points < 1600) {
+        player.level = 8;
+        gameSpeed = 1.8;
+    } else if (player.points >= 1600 && player.points < 1800) {
+        player.level = 9;
+        gameSpeed = 1.9;
+    } else if (player.points >= 1800 && player.points < 2000) {
+        player.level = 10;
+        gameSpeed = 2;
+    }
+    
 }
 
 
@@ -1594,15 +1636,15 @@ function update(progress) {
     // get credits
     countForCredits++;
     if (player.points >= 50) {
-        timeoutCredits >= creditsInterval?
+        timeoutCredits >= creditsInterval/gameSpeed * averageLoopSpeed/calibrate?
         incomeCredits() :
         timeoutCredits += progress;
     } else { countForCredits = 0 }
 
     // Natural decrease and increase of Furballs conditions:
-    myFurball.satiation -= naturalDecreaseOfSatiation * gameSpeed;                                                      // + character trait
-    myFurball.fun -= (naturalDecreaseOfFun + -healthToFun/100*myFurball.health + healthToFun) * gameSpeed;              // + character trait
-    myFurball.secureness -= (naturalDecreaseOfSecureness + -healthToSec/100*myFurball.health + healthToSec) * gameSpeed;// + character trait
+    myFurball.satiation -= naturalDecreaseOfSatiation * gameSpeed/(averageLoopSpeed/calibrate) ;                                                         // + character trait
+    myFurball.fun -= (naturalDecreaseOfFun + -healthToFun/100*myFurball.health + healthToFun) * gameSpeed/(averageLoopSpeed/calibrate);                 // + character trait
+    myFurball.secureness -= (naturalDecreaseOfSecureness + -healthToSec/100*myFurball.health + healthToSec) * gameSpeed/(averageLoopSpeed/calibrate);   // + character trait
 
     /* Increase power to health if condition falls below critical threshold */
     let factor = (condition, critical) => {
@@ -1636,7 +1678,7 @@ function update(progress) {
                     -funPower *factor(myFurball.fun, criticalFun) * (myFurball.health-myFurball.fun)
                     -securenessPower *factor(myFurball.secureness, criticalSec) * (myFurball.health-myFurball.secureness);
     
-    myFurball.health += healthUpdate * gameSpeed;
+    myFurball.health += healthUpdate * gameSpeed/(averageLoopSpeed/calibrate);
 
 
     if (myFurball.satiation > myFurball.fitness) myFurball.satiation = myFurball.fitness;
@@ -1688,6 +1730,8 @@ function draw() {
     containerHeight.innerHTML = "Height: " + $("#adjust-height").height();
     containerWidth.innerHTML = "Width: " + $("#adjust-height").width();
 
+    //let avgLoopSp = v_timeElapsed / counter;
+    //console.log(avgLoopSp);
 
     // user and items:
     points.innerHTML = player.points;
@@ -1753,8 +1797,10 @@ function loop(timestamp) {
     if (pauseTime) {
         lastRender += timestamp - pauseTime;
         pauseTime = undefined;
-    } 
-    
+    }
+
+    if (!lastRender) lastRender = timestamp;
+
     progress = timestamp - lastRender;
     v_timeElapsed += progress;
 
@@ -1762,6 +1808,7 @@ function loop(timestamp) {
     draw();
 
     ++counter;
+    if (v_timeElapsed) averageLoopSpeed = v_timeElapsed / counter;
 
     myFurball.isDead? gameOver()
         : pause? (

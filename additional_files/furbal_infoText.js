@@ -13,7 +13,7 @@ const infoText = {
         10 : ", which name do you want to give your Furball?</p>",
         11 : ", what a beautiful name!!!<br><br>Let me ask you one last question, ",
         skipIntro : "<div id='skip-intro'>Skip Intro &gt;&gt;</div>",
-        next : "<br><div id='next-page'>&gt;&gt;</div>",   // https://www.w3schools.com/HTML/html_entities.asp
+        next : "<br><div><span id='next-page'>&gt;&gt;</span></div>",   // https://www.w3schools.com/HTML/html_entities.asp
         player : "<input type='text' placeholder='Player' maxlength='26' id='enter-player-name'>", // entry fields
         furbal : "<input type='text' placeholder='My Furball' maxlength='26' id='enter-furbal-name'>"
     },
@@ -57,10 +57,12 @@ Add:
 
 Some last things:
 (ul)
-- The more points you earn, the more game credits you get.
 - You need to buy {your Furball}'s food and toy with your game credits.
-- If {your Furball} survives xx minutes, you win and {your Furball} will be immortal.
-or:
-- If you earn xxxx points, you win and {your Furball} will be immortal.
+- You are starting to get credits if you made 50 points.
+- The more points you earn, the more game credits you get.
+- Furball's metabolism gets faster in time.
+        (- If {your Furball} survives xx minutes, you win and {your Furball} will be immortal.
+        or:)
 
+-> If you earn 2000 points / if your Furball survives Level 10, you win and {your Furball} will be immortal.
 */
