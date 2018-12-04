@@ -1768,7 +1768,7 @@ function draw() {
     timeElapsed.innerHTML = "Time elapsed: " + Math.round(v_timeElapsed) + "ms";
     loopSpeed.innerHTML = "Loop Speed: " + Math.round(progress) + "ms/loop";
     gSpeed.innerHTML = "Game Speed: " + gameSpeed;
-    other0.innerHTML = "Other0: " + myFurball.health;
+    other0.innerHTML = "avgLoopSpd: " + averageLoopSpeed;
     other1.innerHTML = "Other1: " + myFurball.satiation;
     other2.innerHTML = "Other2: " + myFurball.fun;
     other3.innerHTML = "Other3: " + myFurball.secureness;
