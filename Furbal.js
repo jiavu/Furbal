@@ -136,6 +136,7 @@ const playBtn = document.getElementById("playBtn");
 const userName = document.getElementById("user-name");
 const points = document.getElementById("points");
 const credits = document.getElementById("credits");
+const level = document.getElementById("level");
 const food = document.getElementById("food");
 const toy = document.getElementById("toy");
 const specialItems = document.getElementById("special-items");
@@ -259,6 +260,8 @@ let saysSatiation;
 let saysFun;
 let saysSecureness;
 
+let pLevel; // for jump animation of level
+
 const cooldownStatement = 2000;      // Cooldown for Furball's statements. Update statement only after cooldown time.
 let timeElapsedTemp;
 
@@ -366,6 +369,15 @@ function startWindow() {
         switch (introPage) {
             case 0:                             // still loading screen
                 loadingScreen.innerHTML = infoText.intro[0];
+                $(document).off().keydown(function(e) {
+                    if (e.keyCode==13 || e.keyCode==39) {  // which or keycode.
+                        introPage++;
+                        intro();
+                    } else if (e.keyCode==40) {
+                        loadingScreen.style.display = "none";
+                        newGame();
+                    };
+                })
                 $("#enter-game").click( ()=> {
                     introPage++;
                     intro();
@@ -395,6 +407,7 @@ function startWindow() {
                         infoText.intro.next +
                         "</div>"
                     );
+
                     $("#next-page").click( ()=> {
                         introPage++;
                         intro();
@@ -575,11 +588,24 @@ function newGame() {
     // last page of start window, confirm to start game, close start window.
     $("#info-window").fadeIn(1500).html(infoText.startWindow.go);
     $(function() {
-        $("#go").click(function() {
+        $(document).off().on("keypress", function(e) {
+            if (e.keyCode == 13) {
+                enter();
+                $(this).off().keypress(function(e) {
+                    if (e.keyCode == 13) settings();
+                });
+            }
+
+        });
+        $("#go").click(enter);
+    });
+
+    function enter() {
+        $(function() {
             $("#go").prop("disabled", true).html("Let's go!");
             $("#info-window").fadeOut(1500, gameInit);
         });
-    });
+    }
 }
 
 function gameInit() {
@@ -616,6 +642,9 @@ function gameInit() {
     saysSatiation = false;
     saysFun = false;
     saysSecureness = false;
+
+    pLevel = 1;
+
     timeElapsedTemp = 0;
 
     secCritical = false;
@@ -674,14 +703,26 @@ function gameOver() {
     pause = true;
 
     $(function(){
+        $(document).off();
+
+        // jQuery bug (this.easing is not a function).
+        // jquery-3.3.1.js:6710
+        // Can I replace this hole snippet with gsap?
         $("#satiation,#fun,#secureness").removeClass("flash").fadeIn(200,
             window.setTimeout(function() {
                 $("#game-field").fadeOut(1500, ()=> {
+
                     $("#info-window").fadeIn(1500)
                     .html(gameOverHTML);
+                    
+                    $(document).on("keypress", function(e) {
+                        if (e.keyCode == 13) {
+                            newGame();
+                        };
                     $("#again").click(newGame);
-                });
-        }, 1500)
+                    });
+                }, 1500);
+            })
         );
     });
 
@@ -1405,6 +1446,11 @@ function incomePoints(progress) {
         gameSpeed = 2;
     }
     
+    if (player.level != pLevel) {
+        letJump2(level);
+        pLevel = player.level;
+    }
+    
 }
 
 
@@ -1736,6 +1782,7 @@ function draw() {
     // user and items:
     points.innerHTML = player.points;
     credits.innerHTML = player.credits;
+    level.innerHTML = player.level;
     food.innerHTML = player.food;
     toy.innerHTML = player.toy;
 

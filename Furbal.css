@@ -485,9 +485,30 @@ body {  /* stretch body to viewable area of the window or screen. */
 
 /*============================*/
 
+.level-and-user {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    width: 100%;
+}
+.level {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    font-size: 0.65rem;
+    line-height: 0.5;
+    border: 2px dashed var(--colorC1);
+    border-radius: 8px;
+    padding: 7% 5% 0;
+}
+#level {
+    font: 1.2rem "Coiny", cursive;
+}
 .user {
+    align-self: center;
     text-align: right;
-    min-width: 5.5rem;
+    min-width: 5rem;
     max-width: 6rem;
 }
 /* displays user name: */
