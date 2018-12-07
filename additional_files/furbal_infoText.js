@@ -29,8 +29,22 @@ const infoText = {
                         <p>",
                         // insert gameOverInfo  //
         gameOverT2 :    "</p> \
-                        <button type='button' id='again'>GIMME A NEW FURBALL!</button>\
-                    </div>"
+                        <button type='button' id='again'>GIMME A NEW FURBALL!</button> \
+                    </div>\
+                    <script>$('#again').click(newGame);</script>",
+        
+        // Won game:                    
+        gameOverWonT1 : "<div class= 'alignCenter'> \
+                        <h1>You won!</h1> \
+                        <p>",
+                        // insert Furball's name //
+        gameOverWonT2 : " survived level 10 and became immortal!<br><br> \
+                        You, ",
+                        // insert Player's name //
+        gameOverWonT3 : ", are great!</p> \
+                        <button type='button' id='again'>GIMME A NEW FURBALL!</button> \
+                        </div>\
+                        <script>$('#again').click(newGame);</script>"
     },
     settingsScreen : "<div class='alignCenter'> \
                         <h1>Options</h1>\

@@ -7,6 +7,8 @@ const furbalStates = {
 
 //High priority:
 
+    // Reaction to player's actions:
+
     toFeeding : {
         95: "Salad. Not again.",     // > 95%
         90: "I'm so full.",          // almost full satiation    > 90%
@@ -42,6 +44,9 @@ const furbalStates = {
     /*=======================*/
     /*=======================*/
 
+    // Reaction to Furball's states:
+
+    won : "WE WON!!!",
 
     health : {         // Highest priority
         //good

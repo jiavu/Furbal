@@ -160,9 +160,10 @@ body {  /* stretch body to viewable area of the window or screen. */
     font: 1.5rem "Coiny", cursive;
     margin-bottom: 0.5rem;
 }
-#info-window h2 {
-    margin-bottom: 0.5em;
+#info-window h3 {
+    margin-bottom: 0.25rem;
 }
+#info-window p { margin-bottom: 0.25rem; }
 #info-window a { text-decoration: none; }
 #info-window button, #info-window a {
     font: 0.9rem "Poor Story", cursive;
