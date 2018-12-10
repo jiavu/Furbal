@@ -8,10 +8,20 @@ const infoText = {
         5 : "<p>You also have to pet your pet.<br>If you don't give it your affection, it will be lonely and is going to lose it's joy for living.</p>",
         6 : "<p>Pay attention to Furball's level of secureness.<br>If your Furball is lonely, it won't eat and play anymore.</p>",
         7 : "<p>If your Furball is sad or ill, it will lose it's color.<br>Critical levels of Furballs conditions will weaken it.<br><br>Be aware - Furbals fitness won't recover!</p>",
-        8 : "<p>So... what was your name again?</p>",
-        9 : ", right!<br><br></p>", // 9 with 10 together
-        10 : ", which name do you want to give your Furball?</p>",
-        11 : ", what a beautiful name!!!<br><br>Let me ask you one last question, ",
+        8 : "<p> \
+                Some last things: \
+                <ul> \
+                    <li>You need to buy your Furball's food and toy with your game credits.</li> \
+                    <li>You are starting to get credits if you made 50 points.</li> \
+                    <li>The more points you earn, the more game credits you get.</li> \
+                    <li>Furball's metabolism gets faster in time.</li> \
+                    <li>If your Furball survives Level 10, you win and your Furball will be immortal.</li> \
+                </ul> \
+            </p>",
+        9 : "<p>So... what was your name again?</p>",
+        10 : ", right!<br><br></p>", // 9 with 10 together
+        11 : ", which name do you want to give your Furball?</p>",
+        12 : ", what a beautiful name!!!<br><br>Let me ask you one last question, ",
         skipIntro : "<div id='skip-intro'>Skip Intro &gt;&gt;</div>",
         next : "<br><div><span id='next-page'>&gt;&gt;</span></div>",   // https://www.w3schools.com/HTML/html_entities.asp
         player : "<input type='text' placeholder='Player' maxlength='26' id='enter-player-name'>", // entry fields
@@ -48,6 +58,8 @@ const infoText = {
     },
     settingsScreen : "<div class='alignCenter'> \
                         <h1>Options</h1>\
+                        <input type='text' placeholder='My Furball' maxlength='26' id='enter-furbal-name2'> \
+                        <p><button type='button' class='smaller-button' id='restart-intro'>New Game (restart intro)</button></p> \
                         <p><button type='button' class='smaller-button' id='restart-game'>Restart Game</button></p> \
                         <p><a href='https://goo.gl/forms/ktww9CI6E7xlP4vj1' target='_blank' class='smaller-button'>Give Feedback</a></p> \
                         <p><button type='button' class='smaller-button' id='install-app'>Get App</button></p> \
@@ -64,19 +76,4 @@ export default infoText;
 
 /*
 Maximum health: endurance, capacity, fitness, stamina
-
-===
-
-Add:
-
-Some last things:
-(ul)
-- You need to buy {your Furball}'s food and toy with your game credits.
-- You are starting to get credits if you made 50 points.
-- The more points you earn, the more game credits you get.
-- Furball's metabolism gets faster in time.
-        (- If {your Furball} survives xx minutes, you win and {your Furball} will be immortal.
-        or:)
-
--> If you earn 2000 points / if your Furball survives Level 10, you win and {your Furball} will be immortal.
 */
