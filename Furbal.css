@@ -165,7 +165,7 @@ body {  /* stretch body to viewable area of the window or screen. */
 }
 #info-window p { margin-bottom: 0.25rem; }
 #info-window a { text-decoration: none; }
-#info-window button, #info-window a {
+#info-window button, .link-as-button {
     font: 0.9rem "Poor Story", cursive;
     display: inline-block;
     margin-top: 6%;
@@ -178,16 +178,16 @@ body {  /* stretch body to viewable area of the window or screen. */
     text-decoration: none;
     box-shadow: -0.04rem 0.09rem 0.1rem var(--dark2);
 }
-#info-window button:hover, #info-window a:hover {
+#info-window button:hover, .link-as-button:hover {
     font-size: 1rem;
     background-image: linear-gradient(to bottom right, var(--white), var(--light3));
 }
-#info-window button:active, #info-window a:active {
+#info-window button:active, .link-as-button:active {
     background-image: linear-gradient(to bottom right, var(--white), var(--light2));
     box-shadow: -0.01rem 0.02rem 0.04rem var(--dark4);
     transform: translate(-0.03rem, 0.07rem);
 }
-#info-window button:focus, #info-window a:focus { outline: none; }
+#info-window button:focus, .link-as-button:focus { outline: none; }
 #info-window button:disabled {
     font-size: 1rem;
     pointer-events: none;
@@ -229,6 +229,16 @@ body {  /* stretch body to viewable area of the window or screen. */
 }
 #info-window input[type=text]:focus {
     border: 2px solid var(--dark2);
+}
+
+#enter-furbal-name2 {
+    margin: 2%;
+    width: 75%;
+}
+
+.settings-credits { font-size: 3rem; }
+.settings-credits div {
+    font-size: 2rem;
 }
 
 /*============================*/

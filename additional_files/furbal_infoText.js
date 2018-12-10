@@ -41,7 +41,7 @@ const infoText = {
         gameOverT2 :    "</p> \
                         <button type='button' id='again'>GIMME A NEW FURBALL!</button> \
                     </div>\
-                    <script>$('#again').click(newGame);</script>",
+                    <script>$('#again').click(()=>startWindow.newGame());</script>",
         
         // Won game:                    
         gameOverWonT1 : "<div class= 'alignCenter'> \
@@ -54,17 +54,47 @@ const infoText = {
         gameOverWonT3 : ", are great!</p> \
                         <button type='button' id='again'>GIMME A NEW FURBALL!</button> \
                         </div>\
-                        <script>$('#again').click(newGame);</script>"
+                        <script>$('#again').click(()=>startWindow.newGame());</script>"
     },
     settingsScreen : "<div class='alignCenter'> \
                         <h1>Options</h1>\
-                        <input type='text' placeholder='My Furball' maxlength='26' id='enter-furbal-name2'> \
+                        <input type='text' placeholder='My Furball' maxlength='26' id='enter-furbal-name2' style='margin:2%;width:75%'> \
                         <p><button type='button' class='smaller-button' id='restart-intro'>New Game (restart intro)</button></p> \
                         <p><button type='button' class='smaller-button' id='restart-game'>Restart Game</button></p> \
-                        <p><a href='https://goo.gl/forms/ktww9CI6E7xlP4vj1' target='_blank' class='smaller-button'>Give Feedback</a></p> \
+                        <p><button type='button' class='smaller-button' id='get-hint'>Get a hint</button></p> \
+                        <p><a href='https://goo.gl/forms/ktww9CI6E7xlP4vj1' target='_blank' class='smaller-button link-as-button'>Give Feedback</a></p> \
+                        <p><button type='button' class='smaller-button' id='sources-and-credits'>Credits</button></p> \
                         <p><button type='button' class='smaller-button' id='install-app'>Get App</button></p> \
                         <button type='button' id='continue'>Continue</button> \
                     </div>",
+    hints : [
+        "Hint:<br>Furball's secureness increases by petting.",
+        "Hint:<br>Lemon is for fun, carrot is for satiation, strawberry is for secureness.",
+        "Hint:<br>Try to fill the conditions to make more points."
+    ],
+    credits :
+        '<div class="alignCenter settings-credits"> \
+            <h1>Credits</h1>\
+            <p> \
+                developed by:<br>\
+                Jan-Patrick Tyra<br> \
+                <a href="https://github.com/jiavu" target="_blank">Github</a><br> \
+                Version: 1.5beta - Dec 2018 \
+                <p>∞</p> \
+            </p> \
+            <h3>Sources</h3> \
+            <div> \
+                Settings and Fullscreen icon made by <a href="https://www.flaticon.com/authors/gregor-cresnar"  target="_blank" title="Gregor Cresnar">Gregor Cresnar</a><br> \
+                Coin, notes and strawberry made by <a href="https://www.flaticon.com/authors/smashicons"  target="_blank" title="Smashicons">Smashicons</a><br> \
+                Cash icon made by <a href="https://www.flaticon.com/authors/roundicons"  target="_blank" title="Roundicons">Roundicons</a><br> \
+                Carrot made by <a href="https://www.flaticon.com/authors/prettycons"  target="_blank" title="prettycons">prettycons</a><br> \
+                Lemon and clover leaf made by <a href="http://www.freepik.com"  target="_blank" title="Freepik">Freepik</a><br> \
+                Santa hat made by <a href="https://www.flaticon.com/authors/vectors-market"  target="_blank" title="Vectors Market">Vectors Market</a><br> \
+                from <a href="https://www.flaticon.com/"  target="_blank" title="Flaticon">www.flaticon.com</a> is licensed by <a href="http://creativecommons.org/licenses/by/3.0/" title="Creative Commons BY 3.0" target="_blank">CC 3.0 BY</a> \
+            </div> \
+        <p><button type="button" class="smaller-button" id="back">Back</button></p> \
+        </div>',
+
     catIpsum : 
         "<h1>Überschrift</h1>\
         Cat ipsum dolor sit amet, american bobtail savannah or jaguar or tom. Turkish angora jaguar. Jaguar.<br>\

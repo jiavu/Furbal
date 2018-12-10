@@ -247,7 +247,7 @@ or Bypass CORS by disabling web-security. */
 //If all files are saved to and accessed via request to server I can use:
 //import furbalStates from "./furbal_says.js";
 //Otherwise paste object here and don't forget to remove type="module":
-const infoText = {intro:{0:"<div class='alignCenter pulse'><h1 id='enter-game'>Furball</h1>",1:"<p>Once there was a Furball.</p>",2:"<p>A Furball is a small pet with big button eyes and a thick and furry fur living in a website.</p>",3:"<p>You have to feed your Furball.<br>If you forget to feed it, it will die.</p>",4:"<p>Play with your Furball.<br>If you forget to play with your Furball, it is going to die of boredom.<br><br>Pay attention: Playing makes your Furball hungry!</p>",5:"<p>You also have to pet your pet.<br>If you don't give it your affection, it will be lonely and is going to lose it's joy for living.</p>",6:"<p>Pay attention to Furball's level of secureness.<br>If your Furball is lonely, it won't eat and play anymore.</p>",7:"<p>If your Furball is sad or ill, it will lose it's color.<br>Critical levels of Furballs conditions will weaken it.<br><br>Be aware - Furbals fitness won't recover!</p>",8:"<p>Some last things:<ul><li>You need to buy your Furball's food and toy with your game credits.</li><li>You are starting to get credits if you made 50 points.</li><li>The more points you earn, the more game credits you get.</li><li>Furball's metabolism gets faster in time.</li><li>If your Furball survives Level 10, you win and your Furball will be immortal.</li></ul></p>",9:"<p>So... what was your name again?</p>",10:", right!<br><br></p>",11:", which name do you want to give your Furball?</p>",12:", what a beautiful name!!!<br><br>Let me ask you one last question, ",skipIntro:"<div id='skip-intro'>Skip Intro &gt;&gt;</div>",next:"<br><div><span id='next-page'>&gt;&gt;</span></div>",player:"<input type='text' placeholder='Player' maxlength='26' id='enter-player-name'>",furbal:"<input type='text' placeholder='Furball' maxlength='26' id='enter-furbal-name'>"},startWindow:{go:"<div class='alignCenter'><h1>Furball</h1><h3>Are you ready for it?</h3><button type='button' id='go'>YES!</button></div>"},finishScreen:{gameOverT1:"<div class='alignCenter'><h1>Game Over</h1><p>"/*insert gameOverInfo*/,gameOverT2:"</p><button type='button' id='again'>GIMME A NEW FURBALL!</button></div><script>$('#again').click(newGame);</script>",gameOverWonT1:"<div class= 'alignCenter'><h1>You won!</h1><p>",gameOverWonT2:" survived level 10 and became immortal!<br><br>You, ",gameOverWonT3:", are great!</p><button type='button' id='again'>GIMME A NEW FURBALL!</button></div><script>$('#again').click(newGame);</script>"},settingsScreen:"<div class='alignCenter'><h1>Options</h1><input type='text' maxlength='26' id='enter-furbal-name2'><p><button type='button' class='smaller-button' id='restart-intro'>New Game (restart intro)</button></p><p><button type='button' class='smaller-button' id='restart-game'>Restart Game</button></p><p><a href='https://goo.gl/forms/ktww9CI6E7xlP4vj1' target='_blank' class='smaller-button'>Give Feedback</a></p><p><button type='button' class='smaller-button' id='install-app'>Get App</button></p><button type='button' id='continue'>Continue</button></div>"};
+const infoText = {intro:{0:"<div class='alignCenter pulse'><h1 id='enter-game'>Furball</h1>",1:"<p>Once there was a Furball.</p>",2:"<p>A Furball is a small pet with big button eyes and a thick and furry fur living in a website.</p>",3:"<p>You have to feed your Furball.<br>If you forget to feed it, it will die.</p>",4:"<p>Play with your Furball.<br>If you forget to play with your Furball, it is going to die of boredom.<br><br>Pay attention: Playing makes your Furball hungry!</p>",5:"<p>You also have to pet your pet.<br>If you don't give it your affection, it will be lonely and is going to lose it's joy for living.</p>",6:"<p>Pay attention to Furball's level of secureness.<br>If your Furball is lonely, it won't eat and play anymore.</p>",7:"<p>If your Furball is sad or ill, it will lose it's color.<br>Critical levels of Furballs conditions will weaken it.<br><br>Be aware - Furbals fitness won't recover!</p>",8:"<p>Some last things:<ul><li>You need to buy your Furball's food and toy with your game credits.</li><li>You are starting to get credits if you made 50 points.</li><li>The more points you earn, the more game credits you get.</li><li>Furball's metabolism gets faster in time.</li><li>If your Furball survives Level 10, you win and your Furball will be immortal.</li></ul></p>",9:"<p>So... what was your name again?</p>",10:", right!<br><br></p>",11:", which name do you want to give your Furball?</p>",12:", what a beautiful name!!!<br><br>Let me ask you one last question, ",skipIntro:"<div id='skip-intro'>Skip Intro &gt;&gt;</div>",next:"<br><div><span id='next-page'>&gt;&gt;</span></div>",player:"<input type='text' placeholder='Player' maxlength='26' id='enter-player-name'>",furbal:"<input type='text' placeholder='Furball' maxlength='26' id='enter-furbal-name'>"},startWindow:{go:"<div class='alignCenter'><h1>Furball</h1><h3>Are you ready for it?</h3><button type='button' id='go'>YES!</button></div>"},finishScreen:{gameOverT1:"<div class='alignCenter'><h1>Game Over</h1><p>"/*insert gameOverInfo*/,gameOverT2:"</p><button type='button' id='again'>GIMME A NEW FURBALL!</button></div><script>$('#again').click(()=>startWindow.newGame());</script>",gameOverWonT1:"<div class= 'alignCenter'><h1>You won!</h1><p>",gameOverWonT2:" survived level 10 and became immortal!<br><br>You, ",gameOverWonT3:", are great!</p><button type='button' id='again'>GIMME A NEW FURBALL!</button></div><script>$('#again').click(()=>startWindow.newGame());</script>"},settingsScreen:"<div class='alignCenter'><h1>Options</h1><input type='text' maxlength='26' id='enter-furbal-name2' style='margin:2%;width:75%'><p><button type='button' class='smaller-button' id='restart-intro'>New Game (restart intro)</button></p><p><button type='button' class='smaller-button' id='restart-game'>Restart Game</button></p><p><button type='button' class='smaller-button' id='get-hint'>Get a hint</button></p><p><a href='https://goo.gl/forms/ktww9CI6E7xlP4vj1' target='_blank' class='smaller-button link-as-button'>Give Feedback</a></p><p><button type='button' class='smaller-button' id='sources-and-credits'>Credits</button></p><p><button type='button' class='smaller-button' id='install-app'>Get App</button></p><button type='button' id='continue'>Continue</button></div>",hints:["Hint:<br>Furball's secureness increases by petting.","Hint:<br>Lemon is for fun, carrot is for satiation, strawberry is for secureness.","Hint:<br>Try to fill the conditions to make more points."],credits:'<div class="alignCenter setting-credits"><h1>Credits</h1><p>developed by:<br>Jan-Patrick Tyra<br><a href="https://github.com/jiavu" target="_blank">Github</a><br>Version: 1.5beta - Dec 2018</p><p>∞</p><h3>Sources</h3><div>Settings and Fullscreen icon made by <a href="https://www.flaticon.com/authors/gregor-cresnar"  target="_blank" title="Gregor Cresnar">Gregor Cresnar</a><br>Coin, notes and strawberry made by <a href="https://www.flaticon.com/authors/smashicons"  target="_blank" title="Smashicons">Smashicons</a><br>Cash icon made by <a href="https://www.flaticon.com/authors/roundicons"  target="_blank" title="Roundicons">Roundicons</a><br>Carrot made by <a href="https://www.flaticon.com/authors/prettycons"  target="_blank" title="prettycons">prettycons</a><br>Lemon and clover leaf made by <a href="http://www.freepik.com"  target="_blank" title="Freepik">Freepik</a><br>Santa hat made by <a href="https://www.flaticon.com/authors/vectors-market"  target="_blank" title="Vectors Market">Vectors Market</a><br>from <a href="https://www.flaticon.com/"  target="_blank" title="Flaticon">www.flaticon.com</a> is licensed by <a href="http://creativecommons.org/licenses/by/3.0/" title="Creative Commons BY 3.0" target="_blank">CC 3.0 BY</a></div><p><button type="button" class="smaller-button" id="back">Back</button></p></div>'};
 
 const furbalStates = {toFeeding:{95:"Salad. Not again.",90:"I'm so full.",85:"I am good, thanks.",1:"Can I have a dessert?",2:"Tastes good, thanks.",3:"Is it food or...",4:"Yummy!",5:"* munch crunch chomp *"},toPlaying:{95:"I don't want to play anymore. You can have it.",90:"Yeay. Toys. :/",85:"I already had a lot of them.",1:"It's my dolly! Play with your own one!",2:"Oh, toys!",3:"Yippee!",4:"Catch me! Haha, catch me!!!"},toPetting:{95:"Leave me some space, okay?",85:"Come on, you're squeezing me.",1:"Huuug!",2:"I love you mama!",3:"You are the sunshine of my live.",4:"It's so good to have you.",5:"Rrrrrrrr!"},won:"WE WON!!!",health:{90:"Oh, happy day!",50:"Could be better.",40:"I am not feeling so well.",30:"Why do you let me die?",20:"I declare that this is my last will and testament.",10:"I am feeling so cold.",5:"I think it's over.",0:"I'm dead."},satiation:{75:"I could maybe eat something.",60:"I want candy, now!",50:"Can I have cookie?",40:"I am so hungry.",30:"Can I eat stones?",20:"I am starving...",10:"My stomache hurts.",},fun:{90:"Live is fun!",75:"Let's play something!",50:"Boring!!!",40:"* YAWN *",30:"* snooze *",20:"Deadly boring."},secureness:{85:"It's so good to have you.",60:"Where are you?",50:"I am so lonley.",40:"I am afraid all alone!",noPlay:"I am so alone and sad. I don't want to play.",noEat:"I am so alone and sad. I don't want to eat."}};
 
@@ -285,6 +285,8 @@ const fadeEasing = "linear";    // default: "swing"     //probably unused after 
 
 let clickOnFurbal = false;
 let pettingTime;
+
+let hint = 0;
 
 // Animation:
 
@@ -369,7 +371,7 @@ const startWindow = {
         switch (this.introPage) {
             case 0:                             // still loading screen
                 loadingScreen.innerHTML = infoText.intro[0];
-                $(document).off().keydown((e)=> {
+                $(document).keydown((e)=> {
                     if (e.keyCode==13 || e.keyCode==39) {  // which or keycode.
                         this.introPage++;
                         this.intro();
@@ -579,26 +581,32 @@ const startWindow = {
     },
 
     init() {
-        window.addEventListener("load", ()=> {
+        // (load listener moved now)
+        //window.addEventListener("load", ()=> {
+            TweenMax.set(goToSettings, {display:"none"});
+            $(document).off();
+            loadingScreen.style.display = "flex";
             $("#game-field").hide();
-            displayEverything();
-            this.intro();
-        });
+            $("#info-window").hide();
+            this.introPage = 0;
+            this.intro();            
+        //});
     },
 
     newGame() {
+        TweenMax.set(goToSettings, {display:"none"});
         $(document).off().keydown((e)=> {
             if (e.keyCode==13 || e.keyCode==39) {
                 // 'this' doesn't work here. Seems 'this' refers to the button pressed before.
-                startWindow.introPage++;
-                startWindow.intro();
+                this.introPage++;
+                this.intro();
             } else if (e.keyCode==40) {
                 newGame();
             };
         });
         $("#game-field").hide();
-        startWindow.introPage = 9;
-        startWindow.intro();
+        this.introPage = 9;
+        this.intro();
     },
 
     introPage: 0
@@ -841,23 +849,34 @@ function settings() {
 
         $(function() {
             $("#info-window").html(infoText.settingsScreen);
-            $("#enter-furbal-name2").attr("placeholder", myFurball.name);
+            $("#enter-furbal-name2").attr("placeholder", "Change Furball's name");
 
             PWAinstalready?
                 $("#install-app").prop("disabled", false) :
                 $("#install-app").prop("disabled", true);
-
+            
             $("#enter-furbal-name2").on("input", function() {
                 if ($(this).prop("value")) {
                     myFurball.name = $(this).prop("value").trim();
                     furballName.innerHTML = myFurball.name;
                 }
             });
-            $("#install-app").click(installWebApp);
-            $("#restart-game").click(startWindow.newGame);
-            $("#restart-intro").click(startWindow.init);
-            $("#continue").click(settings);
-        })
+            $("#install-app").click( ()=> installWebApp() );
+            $("#restart-game").click( ()=> startWindow.newGame() );
+            $("#restart-intro").click( ()=> startWindow.init() );
+            $("#get-hint").click( function() {
+                $(this).prop( "disabled", "true")
+                .html(infoText.hints[hint]);
+                hint++;
+                if (hint >= infoText.hints.length) hint = 0;
+            });
+            $("#sources-and-credits").click( function() {
+                $("#info-window").html(infoText.credits);
+                pause = false;
+                $("#back").click(settings);
+            });
+            $("#continue").click( ()=> settings() );
+        });
 
         // pause? $(function() {$("#info-window").show()}) : $(function() {$("#info-window").hide()});
         pause? TweenMax.set(infoWindow, {display: "inline-block"} )
@@ -1501,35 +1520,36 @@ function incomePoints(progress) {
      
     // leveling up:
     if (player.points >= 50 && player.points < 100) {
-        gameSpeed = 1.1;
+        gameSpeed = 1.15;
     } else if (player.points >= 100 && player.points < 200) {
         player.level = 2;
-        gameSpeed = 1.2;
+        gameSpeed = 1.3;
     } else if (player.points >= 200 && player.points < 300) {
         player.level = 3;
-        gameSpeed = 1.3;
+        gameSpeed = 1.45;
     } else if (player.points >= 300 && player.points < 400) {
         player.level = 4;
-        gameSpeed = 1.4;
+        gameSpeed = 1.6;
     } else if (player.points >= 400 && player.points < 500) {
         player.level = 5;
-        gameSpeed = 1.5;
+        gameSpeed = 1.75;
     } else if (player.points >= 500 && player.points < 600) {
         player.level = 6;
-        gameSpeed = 1.6;
+        gameSpeed = 1.9;
     } else if (player.points >= 600 && player.points < 700) {
         player.level = 7;
-        gameSpeed = 1.7;
+        gameSpeed = 2.05;
     } else if (player.points >= 700 && player.points < 800) {
         player.level = 8;
-        gameSpeed = 1.8;
+        gameSpeed = 2.2;
     } else if (player.points >= 800 && player.points < 900) {
         player.level = 9;
-        gameSpeed = 1.9;
+        gameSpeed = 2.35;
     } else if (player.points >= 900 && player.points < 1000) {
         player.level = 10;
-        gameSpeed = 2;
+        gameSpeed = 2.5;
     }
+
     
     if (player.level != prevLevel) {
         letJump2(level);
@@ -1975,55 +1995,68 @@ function loop(timestamp) {
 }
 
 
-// Event listener:
-pauseButton.addEventListener("click", switchPause);
-feedBtn.addEventListener("click", feed);
-playBtn.addEventListener("click", play);
-//petBtn.addEventListener("click", pet);
-goToSettings.addEventListener("click", settings);
+//////////////////////////////////////////////////
+//////////////////////////////////////////////////
 
-//carrot.addEventListener("click", ()=> specialItem("give", "carrot"));
 
-jQuery(function($) {
-    $("#toggle-fScreen").click(toggleFullScreen);
 
-    $("#buy-food").click( buyFood.buy );
-    $("#buy-toy").click( buyToy.buy );
-    $("#buy-ticket").click( slotMachine.pay );
-    $("#clover").click( slotMachine.play );
+window.addEventListener("load", ()=> {
 
-    $("#strawberry").click( ()=> specialItem.give("strawberry") );
-    $("#lemon").click( ()=> specialItem.give("lemon") );
-    $("#carrot").click( ()=> specialItem.give("carrot") );
+    // Event listener:
+    pauseButton.addEventListener("click", switchPause);
+    feedBtn.addEventListener("click", feed);
+    playBtn.addEventListener("click", play);
+    //petBtn.addEventListener("click", pet);
+    goToSettings.addEventListener("click", settings);
+
+    //carrot.addEventListener("click", ()=> specialItem("give", "carrot"));
+
+    //jQuery(function($) {
+        $("#toggle-fScreen").click(toggleFullScreen);
+
+        $("#buy-food").click( buyFood.buy );
+        $("#buy-toy").click( buyToy.buy );
+        $("#buy-ticket").click( slotMachine.pay );
+        $("#clover").click( slotMachine.play );
+
+        $("#strawberry").click( ()=> specialItem.give("strawberry") );
+        $("#lemon").click( ()=> specialItem.give("lemon") );
+        $("#carrot").click( ()=> specialItem.give("carrot") );
+    //});
+
+
+    // petting Furball by swiping over Furball:
+    divOverFurball.onmousedown = ()=> clickOnFurbal = true;
+    window.onmouseup = ()=> { clickOnFurbal = false; };
+    divOverFurball.onmousemove = function() {
+        if (clickOnFurbal) petBySwipe();
+    };
+
+    // petting on mobile:
+    divOverFurball.addEventListener("touchmove", handleMove, false);
+    function handleMove(event) {
+        event.preventDefault();
+        petBySwipe();
+    }
+
+
+    /*
+    // Layout adjusting: height:
+    sizeHeight.oninput = function() {
+        adjustHeight.style.height = this.value + "px";
+        showHeight.value = sizeHeight.value;
+    }
+    showHeight.oninput = function() {
+        adjustHeight.style.height = this.value + "px";
+    }
+    */
+
+
+    TweenMax.set(goToSettings, {display:"none"});
+    
+    displayEverything();
+
+    player.gameInProgress? gameInit() : startWindow.init();
+
+
 });
-
-// petting Furball by swiping over Furball:
-divOverFurball.onmousedown = ()=> clickOnFurbal = true;
-window.onmouseup = ()=> { clickOnFurbal = false; };
-divOverFurball.onmousemove = function() {
-    if (clickOnFurbal) petBySwipe();
-};
-
-// petting on mobile:
-divOverFurball.addEventListener("touchmove", handleMove, false);
-function handleMove(event) {
-    event.preventDefault();
-    petBySwipe();
-}
-
-
-/*
-// Layout adjusting: height:
-sizeHeight.oninput = function() {
-    adjustHeight.style.height = this.value + "px";
-    showHeight.value = sizeHeight.value;
-}
-showHeight.oninput = function() {
-    adjustHeight.style.height = this.value + "px";
-}
-*/
-
-
-TweenMax.set(goToSettings, {display:"none"});
-
-player.gameInProgress? gameInit() : startWindow.init();
