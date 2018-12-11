@@ -52,9 +52,9 @@ let deferredPrompt;
 let PWAinstalready = false;
 
 window.addEventListener('beforeinstallprompt', (e) => {
-  e.preventDefault();   // Prevent Chrome 67 and earlier from automatically showing the prompt
-  deferredPrompt = e;   // Stash the event so it can be triggered later.
-  PWAinstalready = true;
+    e.preventDefault();   // Prevent Chrome 67 and earlier from automatically showing the prompt
+    deferredPrompt = e;   // Stash the event so it can be triggered later.
+    PWAinstalready = true;
 });
 
 function installWebApp() {  // do I need to give in a parameter?
