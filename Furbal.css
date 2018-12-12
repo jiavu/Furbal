@@ -54,6 +54,10 @@ html {
 * {
     margin: 0;
     box-sizing: border-box;
+    touch-action: manipulation; /* none didn't help on */
+    -moz-user-select: none;
+    -webkit-user-select: none;
+    -ms-user-select: none;
     user-select: none;
     /* border: 0.5px solid green; */
 }
@@ -278,6 +282,9 @@ body {  /* stretch body to viewable area of the window or screen. */
     display: table;
 }
 
+.be-block {
+    display: inline-block;
+}
 /*============================*/
 /* FURALLS CONDITIONS */
 /*============================*/
@@ -342,6 +349,12 @@ body {  /* stretch body to viewable area of the window or screen. */
 .furball-pic {
     height: 100%;
     width: auto;
+    /* 
+    -webkit-user-drag: none;    /* no need anymore because of preventDefault()
+    -khtml-user-drag: none;
+    -moz-user-drag: none;
+    -o-user-drag: none;
+    /*user-drag: none;*/
 }
 
 .buttons {

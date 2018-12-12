@@ -290,7 +290,7 @@ let hint = 0;
 
 // Animation:
 
-function letJump(element) {
+function letJump(element) {     // small jump (for the big elements)
     TweenMax.to(element, 0.2, {
         /* fontSize: "130%", */
         scaleX: 1.04,
@@ -308,10 +308,24 @@ function letJump(element) {
         });
 }
 
-function letJump2(element) {
+function letJump2(element) {    // big jump (for the small elements)
     TweenMax.to(element, 0.2, {
-        scaleX: 1.4,
-        scaleY:1.4,
+        scaleX: 1.55,
+        scaleY:1.55,
+        ease: Power2.easeInOut,
+        onComplete: ()=>
+            TweenMax.to(element, 0.2, {
+                scaleX: 1,
+                scaleY: 1,
+                ease: Power2.easeInOut,
+            })
+        });
+}
+
+function letJump3(element) {    // medium jump
+    TweenMax.to(element, 0.2, {
+        scaleX: 1.3,
+        scaleY:1.3,
         ease: Power2.easeInOut,
         onComplete: ()=>
             TweenMax.to(element, 0.2, {
@@ -963,6 +977,7 @@ function feed() {
         if (satiationIncrease > 0) {
             player.points++;
             letJump(satiation);
+            letJump3(satiation.firstElementChild);
             letShrink(food);
         }
         
@@ -1048,6 +1063,7 @@ function play() {
 
             satiation.style.color = "var(--red)";
             letJump(fun);
+            letJump3(fun.firstElementChild);
             letShrink(toy);
             satShown = true;
             TweenMax.to(satiation, fadeInTime, {opacity:1});
@@ -1115,6 +1131,7 @@ function pet() {
     if (saysPet) {
         TweenMax.to(secureness, fadeInTime, {opacity:1});
         letJump(secureness);
+        letJump3(secureness.firstElementChild);
     }
     
 }
@@ -1379,6 +1396,7 @@ const specialItem = {
                 
                 TweenMax.to(secureness, fadeInTime, {opacity:1});
                 letJump(secureness);
+                letJump3(secureness.firstElementChild);
                 secShown = true;
                 break;
 
@@ -1398,6 +1416,7 @@ const specialItem = {
 
                 TweenMax.to(fun, fadeInTime, {opacity:1});
                 letJump(fun);
+                letJump3(fun.firstElementChild);
                 funShown = true;
                 break;
 
@@ -1417,6 +1436,7 @@ const specialItem = {
 
                 TweenMax.to(satiation, fadeInTime, {opacity:1});
                 letJump(satiation);
+                letJump3(satiation.firstElementChild);
                 satShown = true;
                 break;
         }
@@ -1475,6 +1495,7 @@ function incomePoints(progress) {
         if (!timeoutGainPntsHealth) {
             player.points += Math.round(50 * (myFurball.fitness-10) / 90);      // for health=90: 50 points.
             letJump($("#health-container"));
+            letJump2($("#name-in-health, #title-in-health"));
             letJump2(credits);
         }
         if (timeoutGainPntsHealth >= pointsInterval/gameSpeed * averageLoopSpeed/calibrate) {
@@ -1923,14 +1944,14 @@ function draw() {
 
     furballStatement.innerHTML = furballSaying;
 
-    satiation.children[0].style.width = myFurball.satiation + "%";
-    satiation.children[0].style.backgroundColor = "#" + colorMap[Math.round(myFurball.satiation-1)];
+    satiation.children[1].style.width = myFurball.satiation + "%";
+    satiation.children[1].style.backgroundColor = "#" + colorMap[Math.round(myFurball.satiation-1)];
     //satiation.style.borderColor = "#" + colorMap[Math.round(myFurball.satiation-1)];
-    fun.children[0].style.width = myFurball.fun + "%";
-    fun.children[0].style.backgroundColor = "#" + colorMap[Math.round(myFurball.fun-1)];
+    fun.children[1].style.width = myFurball.fun + "%";
+    fun.children[1].style.backgroundColor = "#" + colorMap[Math.round(myFurball.fun-1)];
     //fun.style.borderColor = "#" + colorMap[Math.round(myFurball.fun-1)];
-    secureness.children[0].style.width = myFurball.secureness + "%";
-    secureness.children[0].style.backgroundColor = "#" + colorMap[Math.round(myFurball.secureness-1)];
+    secureness.children[1].style.width = myFurball.secureness + "%";
+    secureness.children[1].style.backgroundColor = "#" + colorMap[Math.round(myFurball.secureness-1)];
     //secureness.style.borderColor = "#" + colorMap[Math.round(myFurball.secureness-1)];
 
     // Furball loosing color:
@@ -2026,7 +2047,10 @@ window.addEventListener("load", ()=> {
 
 
     // petting Furball by swiping over Furball:
-    divOverFurball.onmousedown = ()=> clickOnFurbal = true;
+    divOverFurball.onmousedown = function(e){
+        e.preventDefault();
+        clickOnFurbal = true;
+    }
     window.onmouseup = ()=> { clickOnFurbal = false; };
     divOverFurball.onmousemove = function() {
         if (clickOnFurbal) petBySwipe();

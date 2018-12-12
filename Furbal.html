@@ -4,7 +4,8 @@
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
         <meta http-equiv="X-UA-Compatible" content="IE=edge">
         <title>Furball</title>
-        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+        <!-- or maybe user-scalable=0 -->
 
         <!--
         If page added to home screen, it should load to fullscreen when opening from home screen.
@@ -18,12 +19,12 @@
         <link rel="stylesheet" type="text/css" media="screen" href="Furbal.css" id="cssheet">
         <!-- Maybe preload stylesheets: rel="preload" as="style". Error when using it. -->
     </head>
-    <body>
+    <body oncontextmenu="return false;">
 
         <div id="loading-screen" style="z-index:3;background-color:white;position:fixed;top:0;left:0;height:100%;width:100%;display:flex;align-items:center;justify-content:center">Loading...</div>
         
         <!-- Deactivate later: -->
-        <div class="test-monitor" style="display: none">  <!--  -->
+        <div class="test-monitor">  <!-- style="display: none" -->
                 <h4>Control Monitor</h4>
                 <div id="timeElapsed"></div>
                 <div id="loopSpeed"></div>
@@ -65,26 +66,26 @@
         
                 <div class="conditions clearfix">
                     <div id="secureness">
-                        Secureness
+                        <span class="be-block">Secureness</span>
                         <div class="condition-bar">
                         <div></div>
                     </div>
                     </div>
                     <div id="fun">
-                        Fun                         <!-- (Entertainment) -->
+                        <span class="be-block">Fun</span>           <!-- (Entertainment) -->
                         <div class="condition-bar">
                             <div></div>
                         </div>
                     </div>
                     <div id="satiation">
-                        Satiation       <!--Starvation/Hunger/Satiation -->
+                        <span class="be-block">Satiation</span>     <!--Starvation/Hunger/Satiation -->
                         <div class="condition-bar">
                             <div></div>
                         </div>
                     </div>
                     <div class="health" id="health-container">
-                        <p class="hide-in-fullscreen" id="name-in-health"></p>
-                        <p class="show-in-fullscreen">HEALTH</p>  <!--(ENERGY)-->
+                        <p class="hide-in-fullscreen" ><span id="name-in-health" class="be-block"></span></p>
+                        <p class="show-in-fullscreen"><span id="title-in-health" class="be-block">HEALTH</span></p>  <!--(ENERGY)-->
                         <div class="health-bar" id="fitness">
                             <div id="health"></div>
                         </div>
