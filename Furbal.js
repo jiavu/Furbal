@@ -215,6 +215,7 @@ const petPowerMin = 1;
 const foodPrice = 1;
 const toyPrice = 1.5;
 const ticketPrice = 20;
+const getFirstCreditsWith = 40;
 
 const winMoney = 50;
 const activateSlotMachine = 400;
@@ -247,7 +248,7 @@ or Bypass CORS by disabling web-security. */
 //If all files are saved to and accessed via request to server I can use:
 //import furbalStates from "./furbal_says.js";
 //Otherwise paste object here and don't forget to remove type="module":
-const infoText = {intro:{0:"<div class='alignCenter pulse'><h1 id='enter-game'>Furball</h1>",1:"<p>Once there was a Furball.</p>",2:"<p>A Furball is a small pet with big button eyes and a thick and furry fur living in a website.</p>",3:"<p>You have to feed your Furball.<br>If you forget to feed it, it will die.</p>",4:"<p>Play with your Furball.<br>If you forget to play with your Furball, it is going to die of boredom.<br><br>Pay attention: Playing makes your Furball hungry!</p>",5:"<p>You also have to pet your pet.<br>If you don't give it your affection, it will be lonely and is going to lose it's joy for living.</p>",6:"<p>Pay attention to Furball's level of secureness.<br>If your Furball is lonely, it won't eat and play anymore.</p>",7:"<p>If your Furball is sad or ill, it will lose it's color.<br>Critical levels of Furballs conditions will weaken it.<br><br>Be aware - Furbals fitness won't recover!</p>",8:"<p>Some last things:<ul><li>You need to buy your Furball's food and toy with your game credits.</li><li>You are starting to get credits if you made 50 points.</li><li>The more points you earn, the more game credits you get.</li><li>Furball's metabolism gets faster in time.</li><li>If your Furball survives Level 10, you win and your Furball will be immortal.</li></ul></p>",9:"<p>So... what was your name again?</p>",10:", right!<br><br></p>",11:", which name do you want to give your Furball?</p>",12:", what a beautiful name!!!<br><br>Let me ask you one last question, ",skipIntro:"<div id='skip-intro'>Skip Intro &gt;&gt;</div>",next:"<br><div><span id='next-page'>&gt;&gt;</span></div>",player:"<input type='text' placeholder='Player' maxlength='26' id='enter-player-name'>",furbal:"<input type='text' placeholder='Furball' maxlength='26' id='enter-furbal-name'>"},startWindow:{go:"<div class='alignCenter'><h1>Furball</h1><h3>Are you ready for it?</h3><button type='button' id='go'>YES!</button></div>"},finishScreen:{gameOverT1:"<div class='alignCenter'><h1>Game Over</h1><p>"/*insert gameOverInfo*/,gameOverT2:"</p><button type='button' id='again'>GIMME A NEW FURBALL!</button></div><script>$('#again').click(()=>startWindow.newGame());</script>",gameOverWonT1:"<div class= 'alignCenter'><h1>You won!</h1><p>",gameOverWonT2:" survived level 10 and became immortal!<br><br>You, ",gameOverWonT3:", are great!</p><button type='button' id='again'>GIMME A NEW FURBALL!</button></div><script>$('#again').click(()=>startWindow.newGame());</script>"},settingsScreen:"<div class='alignCenter'><h1>Options</h1><input type='text' maxlength='26' id='enter-furbal-name2' style='margin:2%;width:75%'><p><button type='button' class='smaller-button' id='restart-intro'>New Game (restart intro)</button></p><p><button type='button' class='smaller-button' id='restart-game'>Restart Game</button></p><p><button type='button' class='smaller-button' id='get-hint'>Get a hint</button></p><p><a href='https://goo.gl/forms/ktww9CI6E7xlP4vj1' target='_blank' class='smaller-button link-as-button'>Give Feedback</a></p><p><button type='button' class='smaller-button' id='sources-and-credits'>Credits</button></p><p><button type='button' class='smaller-button' id='install-app'>Get App</button></p><button type='button' id='continue'>Continue</button></div>",hints:["Hint:<br>Furball's secureness increases by petting.","Hint:<br>Lemon is for fun, carrot is for satiation, strawberry is for secureness.","Hint:<br>Try to fill the conditions to make more points."],credits:'<div class="alignCenter setting-credits"><h1>Credits</h1><p>developed by:<br>Jan-Patrick Tyra<br><a href="https://github.com/jiavu" target="_blank">Github</a><br>Version: 1.5beta - Dec 2018</p><p>∞</p><h3>Sources</h3><div>Settings and Fullscreen icon made by <a href="https://www.flaticon.com/authors/gregor-cresnar"  target="_blank" title="Gregor Cresnar">Gregor Cresnar</a><br>Coin, notes and strawberry made by <a href="https://www.flaticon.com/authors/smashicons"  target="_blank" title="Smashicons">Smashicons</a><br>Cash icon made by <a href="https://www.flaticon.com/authors/roundicons"  target="_blank" title="Roundicons">Roundicons</a><br>Carrot made by <a href="https://www.flaticon.com/authors/prettycons"  target="_blank" title="prettycons">prettycons</a><br>Lemon and clover leaf made by <a href="http://www.freepik.com"  target="_blank" title="Freepik">Freepik</a><br>Santa hat made by <a href="https://www.flaticon.com/authors/vectors-market"  target="_blank" title="Vectors Market">Vectors Market</a><br>from <a href="https://www.flaticon.com/"  target="_blank" title="Flaticon">www.flaticon.com</a> is licensed by <a href="http://creativecommons.org/licenses/by/3.0/" title="Creative Commons BY 3.0" target="_blank">CC 3.0 BY</a></div><p><button type="button" class="smaller-button" id="back">Back</button></p></div>'};
+const infoText = {intro:{0:"<div class='alignCenter pulse'><h1 id='enter-game'>Furball</h1>",1:"<p>Once there was a Furball.</p>",2:"<p>A Furball is a small pet with big button eyes and a thick and furry fur living in a website.</p>",3:"<p>You have to feed your Furball.<br>If you forget to feed it, it will die.</p>",4:"<p>Play with your Furball.<br>If you forget to play with your Furball, it is going to die of boredom.<br><br>Pay attention: Playing makes your Furball hungry!</p>",5:"<p>You also have to pet your pet.<br>If you don't give it your affection, it will be lonely and is going to lose it's joy for living.</p>",6:"<p>Pay attention to Furball's level of secureness.<br>If your Furball is lonely, it won't eat and play anymore.</p>",7:"<p>If your Furball is sad or ill, it will lose it's color.<br>Critical levels of Furballs conditions will weaken it.<br><br>Be aware - Furbals fitness won't recover!</p>",8:`<p>Some last things:<ul><li>You need to buy <img src="./icons/cart.svg" onerror="this.src='https://image.flaticon.com/icons/svg/726/726496.svg'" alt="$" class="img-description"> your Furball's food and toy with your game credits.</li><li>You are starting to get credits if you made 50 points.</li><li>The more points you earn, the more game credits you get.</li><li>Furball's metabolism gets faster in time.</li><li>If your Furball survives Level 10, you win and your Furball will be immortal.</li></ul></p>`,9:"<p>So... what was your name again?</p>",10:", right!<br><br></p>",11:", which name do you want to give your Furball?</p>",12:", what a beautiful name!!!<br><br>Let me ask you one last question, ",skipIntro:"<div id='skip-intro'>Skip Intro &gt;&gt;</div>",next:"<br><div><span id='next-page'>&gt;&gt;</span></div>",player:"<input type='text' name='player-name' placeholder='Player' maxlength='26' id='enter-player-name'>",furbal:"<input type='text' name='furbal-name' placeholder='Furball' maxlength='26' id='enter-furbal-name'>"},startWindow:{go:"<div class='alignCenter'><h1>Furball</h1><h3>Are you ready for it?</h3><button type='button' id='go'>YES!</button></div>"},finishScreen:{gameOverT1:"<div class='alignCenter'><h1>Game Over</h1><p>"/*insert gameOverInfo*/,gameOverT2:"</p><button type='button' id='again'>GIMME A NEW FURBALL!</button></div><script>$('#again').click(()=>startWindow.newGame());</script>",gameOverWonT1:"<div class= 'alignCenter'><h1>You won!</h1><p>",gameOverWonT2:" survived level 10 and became immortal!<br><br>You, ",gameOverWonT3:", are great!</p><button type='button' id='again'>GIMME A NEW FURBALL!</button></div><script>$('#again').click(()=>startWindow.newGame());</script>"},settingsScreen:"<div class='alignCenter'><h1>Options</h1><input type='text'  name='player-name' maxlength='26' id='enter-furbal-name2' style='margin:2%;width:75%'><p><button type='button' class='smaller-button' id='restart-intro'>New Game (restart intro)</button></p><p><button type='button' class='smaller-button' id='restart-game'>Restart Game</button></p><p><button type='button' class='smaller-button' id='get-hint'>Get a hint</button></p><p><a href='https://goo.gl/forms/ktww9CI6E7xlP4vj1' target='_blank' class='smaller-button link-as-button'>Give Feedback</a></p><p><button type='button' class='smaller-button' id='sources-and-credits'>Credits</button></p><p><button type='button' class='smaller-button' id='install-app'>Get App</button></p><button type='button' id='continue'>Continue</button></div>",hints:["Hint:<br>Furball's secureness increases by petting.","Hint:<br>Lemon is for fun, carrot is for satiation, strawberry is for secureness.","Hint:<br>Try to fill the conditions to make more points."],credits:'<div class="alignCenter setting-credits"><h1>Credits</h1><p>developed by:<br>Jan-Patrick Tyra<br><a href="https://github.com/jiavu" target="_blank">Github</a><br>Version: 1.5beta - Dec 2018</p><p>∞</p><h3>Sources</h3><div>Settings and Fullscreen icon made by <a href="https://www.flaticon.com/authors/gregor-cresnar" target="_blank" title="Gregor Cresnar">Gregor Cresnar</a><br>Coin and strawberry made by <a href="https://www.flaticon.com/authors/smashicons" target="_blank" title="Smashicons">Smashicons</a><br>Cash icon made by <a href="https://www.flaticon.com/authors/roundicons" target="_blank" title="Roundicons">Roundicons</a><br>Shopping cart made by <a href="https://www.flaticon.com/authors/pixel-perfect" target="_blank" title="Pixel perfect">Pixel perfect</a><br>Carrot made by <a href="https://www.flaticon.com/authors/prettycons" target="_blank" title="prettycons">prettycons</a><br>Lemon and clover leaf made by <a href="http://www.freepik.com" target="_blank" title="Freepik">Freepik</a><br>Santa hat made by <a href="https://www.flaticon.com/authors/vectors-market" target="_blank" title="Vectors Market">Vectors Market</a><br>from <a href="https://www.flaticon.com/" target="_blank" title="Flaticon">www.flaticon.com</a> is licensed by <a href="http://creativecommons.org/licenses/by/3.0/" title="Creative Commons BY 3.0" target="_blank">CC 3.0 BY</a></div><p><button type="button" class="smaller-button" id="back">Back</button></p></div>'};
 
 const furbalStates = {toFeeding:{95:"Salad. Not again.",90:"I'm so full.",85:"I am good, thanks.",1:"Can I have a dessert?",2:"Tastes good, thanks.",3:"Is it food or...",4:"Yummy!",5:"* munch crunch chomp *"},toPlaying:{95:"I don't want to play anymore. You can have it.",90:"Yeay. Toys. :/",85:"I already had a lot of them.",1:"It's my dolly! Play with your own one!",2:"Oh, toys!",3:"Yippee!",4:"Catch me! Haha, catch me!!!"},toPetting:{95:"Leave me some space, okay?",85:"Come on, you're squeezing me.",1:"Huuug!",2:"I love you mama!",3:"You are the sunshine of my live.",4:"It's so good to have you.",5:"Rrrrrrrr!"},won:"WE WON!!!",health:{90:"Oh, happy day!",50:"Could be better.",40:"I am not feeling so well.",30:"Why do you let me die?",20:"I declare that this is my last will and testament.",10:"I am feeling so cold.",5:"I think it's over.",0:"I'm dead."},satiation:{75:"I could maybe eat something.",60:"I want candy, now!",50:"Can I have cookie?",40:"I am so hungry.",30:"Can I eat stones?",20:"I am starving...",10:"My stomache hurts.",},fun:{90:"Live is fun!",75:"Let's play something!",50:"Boring!!!",40:"* YAWN *",30:"* snooze *",20:"Deadly boring."},secureness:{85:"It's so good to have you.",60:"Where are you?",50:"I am so lonley.",40:"I am afraid all alone!",noPlay:"I am so alone and sad. I don't want to play.",noEat:"I am so alone and sad. I don't want to eat."}};
 
@@ -1464,7 +1465,7 @@ function incomeCredits() {
     timeoutCredits = 0;
 
     if (countForCredits === 1) {
-        player.credits += 20*foodPrice;
+        player.credits += Math.round(40 * foodPrice);
 
     } else {
         let lostSatiation = Math.ceil(naturalDecreaseOfSatiation * countForCredits * gameSpeed/(averageLoopSpeed/calibrate) );
@@ -1540,39 +1541,41 @@ function incomePoints(progress) {
     }
      
     // leveling up:
-    if (player.points >= 50 && player.points < 100) {
-        gameSpeed = 1.15;
+    if (player.points >= 40 && player.points < 100) {
+        gameSpeed = Math.round(1.15 * 1000 * averageLoopSpeed/calibrate)/1000;
     } else if (player.points >= 100 && player.points < 200) {
         player.level = 2;
-        gameSpeed = 1.3;
+        gameSpeed = Math.round(1.3 * 1000 * averageLoopSpeed/calibrate)/1000;
     } else if (player.points >= 200 && player.points < 300) {
         player.level = 3;
-        gameSpeed = 1.45;
+        gameSpeed = Math.round(1.45 * 1000 * averageLoopSpeed/calibrate)/1000;        
     } else if (player.points >= 300 && player.points < 400) {
         player.level = 4;
-        gameSpeed = 1.6;
+        gameSpeed = Math.round(1.6 * 1000 * averageLoopSpeed/calibrate)/1000;
     } else if (player.points >= 400 && player.points < 500) {
         player.level = 5;
-        gameSpeed = 1.75;
+        gameSpeed = Math.round(1.75 * 1000 * averageLoopSpeed/calibrate)/1000;
     } else if (player.points >= 500 && player.points < 600) {
         player.level = 6;
-        gameSpeed = 1.9;
+        gameSpeed = Math.round(1.9 * 1000 * averageLoopSpeed/calibrate)/1000;
     } else if (player.points >= 600 && player.points < 700) {
         player.level = 7;
-        gameSpeed = 2.05;
+        gameSpeed = Math.round(2.05 * 1000 * averageLoopSpeed/calibrate)/1000;
     } else if (player.points >= 700 && player.points < 800) {
         player.level = 8;
-        gameSpeed = 2.2;
+        gameSpeed = Math.round(2.2 * 1000 * averageLoopSpeed/calibrate)/1000;
     } else if (player.points >= 800 && player.points < 900) {
         player.level = 9;
-        gameSpeed = 2.35;
+        gameSpeed = Math.round(2.35 * 1000 * averageLoopSpeed/calibrate)/1000;
     } else if (player.points >= 900 && player.points < 1000) {
         player.level = 10;
-        gameSpeed = 2.5;
+        gameSpeed = Math.round(2.5 * 1000 * averageLoopSpeed/calibrate)/1000;
     }
 
     
     if (player.level != prevLevel) {
+        player.credits += Math.round(20 * foodPrice) + Math.round(10 * toyPrice);
+        letJump2(credits);
         letJump2(level);
         prevLevel = player.level;
     }
@@ -1807,7 +1810,7 @@ function update(progress) {
 
     // get credits
     countForCredits++;
-    if (player.points >= 50) {
+    if (player.points >= getFirstCreditsWith) {
         timeoutCredits >= creditsInterval/gameSpeed * averageLoopSpeed/calibrate?
         incomeCredits() :
         timeoutCredits += progress;
@@ -2019,6 +2022,23 @@ function loop(timestamp) {
 //////////////////////////////////////////////////
 //////////////////////////////////////////////////
 
+// Extrawurst for Safari (prevent zooming by gesture and double tap):
+window.addEventListener('touchmove', function (event) {
+    if (event.scale !== 1) { event.preventDefault(); }
+}, false);
+// doesn't work `_´
+
+// that is killing double tap completely:
+/*
+let lastTouchEnd = 0;
+document.addEventListener('touchend', function (event) {
+  let now = (new Date()).getTime();
+  if (now - lastTouchEnd <= 300) {
+    event.preventDefault();
+  }
+  lastTouchEnd = now;
+}, false);
+*/
 
 
 window.addEventListener("load", ()=> {
@@ -2062,6 +2082,8 @@ window.addEventListener("load", ()=> {
         event.preventDefault();
         petBySwipe();
     }
+
+
 
 
     /*

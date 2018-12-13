@@ -4,16 +4,17 @@
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
         <meta http-equiv="X-UA-Compatible" content="IE=edge">
         <title>Furball</title>
-        <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+        <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no, maximum-scale=1, minimum-scale=1">
         <!-- or maybe user-scalable=0 -->
 
         <!--
         If page added to home screen, it should load to fullscreen when opening from home screen.
         (Safari/iOS and Chrome/Android:) -->
         <meta name="apple-mobile-web-app-capable" content="yes">
-        <!-- <meta name="mobile-web-app-capable" content="yes"> -->
-        <!-- (A better option is to use the Web App Manifest.) -->
-        <link rel="manifest" href="/manifest.json">
+        <meta name="mobile-web-app-capable" content="yes">
+
+        <!-- (A better option is to use the Web App Manifest. Can't test if it works atm.) -->
+        <!-- <link rel="manifest" href="/manifest.json"> -->
 
         <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Amatic+SC|Caveat|Coiny|Indie+Flower|Open+Sans|Poor+Story|Source+Sans+Pro">
         <link rel="stylesheet" type="text/css" media="screen" href="Furbal.css" id="cssheet">
@@ -24,7 +25,7 @@
         <div id="loading-screen" style="z-index:3;background-color:white;position:fixed;top:0;left:0;height:100%;width:100%;display:flex;align-items:center;justify-content:center">Loading...</div>
         
         <!-- Deactivate later: -->
-        <div class="test-monitor">  <!-- style="display: none" -->
+        <div class="test-monitor" style="display: none">  <!--  -->
                 <h4>Control Monitor</h4>
                 <div id="timeElapsed"></div>
                 <div id="loopSpeed"></div>
@@ -118,12 +119,12 @@
                             <div>
                                 <div>
                                     <p> Food: <span id="food" style="display: inline-block"></span></p>
-                                    <img src="./icons/notes.svg" onerror="this.src='https://image.flaticon.com/icons/svg/138/138255.svg'" alt="$" class="buy-button" id="buy-food">
+                                    <img src="./icons/cart.svg" onerror="this.src='https://image.flaticon.com/icons/svg/726/726496.svg'" alt="$" class="buy-button" id="buy-food">
                                     <!-- money.svg or dollar.svg are my preferences. -->
                                 </div>
                                 <div>
                                     <p>Toy: <span id="toy" style="display: inline-block"></span></p>
-                                    <img src="./icons/notes.svg" onerror="this.src='https://image.flaticon.com/icons/svg/138/138255.svg'" alt="$" class="buy-button" id="buy-toy">
+                                    <img src="./icons/cart.svg" onerror="this.src='https://image.flaticon.com/icons/svg/726/726496.svg'" alt="$" class="buy-button" id="buy-toy">
                                 </div>
                                 <!-- <p>Special Items:</p> -->
                                 <div id="special-items">

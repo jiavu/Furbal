@@ -8,24 +8,24 @@ const infoText = {
         5 : "<p>You also have to pet your pet.<br>If you don't give it your affection, it will be lonely and is going to lose it's joy for living.</p>",
         6 : "<p>Pay attention to Furball's level of secureness.<br>If your Furball is lonely, it won't eat and play anymore.</p>",
         7 : "<p>If your Furball is sad or ill, it will lose it's color.<br>Critical levels of Furballs conditions will weaken it.<br><br>Be aware - Furbals fitness won't recover!</p>",
-        8 : "<p> \
+        8 : `<p> \
                 Some last things: \
                 <ul> \
-                    <li>You need to buy your Furball's food and toy with your game credits.</li> \
+                    <li>You need to buy <img src="./icons/cart.svg" onerror="this.src='https://image.flaticon.com/icons/svg/726/726496.svg'" alt="$" class="img-description"> your Furball's food and toy with your game credits.</li> \
                     <li>You are starting to get credits if you made 50 points.</li> \
                     <li>The more points you earn, the more game credits you get.</li> \
                     <li>Furball's metabolism gets faster in time.</li> \
                     <li>If your Furball survives Level 10, you win and your Furball will be immortal.</li> \
                 </ul> \
-            </p>",
+            </p>`,
         9 : "<p>So... what was your name again?</p>",
         10 : ", right!<br><br></p>", // 9 with 10 together
         11 : ", which name do you want to give your Furball?</p>",
         12 : ", what a beautiful name!!!<br><br>Let me ask you one last question, ",
         skipIntro : "<div id='skip-intro'>Skip Intro &gt;&gt;</div>",
         next : "<br><div><span id='next-page'>&gt;&gt;</span></div>",   // https://www.w3schools.com/HTML/html_entities.asp
-        player : "<input type='text' placeholder='Player' maxlength='26' id='enter-player-name'>", // entry fields
-        furbal : "<input type='text' placeholder='My Furball' maxlength='26' id='enter-furbal-name'>"
+        player : "<input type='text' name='player-name' placeholder='Player' maxlength='26' id='enter-player-name'>", // entry fields
+        furbal : "<input type='text' name='furbal-name' placeholder='My Furball' maxlength='26' id='enter-furbal-name'>"
     },
     startWindow : {
         go : "<div class='alignCenter'><h1>Furball</h1>\
@@ -58,7 +58,7 @@ const infoText = {
     },
     settingsScreen : "<div class='alignCenter'> \
                         <h1>Options</h1>\
-                        <input type='text' placeholder='My Furball' maxlength='26' id='enter-furbal-name2' style='margin:2%;width:75%'> \
+                        <input type='text' name='player-name' maxlength='26' id='enter-furbal-name2' style='margin:2%;width:75%'> \
                         <p><button type='button' class='smaller-button' id='restart-intro'>New Game (restart intro)</button></p> \
                         <p><button type='button' class='smaller-button' id='restart-game'>Restart Game</button></p> \
                         <p><button type='button' class='smaller-button' id='get-hint'>Get a hint</button></p> \
@@ -84,13 +84,14 @@ const infoText = {
             </p> \
             <h3>Sources</h3> \
             <div> \
-                Settings and Fullscreen icon made by <a href="https://www.flaticon.com/authors/gregor-cresnar"  target="_blank" title="Gregor Cresnar">Gregor Cresnar</a><br> \
-                Coin, notes and strawberry made by <a href="https://www.flaticon.com/authors/smashicons"  target="_blank" title="Smashicons">Smashicons</a><br> \
-                Cash icon made by <a href="https://www.flaticon.com/authors/roundicons"  target="_blank" title="Roundicons">Roundicons</a><br> \
-                Carrot made by <a href="https://www.flaticon.com/authors/prettycons"  target="_blank" title="prettycons">prettycons</a><br> \
-                Lemon and clover leaf made by <a href="http://www.freepik.com"  target="_blank" title="Freepik">Freepik</a><br> \
-                Santa hat made by <a href="https://www.flaticon.com/authors/vectors-market"  target="_blank" title="Vectors Market">Vectors Market</a><br> \
-                from <a href="https://www.flaticon.com/"  target="_blank" title="Flaticon">www.flaticon.com</a> is licensed by <a href="http://creativecommons.org/licenses/by/3.0/" title="Creative Commons BY 3.0" target="_blank">CC 3.0 BY</a> \
+                Settings and Fullscreen icon made by <a href="https://www.flaticon.com/authors/gregor-cresnar" target="_blank" title="Gregor Cresnar">Gregor Cresnar</a><br> \
+                Coin and strawberry made by <a href="https://www.flaticon.com/authors/smashicons" target="_blank" title="Smashicons">Smashicons</a><br> \
+                Cash icon made by <a href="https://www.flaticon.com/authors/roundicons" target="_blank" title="Roundicons">Roundicons</a><br> \
+                Shopping cart made by <a href="https://www.flaticon.com/authors/pixel-perfect" target="_blank" title="Pixel perfect">Pixel perfect</a><br> \
+                Carrot made by <a href="https://www.flaticon.com/authors/prettycons" target="_blank" title="prettycons">prettycons</a><br> \
+                Lemon and clover leaf made by <a href="http://www.freepik.com" target="_blank" title="Freepik">Freepik</a><br> \
+                Santa hat made by <a href="https://www.flaticon.com/authors/vectors-market" target="_blank" title="Vectors Market">Vectors Market</a><br> \
+                from <a href="https://www.flaticon.com/" target="_blank" title="Flaticon">www.flaticon.com</a> is licensed by <a href="http://creativecommons.org/licenses/by/3.0/" title="Creative Commons BY 3.0" target="_blank">CC 3.0 BY</a> \
             </div> \
         <p><button type="button" class="smaller-button" id="back">Back</button></p> \
         </div>',

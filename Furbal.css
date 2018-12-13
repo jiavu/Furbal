@@ -54,12 +54,19 @@ html {
 * {
     margin: 0;
     box-sizing: border-box;
-    touch-action: manipulation; /* none didn't help on */
+    /* https://developer.mozilla.org/en-US/docs/Web/CSS/touch-action */
+    touch-action: none;     /* Not supported by Safari (yet). */
+    touch-action: manipulation; /* maybe supported by Safari 9.1+ */
+    /* but block-level elements only? -> anyhow no solution. */
     -moz-user-select: none;
     -webkit-user-select: none;
     -ms-user-select: none;
     user-select: none;
     /* border: 0.5px solid green; */
+}
+
+button, button:disabled {
+    touch-action: manipulation;
 }
 
 body {  /* stretch body to viewable area of the window or screen. */
@@ -230,6 +237,13 @@ body {  /* stretch body to viewable area of the window or screen. */
     border-radius: 10px;
     border: 2px solid var(--dark3);
     outline: none;
+
+    -webkit-user-select: text;
+    -khtml-user-select: text;
+    -moz-user-select: text;
+    -ms-user-select: text;
+    user-select: text;
+
 }
 #info-window input[type=text]:focus {
     border: 2px solid var(--dark2);
@@ -243,6 +257,12 @@ body {  /* stretch body to viewable area of the window or screen. */
 .settings-credits { font-size: 3rem; }
 .settings-credits div {
     font-size: 2rem;
+}
+
+.img-description {
+    display: inline-block;
+    height: 1rem;
+    width: auto;
 }
 
 /*============================*/
