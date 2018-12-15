@@ -1,5 +1,9 @@
 "use strict";
 
+if ( navigator.vendor.toLowerCase().includes("apple") )
+    window.alert("If you are using Safari 10 or higher on a mobile device this game might be unplayable because of double tap zooming.");
+
+
 let requestAnimationFrame = window.requestAnimationFrame || window.mozRequestAnimationFrame || window.webkitRequestAnimationFrame || windows.msRequestAnimationFrame;
 let cancelAnimationFrame = window.cancelAnimationFrame || window.mozCancelAnimationFrame;
 let reqAnimF;
@@ -842,10 +846,6 @@ function gameOver() {
 
 }
 
-function wonGame() {
-
-}
-
 function switchPause() {
 
     pause = !pause;
@@ -903,296 +903,295 @@ function settings() {
 
 // ACTIONS: feed, play, pet // buying things // gambling:
 
-function feed() {
-    let satiationIncrease;
+const actionButtons = {
+    
+    feed() {
 
-    (myFurball.secureness < 0)?
-        satiationIncrease = 0 :
-        //satiationIncrease = ( (-(foodPowerMax-foodPowerMin)/100 *myFurball.satiation) + foodPowerMax ) * myFurball.secureness/100;
-        satiationIncrease = ( (-(foodPowerMax-foodPowerMin)/myFurball.fitness *myFurball.satiation) + foodPowerMax ) * myFurball.secureness/100;
-        // the less secureness, the less myFurball will eat.
+        let satiationIncrease;
 
-
-    /* If player doesn't have enough food for 1 food portion, Furball gets what player has.
-        If player has no food, Furball gets no food. */
-    if (player.food > 0 && player.food < satiationIncrease) {
-        satiationIncrease = player.food;
-    } else if (!player.food) { satiationIncrease = 0 };
+        (myFurball.secureness < 0)?
+            satiationIncrease = 0 :
+            //satiationIncrease = ( (-(foodPowerMax-foodPowerMin)/100 *myFurball.satiation) + foodPowerMax ) * myFurball.secureness/100;
+            satiationIncrease = ( (-(foodPowerMax-foodPowerMin)/myFurball.fitness *myFurball.satiation) + foodPowerMax ) * myFurball.secureness/100;
+            // the less secureness, the less myFurball will eat.
 
 
-    // That's how food will increase Furballs satiation:
-    satiationIncrease = Math.ceil(satiationIncrease);
-    (myFurball.satiation < 0 && myFurball.secureness/100 > 0)?
-        myFurball.satiation = satiationIncrease :
-        myFurball.satiation += satiationIncrease;
+        /* If player doesn't have enough food for 1 food portion, Furball gets what player has.
+            If player has no food, Furball gets no food. */
+        if (player.food > 0 && player.food < satiationIncrease) {
+            satiationIncrease = player.food;
+        } else if (!player.food) { satiationIncrease = 0 };
 
 
-    // Reset color:
-    furballStatement.style.color = "var(--black)";
-    if (myFurball.satiation > criticalSat) satiation.style.color = "var(--black)";
+        // That's how food will increase Furballs satiation:
+        satiationIncrease = Math.ceil(satiationIncrease);
+        (myFurball.satiation < 0 && myFurball.secureness/100 > 0)?
+            myFurball.satiation = satiationIncrease :
+            myFurball.satiation += satiationIncrease;
 
 
-    // Get Furballs statements about food and warn if necessary:
-    if (player.food) {
+        // Reset color:
+        furballStatement.style.color = "var(--black)";
+        if (myFurball.satiation > criticalSat) satiation.style.color = "var(--black)";
 
-        // reset prio:
-        secCritical = false;
-        prioAction = true;
 
-        if (!satiationIncrease) {       // Because secureness is critical, no satiationIncrease.
-            secCritical = true;
-            saysFeed = furbalStates.secureness.noEat;
-            furballStatement.style.color = "var(--red)";
-            //countSecShown = 0;
-            //secShown = true;                                    // ..v
-            //secureness.style.color = "var(--red)";              // not really necessary. secureness should already be red and flashing in this range.
-            //$( () => $("#secureness").fadeIn(fadeInTime) );     // But, secCritical could maybe be higher than critical threshold of secureness,
-                                                                //depending on result of satiationIncrease.
-        } else if (myFurball.satiation >= 95) {
-            saysFeed = furbalStates.toFeeding[95];
-        } else if (myFurball.satiation >= 90) {
-            saysFeed = furbalStates.toFeeding[90];
-        } else if (myFurball.satiation >= 85) {
-            saysFeed = furbalStates.toFeeding[85];
-        } else if (!saysFeed) {
-            timeElapsedTemp = 0;
-            let r = Math.floor(Math.random()*5);
-            saysPlay = false;
-            saysPet = false;
-            saysFeed = furbalStates.toFeeding[r+1];
+        // Get Furballs statements about food and warn if necessary:
+        if (player.food) {
+
+            // reset prio:
+            secCritical = false;
+            prioAction = true;
+
+            if (!satiationIncrease) {       // Because secureness is critical, no satiationIncrease.
+                secCritical = true;
+                saysFeed = furbalStates.secureness.noEat;
+                furballStatement.style.color = "var(--red)";
+                //countSecShown = 0;
+                //secShown = true;                                    // ..v
+                //secureness.style.color = "var(--red)";              // not really necessary. secureness should already be red and flashing in this range.
+                //$( () => $("#secureness").fadeIn(fadeInTime) );     // But, secCritical could maybe be higher than critical threshold of secureness,
+                                                                    //depending on result of satiationIncrease.
+            } else if (myFurball.satiation >= 95) {
+                saysFeed = furbalStates.toFeeding[95];
+            } else if (myFurball.satiation >= 90) {
+                saysFeed = furbalStates.toFeeding[90];
+            } else if (myFurball.satiation >= 85) {
+                saysFeed = furbalStates.toFeeding[85];
+            } else if (!saysFeed) {
+                timeElapsedTemp = 0;
+                let r = Math.floor(Math.random()*5);
+                saysPlay = false;
+                saysPet = false;
+                saysFeed = furbalStates.toFeeding[r+1];
+            }
+
+            if (myFurball.health > 20) {        // (prioritization)
+                furballSaying = saysFeed;
+            } else if (secCritical) { furballSaying = saysFeed }
+            
+
+            // Fade in html element (Furballs satiation):
+
+            countSatShown = 0;
+            satShown = true;
+
+            // Animation:
+            if (satiationIncrease) TweenMax.to(satiation, fadeInTime, {opacity:1});
+
+            if (satiationIncrease > 0) {
+                player.points++;
+                letJump(satiation);
+                letJump3(satiation.firstElementChild);
+                letShrink(food);
         }
-
-        if (myFurball.health > 20) {
-            furballSaying = saysFeed;
-        } else if (secCritical) { furballSaying = saysFeed }
-        
-
-        // Fade in html element (Furballs satiation):
-
-        countSatShown = 0;
-        satShown = true;
-
-        // Animation:
-        if (satiationIncrease) TweenMax.to(satiation, fadeInTime, {opacity:1});
-
-        if (satiationIncrease > 0) {
-            player.points++;
-            letJump(satiation);
-            letJump3(satiation.firstElementChild);
-            letShrink(food);
-        }
-        
     }
 
     // Update players food box:
     player.food -= satiationIncrease;
     feedBtn.disabled = !player.food? true : false;
 
-}
+    },
 
-
-function play() {
-
-    //let funIncrease = ( (-(toyPowerMax-toyPowerMin)/100 *myFurball.fun) + toyPowerMax ) * (myFurball.secureness/100 -secToFunThreshold);   // the less secureness, the less myFurball will play.
-    let funIncrease = ( (-(toyPowerMax-toyPowerMin)/myFurball.fitness *myFurball.fun) + toyPowerMax ) * (myFurball.secureness/100 -secToFunThreshold);
-    
-    /* If player doesn't have enough toy for 1 toy portion, Furball gets what player has.
-        If player has no toys, Furball gets no toys. */
-    if (player.toy > 0 && player.toy < funIncrease) {
-        funIncrease = player.toy;
-    } else if (!player.toy) { funIncrease = 0 };
-
-
-    // That's how toys will increase Furballs fun:
-    funIncrease = Math.ceil(funIncrease);
-    (myFurball.fun < 0 && myFurball.secureness/100 -secToFunThreshold > 0)?
-        myFurball.fun = funIncrease :
-        myFurball.fun += funIncrease;
-
+    play() {
+            
+        //let funIncrease = ( (-(toyPowerMax-toyPowerMin)/100 *myFurball.fun) + toyPowerMax ) * (myFurball.secureness/100 -secToFunThreshold);   // the less secureness, the less myFurball will play.
+        let funIncrease = ( (-(toyPowerMax-toyPowerMin)/myFurball.fitness *myFurball.fun) + toyPowerMax ) * (myFurball.secureness/100 -secToFunThreshold);
         
-    // Reset:
-    furballStatement.style.color = "var(--black)";
-    if (myFurball.fun > criticalFun) fun.style.color = "var(--black)";
+        /* If player doesn't have enough toy for 1 toy portion, Furball gets what player has.
+            If player has no toys, Furball gets no toys. */
+        if (player.toy > 0 && player.toy < funIncrease) {
+            funIncrease = player.toy;
+        } else if (!player.toy) { funIncrease = 0 };
 
 
-    // Get Furballs statements about toys and checking if a warning is necessary:
-    if (player.toy) {
+        // That's how toys will increase Furballs fun:
+        funIncrease = Math.ceil(funIncrease);
+        (myFurball.fun < 0 && myFurball.secureness/100 -secToFunThreshold > 0)?
+            myFurball.fun = funIncrease :
+            myFurball.fun += funIncrease;
+
+            
+        // Reset:
+        furballStatement.style.color = "var(--black)";
+        if (myFurball.fun > criticalFun) fun.style.color = "var(--black)";
+
+
+        // Get Furballs statements about toys and checking if a warning is necessary:
+        if (player.toy) {
+
+            // reset prio:
+            secCritical = false;
+            prioAction = true;
+
+            if (funIncrease <= 0) {     // Because secureness is critical, no fun increase.
+                secCritical = true;
+                saysPlay = furbalStates.secureness.noPlay;
+                furballStatement.style.color = "var(--red)";
+                //countSecShown = 0;
+                //secShown = true;                                    // ..v
+                //secureness.style.color = "var(--red)";              // not really necessary. secureness
+                //$( () => $("#secureness").fadeIn(fadeInTime) );     // should already be red and flashing.
+
+            } else if (myFurball.fun >= 95) {
+                saysPlay = furbalStates.toPlaying[95];
+            } else if (myFurball.fun >= 90) {
+                saysPlay = furbalStates.toPlaying[90];
+            } else if (myFurball.fun >= 85) {
+                saysPlay = furbalStates.toPlaying[85];
+            } else if (!saysPlay) {
+                timeElapsedTemp = 0;
+                let r = Math.floor(Math.random()*4);
+                saysFeed = false;
+                saysPet = false;
+                saysPlay = furbalStates.toPlaying[r+1];
+            }
+
+            if (myFurball.health > 20) {
+                furballSaying = saysPlay;
+            } else if (secCritical) { furballSaying = saysPlay }
+
+
+            // Fade in html elements (Furballs conditions):
+            
+            countFunShown = 0;
+            funShown = true;
+            
+            let a = funIncrease > 0? true : false;
+            let b = funIncrease < 0? true : false;
+
+            if (a) {
+                myFurball.satiation -= playToSat * funIncrease; // PLAYING MAKES FURBALL HUNGRY!
+                player.points++;
+
+                satiation.style.color = "var(--red)";
+                letJump(fun);
+                letJump3(fun.firstElementChild);
+                letShrink(toy);
+                satShown = true;
+                TweenMax.to(satiation, fadeInTime, {opacity:1});
+                letShrink2(satiation);
+
+            } else if (b) {
+                fun.style.color = "var(--red)";
+
+                funIncrease *= -1;
+            }
+            
+            // Update players toy box:
+            player.toy -= funIncrease;
+            playBtn.disabled = !player.toy? true : false;
+
+            if (funIncrease) TweenMax.to(fun, fadeInTime, {opacity:1});
+        }
+    },
+
+    // Old pet(), not used anymore:
+    /*
+    pet() {
+
+        let securenessIncrease = ((petPowerMax-petPowerMin)/100 *myFurball.secureness) + petPowerMin; // the less secureness, the less increase. LOST CONFIDENCE!
+    
+        // That's how petting will increase Furballs secureness:
+        (myFurball.secureness < 0)?
+            myFurball.secureness = securenessIncrease :
+            myFurball.secureness += securenessIncrease;
+        //if (myFurball.secureness > myFurball.fitness) myFurball.secureness = myFurball.fitness;
+        // i am sure it had to be moved to update().
+    
+    
+        // Reset color:
+        furballStatement.style.color = "var(--black)";
+        if (myFurball.secureness > criticalSec) secureness.style.color = "var(--black)";
+    
+    
+        // reset prio:
+        secCritical = false;
+        prioAction = true;
+    
+    
+        // Get Furballs statements about petting:
+        if (myFurball.secureness >= 95) {
+            saysPet = furbalStates.toPetting[95];
+        } else if (myFurball.secureness >= 85) {
+            saysPet = furbalStates.toPetting[85];
+        } else if (!saysPet) {
+            timeElapsedTemp = 0;
+            let r = Math.floor(Math.random()*5);
+            saysPlay = false;
+            saysFeed = false;
+            saysPet = furbalStates.toPetting[r+1];
+        }
+        if (myFurball.health > 20) furballSaying = saysPet;
+    
+    
+        // Fade in html element (Furballs secureness):
+    
+        countSecShown = 0;
+        secShown = true;
+    
+        if (saysPet) {
+            TweenMax.to(secureness, fadeInTime, {opacity:1});
+            letJump(secureness);
+            letJump3(secureness.firstElementChild);
+        }
+    },*/
+
+    petBySwipe() {
+            
+        let securenessIncrease = gameSpeed/(averageLoopSpeed/calibrate) * ( ((petPowerMax-petPowerMin)/100 *myFurball.secureness) + petPowerMin )/20;
+        // the less secureness, the less increase. LOST CONFIDENCE!
+        
+        // That's how petting will increase Furballs secureness:
+        (myFurball.secureness < 0)?
+            myFurball.secureness = securenessIncrease :
+            myFurball.secureness += securenessIncrease;
+        //if (myFurball.secureness > myFurball.fitness) myFurball.secureness = myFurball.fitness;
+        // i am sure it had to be moved to update().
+
+
+        // Reset color:
+        furballStatement.style.color = "var(--black)";
+        if (myFurball.secureness > criticalSec) secureness.style.color = "var(--black)";
+
 
         // reset prio:
         secCritical = false;
         prioAction = true;
 
-        if (funIncrease <= 0) {     // Because secureness is critical, no fun increase.
-            secCritical = true;
-            saysPlay = furbalStates.secureness.noPlay;
-            furballStatement.style.color = "var(--red)";
-            //countSecShown = 0;
-            //secShown = true;                                    // ..v
-            //secureness.style.color = "var(--red)";              // not really necessary. secureness
-            //$( () => $("#secureness").fadeIn(fadeInTime) );     // should already be red and flashing.
 
-        } else if (myFurball.fun >= 95) {
-            saysPlay = furbalStates.toPlaying[95];
-        } else if (myFurball.fun >= 90) {
-            saysPlay = furbalStates.toPlaying[90];
-        } else if (myFurball.fun >= 85) {
-            saysPlay = furbalStates.toPlaying[85];
-        } else if (!saysPlay) {
+        // Get Furballs statements about petting:
+        if (myFurball.secureness >= 95) {
+            saysPet = furbalStates.toPetting[95];
+        } else if (myFurball.secureness >= 85) {
+            saysPet = furbalStates.toPetting[85];
+        } else if (!saysPet) {
             timeElapsedTemp = 0;
-            let r = Math.floor(Math.random()*4);
+            let r = Math.floor(Math.random()*5);
+            saysPlay = false;
             saysFeed = false;
-            saysPet = false;
-            saysPlay = furbalStates.toPlaying[r+1];
+            saysPet = furbalStates.toPetting[r+1];
+        }
+        if (myFurball.health > 20) furballSaying = saysPet;
+
+
+        // Fade in html element (Furballs secureness):
+
+        countSecShown = 0;
+        secShown = true;
+
+        if (saysPet) {
+            TweenMax.to(secureness, fadeInTime, {opacity:1});
+            //letJump(secureness);                              // would be nice if it could jump once and again.
         }
 
-        if (myFurball.health > 20) {
-            furballSaying = saysPlay;
-        } else if (secCritical) { furballSaying = saysPlay }
-
-
-        // Fade in html elements (Furballs conditions):
-        
-        countFunShown = 0;
-        funShown = true;
-        
-        let a = funIncrease > 0? true : false;
-        let b = funIncrease < 0? true : false;
-
-        if (a) {
-            myFurball.satiation -= playToSat * funIncrease; // PLAYING MAKES FURBALL HUNGRY!
+        // gain points for petting:
+        if (pettingTime >= 1000/gameSpeed *averageLoopSpeed/calibrate) {
             player.points++;
-
-            satiation.style.color = "var(--red)";
-            letJump(fun);
-            letJump3(fun.firstElementChild);
-            letShrink(toy);
-            satShown = true;
-            TweenMax.to(satiation, fadeInTime, {opacity:1});
-            letShrink2(satiation);
-
-        } else if (b) {
-            fun.style.color = "var(--red)";
-
-            funIncrease *= -1;
-        }
-        
-        // Update players toy box:
-        player.toy -= funIncrease;
-        playBtn.disabled = !player.toy? true : false;
-
-        if (funIncrease) TweenMax.to(fun, fadeInTime, {opacity:1});
+            pettingTime = 0;
+        } else { pettingTime += progress; }
     }
-
 }
 
-// Old pet(), not used anymore:
-/*
-function pet() {
-
-    let securenessIncrease = ((petPowerMax-petPowerMin)/100 *myFurball.secureness) + petPowerMin; // the less secureness, the less increase. LOST CONFIDENCE!
-    
-    // That's how petting will increase Furballs secureness:
-    (myFurball.secureness < 0)?
-        myFurball.secureness = securenessIncrease :
-        myFurball.secureness += securenessIncrease;
-    //if (myFurball.secureness > myFurball.fitness) myFurball.secureness = myFurball.fitness;
-    // i am sure it had to be moved to update().
-
-
-    // Reset color:
-    furballStatement.style.color = "var(--black)";
-    if (myFurball.secureness > criticalSec) secureness.style.color = "var(--black)";
-
-
-    // reset prio:
-    secCritical = false;
-    prioAction = true;
-
-
-    // Get Furballs statements about petting:
-    if (myFurball.secureness >= 95) {
-        saysPet = furbalStates.toPetting[95];
-    } else if (myFurball.secureness >= 85) {
-        saysPet = furbalStates.toPetting[85];
-    } else if (!saysPet) {
-        timeElapsedTemp = 0;
-        let r = Math.floor(Math.random()*5);
-        saysPlay = false;
-        saysFeed = false;
-        saysPet = furbalStates.toPetting[r+1];
-    }
-    if (myFurball.health > 20) furballSaying = saysPet;
-
-
-    // Fade in html element (Furballs secureness):
-
-    countSecShown = 0;
-    secShown = true;
-
-    if (saysPet) {
-        TweenMax.to(secureness, fadeInTime, {opacity:1});
-        letJump(secureness);
-        letJump3(secureness.firstElementChild);
-    }
-    
-}
-*/
-
-function petBySwipe() {
-
-    let securenessIncrease = gameSpeed/(averageLoopSpeed/calibrate) * ( ((petPowerMax-petPowerMin)/100 *myFurball.secureness) + petPowerMin )/20;
-     // the less secureness, the less increase. LOST CONFIDENCE!
-    
-    // That's how petting will increase Furballs secureness:
-    (myFurball.secureness < 0)?
-        myFurball.secureness = securenessIncrease :
-        myFurball.secureness += securenessIncrease;
-    //if (myFurball.secureness > myFurball.fitness) myFurball.secureness = myFurball.fitness;
-    // i am sure it had to be moved to update().
-
-
-    // Reset color:
-    furballStatement.style.color = "var(--black)";
-    if (myFurball.secureness > criticalSec) secureness.style.color = "var(--black)";
-
-
-    // reset prio:
-    secCritical = false;
-    prioAction = true;
-
-
-    // Get Furballs statements about petting:
-    if (myFurball.secureness >= 95) {
-        saysPet = furbalStates.toPetting[95];
-    } else if (myFurball.secureness >= 85) {
-        saysPet = furbalStates.toPetting[85];
-    } else if (!saysPet) {
-        timeElapsedTemp = 0;
-        let r = Math.floor(Math.random()*5);
-        saysPlay = false;
-        saysFeed = false;
-        saysPet = furbalStates.toPetting[r+1];
-    }
-    if (myFurball.health > 20) furballSaying = saysPet;
-
-
-    // Fade in html element (Furballs secureness):
-
-    countSecShown = 0;
-    secShown = true;
-
-    if (saysPet) {
-        TweenMax.to(secureness, fadeInTime, {opacity:1});
-        //letJump(secureness);                              // would be nice if it could jump once and again.
-    }
-
-    // gain points for petting:
-    if (pettingTime >= 1000/gameSpeed *averageLoopSpeed/calibrate) {
-        player.points++;
-        pettingTime = 0;
-    } else { pettingTime += progress; }
-    
-}
 
 const buyFood = {
     // I need costs AND buyable food to be positive integers....
@@ -1380,7 +1379,13 @@ const slotMachine = {
 const specialItem = {
 
     give(item) {
+
+        let r;
+        secCritical = false;
+        prioAction = true;
+
         switch (item) {
+
             case "strawberry":
                 player.specialItems.strawberry -= 1;
 
@@ -1393,7 +1398,13 @@ const specialItem = {
                 
                 if (myFurball.secureness > criticalSec) secureness.style.color = "var(--black)";
 
-                // fire a furball statement!
+                // fire a furball statement:
+                timeElapsedTemp = 0;
+                r = Math.floor(Math.random()*5);
+                saysPlay = false;
+                saysFeed = false;
+                saysPet = furbalStates.toPetting[r+1];
+                furballSaying = saysPet;
                 
                 TweenMax.to(secureness, fadeInTime, {opacity:1});
                 letJump(secureness);
@@ -1413,7 +1424,13 @@ const specialItem = {
                 
                 if (myFurball.fun > criticalFun) fun.style.color = "var(--black)";
 
-                // fire a furball statement!
+                // fire a furball statement:
+                timeElapsedTemp = 0;
+                r = Math.floor(Math.random()*4);
+                saysFeed = false;
+                saysPet = false;
+                saysPlay = furbalStates.toPlaying[r+1];
+                furballSaying = saysPlay;
 
                 TweenMax.to(fun, fadeInTime, {opacity:1});
                 letJump(fun);
@@ -1433,7 +1450,14 @@ const specialItem = {
                 
                 if (myFurball.satiation > criticalSat) satiation.style.color = "var(--black)";
 
-                // fire a furball statement!
+                // fire a furball statement:
+                timeElapsedTemp = 0;
+                r = Math.floor(Math.random()*5);
+                saysPlay = false;
+                saysPet = false;
+                saysFeed = furbalStates.toFeeding[r+1];
+                    furballSaying = saysFeed;
+
 
                 TweenMax.to(satiation, fadeInTime, {opacity:1});
                 letJump(satiation);
@@ -2022,7 +2046,7 @@ function loop(timestamp) {
 //////////////////////////////////////////////////
 //////////////////////////////////////////////////
 
-// Extrawurst for Safari (prevent zooming by gesture and double tap):
+/* Extrawurst for Safari (prevent zooming by gesture and double tap):
 window.addEventListener('touchmove', function (event) {
     if (event.scale !== 1) { event.preventDefault(); }
 }, false);
@@ -2045,9 +2069,9 @@ window.addEventListener("load", ()=> {
 
     // Event listener:
     pauseButton.addEventListener("click", switchPause);
-    feedBtn.addEventListener("click", feed);
-    playBtn.addEventListener("click", play);
-    //petBtn.addEventListener("click", pet);
+    feedBtn.addEventListener("click", actionButtons.feed);
+    playBtn.addEventListener("click", actionButtons.play);
+    //petBtn.addEventListener("click", actionButtons.pet);
     goToSettings.addEventListener("click", settings);
 
     //carrot.addEventListener("click", ()=> specialItem("give", "carrot"));
@@ -2073,16 +2097,15 @@ window.addEventListener("load", ()=> {
     }
     window.onmouseup = ()=> { clickOnFurbal = false; };
     divOverFurball.onmousemove = function() {
-        if (clickOnFurbal) petBySwipe();
+        if (clickOnFurbal) actionButtons.petBySwipe();
     };
 
     // petting on mobile:
     divOverFurball.addEventListener("touchmove", handleMove, false);
     function handleMove(event) {
         event.preventDefault();
-        petBySwipe();
+        actionButtons.petBySwipe();
     }
-
 
 
 
@@ -2103,6 +2126,5 @@ window.addEventListener("load", ()=> {
     displayEverything();
 
     player.gameInProgress? gameInit() : startWindow.init();
-
 
 });
