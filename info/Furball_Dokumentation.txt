@@ -1,0 +1,118 @@
+
+============================================
+Formeln und Funktionen, condition parameters
+============================================
+
+
+	Newton's law of cooling:
+	u'(t) = -k( u(t) -a )
+	http://www.mathe.tu-freiberg.de/~bernstei/HMI/mNewton.pdf
+
+u = Temperatur des Objekts
+a = konstante Umgebungstemperatur
+k>0 = konstante Abkühlungsrate.
+
+
+Der Hauptwert HEALTH ( u(t) ) nähert sich allen drei Conditions (Satiation, Fun & Secureness) (a) an,
+jedoch jeweils unterschiedlich stark (k).
+
+Satiation hat den größten Einfluss auf die Gesundheit, danach Fun, danach Secureness.
+
+Bsp.:
+health += -satiationPower * (health - satiation);
+
+==========
+
+
+Eine Condition hat maximal 100% und minimal 0%.
+
+Jeder der 3 conditions nimmt pro GameLoop um einen bestimmten Wert ab.
+
+Es gibt einen gameSpeed-Faktor, mit dem die Höhe des decreases pro Loop eingestellt werden kann.
+
+Bsp.:
+satiation -= naturalDecreaseOfSatiation * gameSpeed;
+
+==========
+
+
+
+Je höher, desto niedriger:
+f(x) = ( -(max-min)/100 *x ) + max
+
+je höher, desto höher:
+f(x) = ( (max-min)/100 *x ) + min
+
+==========
+
+
+Food, Toys und Streicheleinheiten haben einen Min- und einen Max-Wert.
+
+Bsp.:
+Löst man durch einen Button die feed()-Funktion aus, wird Furball um mindestens 1, und maximal um 10 gefüttert.
+
+
+Je gesättigter Furball ist, desto weniger isst er.
+
+	satiationIncrease = ( -(foodPowerMax-foodPowerMin)/100 *satiation ) + foodPowerMax;
+
+
+Je höher der fun-Wert, desto weniger spielt Furball.
+
+	funIncrease = ( -(playPowerMax-playPowerMin)/100 *fun ) + playPowerMax;
+	
+
+Je niedriger secureness, desto weniger schnell steigt secureness durch Streicheleinheiten.
+
+=> Furball ist weniger zutraulicher, je länger er nicht gestreichelt wurde!
+
+	securenessIncrease = ( (petPowerMax-petPowerMin)/100 *secureness ) + petPowerMin;
+
+==========
+
+
+PLAYING MAKES FURBALL HUNGRY!
+
+Für jedes Spielen nimmt Furballs satiation ab.
+
+	satiation -= playToSat * funIncrease;
+
+==========
+
+
+Die Werte beeinflussen sich untereinander.
+
+Je niedriger die Gesundheit, desto höher der decrease von fun und von secureness.
+
+	fun -= (naturalDecreaseOfFun + -healthToFun/100*health + healthToFun) * gameSpeed;
+	secureness -= (naturalDecreaseOfSecureness + -healthToSec/100*health + healthToSec) * gameSpeed;
+
+
+ACHTUNG:
+Je niedriger Furball's secureness-Wert ist, desto weniger isst und spielt er!
+
+
+Es gibt einen Punkt, an dem Furball nicht mehr spielt, da er sich einsam, traurig und ängstlich fühlt.
+
+Wenn secureness noch tiefer sinkt, haben Toys sogar eine negative Wirkung auf Furball's fun!
+
+	funIncrease *= (secureness/100 -secToFunThreshold);		// secToFunThreshold ist in % (z. B. 0.25)
+
+
+Es gibt einen Punkt, an dem Furball nichts mehr isst, da er zu einsam und traurig ist.
+
+	satiationIncrease *= secureness/100;
+
+Durch die Rundung von satiationIncrease kurz vor Verarbeitung durch den Magen
+(und kurz vor Verrechnung mit dem Futter-Beutel des Spielers) kommt es früher dazu,
+dass Furball nichts mehr isst.
+
+Bsp.:
+	satiationIncrease = 10 * 4.9/100;
+	satiationIncrease = 0.49;	// wird zu 0 abgerundet.
+oder:
+	satiationIncrease = 1 * 49/100;
+	satiationIncrease = 0.49;	// wird zu 0 abgerundet.
+
+=================
+=================
