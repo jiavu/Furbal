@@ -11,10 +11,10 @@
         If page added to home screen, it should load to fullscreen when opening from home screen.
         (Safari/iOS and Chrome/Android:) -->
         <meta name="apple-mobile-web-app-capable" content="yes">
-        <meta name="mobile-web-app-capable" content="yes">
+        <!-- <meta name="mobile-web-app-capable" content="yes"> -->
 
         <!-- (A better option is to use the Web App Manifest. Can't test if it works atm.) -->
-        <!-- <link rel="manifest" href="/manifest.json"> -->
+        <link rel="manifest" href="/manifest.json">
 
         <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Amatic+SC|Caveat|Coiny|Indie+Flower|Open+Sans|Poor+Story|Source+Sans+Pro">
         <link rel="stylesheet" type="text/css" media="screen" href="Furbal.css" id="cssheet">
@@ -24,8 +24,9 @@
 
         <div id="loading-screen" style="z-index:3;background-color:white;position:fixed;top:0;left:0;height:100%;width:100%;display:flex;align-items:center;justify-content:center">Loading...</div>
         
-        <!-- Deactivate later: -->
-        <div class="test-monitor" style="display: none">  <!--  -->
+        <!-- Deactivate later: Adjusting tools -->
+        <!-- 
+        <div class="test-monitor" style="display: none">
                 <h4>Control Monitor</h4>
                 <div id="timeElapsed"></div>
                 <div id="loopSpeed"></div>
@@ -36,14 +37,15 @@
                 <div id="other3"></div>
                 <input type="button" id="pause" value="Pause">
             </div>
-
+        -->
 
         <!--
             (moto G5 | 1080x1920p)
             Android info bar, mobile Chrome header, bottom navigation bar.
             viewable area in my mobile Chrome browser: 1080 x 1536 px
         -->
-        <div class="slider-container" style="display: none">    <!-- -->
+        <!-- 
+        <div class="slider-container" style="display: none">
             <div>
                 <div id="container-height"></div>
                 <input type="text" id="show-height">
@@ -51,7 +53,7 @@
             </div>
             <input type="range" min="480" max="1920" value="1536" class="slider" id="size-height">
         </div>
-
+        -->
 
         <div class="container" id="adjust-height">
 
@@ -181,7 +183,7 @@
             
             <footer class="my-credits">
                 <p>developed by <a href="https://github.com/jiavu" target="_blank"> Jan-Patrick Tyra</a></p>
-                <p>Version: 1.3beta - Dec 2018</p>
+                <p>Version: <span class="version-number"></span> - <span class="version-date"></span></p>
                 <img src="./icons/expand_1.svg" onerror="this.src='https://image.flaticon.com/icons/svg/158/158783.svg'" alt="FS" id="toggle-fScreen">
                 <img src="./icons/settings2.svg" onerror="this.src='https://image.flaticon.com/icons/svg/158/158866.svg'" alt="S" id="go-to-settings">
 
@@ -194,10 +196,15 @@
         <!-- <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script> -->
         <script src="./jquery-3.3.1.js"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/2.0.2/TweenMax.min.js"></script>
+
+        <!-- Main file: -->
         <script src="./Furbal.js"></script>
-        <!--
-        <script type="module" src=".additional_files/furbal_says.js"></script>
-        <script type="module" src="./Furbal.js"></script>
+        <!-- <script type="module" src="./Furbal.js"></script> -->
+        
+<!--         
+        <script type="module" src="./additional_files/furbal_says.js"></script>
+        <script type="module" src="./additional_files/FurbalColorMaps.js"></script>
+        <script type="module" src="./additional_files/furbal_infoText.js"></script>
         -->
 
         <!--
@@ -210,6 +217,7 @@
         -->
         
     </body>
+
 
 <!--
 My Google Fonts Selection:

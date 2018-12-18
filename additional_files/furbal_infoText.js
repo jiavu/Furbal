@@ -68,9 +68,9 @@ const infoText = {
                         <button type='button' id='continue'>Continue</button> \
                     </div>",
     hints : [
-        "Hint:<br>Furball's secureness increases by petting.",
-        "Hint:<br>Lemon is for fun, carrot is for satiation, strawberry is for secureness.",
-        "Hint:<br>Try to fill the conditions to make more points."
+        "Hint 1/3:<br>Furball's secureness increases by petting.",
+        "Hint 2/3:<br>Lemon is for fun, carrot is for satiation, strawberry is for secureness.",
+        "Hint 3/3:<br>Try to fill the conditions to make more points."
     ],
     credits :
         '<div class="alignCenter settings-credits"> \
@@ -79,9 +79,9 @@ const infoText = {
                 developed by:<br>\
                 Jan-Patrick Tyra<br> \
                 <a href="https://github.com/jiavu" target="_blank">Github</a><br> \
-                Version: 1.5beta - Dec 2018 \
-                <p>∞</p> \
+                Version: <span class="version-number"></span> - <span class="version-date"></span> \
             </p> \
+            <p>∞</p> \
             <h3>Sources</h3> \
             <div> \
                 Settings and Fullscreen icon made by <a href="https://www.flaticon.com/authors/gregor-cresnar" target="_blank" title="Gregor Cresnar">Gregor Cresnar</a><br> \

@@ -101,10 +101,11 @@ body {  /* stretch body to viewable area of the window or screen. */
 /* FOR TESTING AND ADJUSTING */
 /*============================*/
 
+/* 
 .test-monitor {
     position: fixed;
     right: 0;
-    top: 0;   /*23%*/
+    top: 0;   /*23%
     width: 40%;
     color: red;
     font: 0.45rem sans-serif;
@@ -133,6 +134,7 @@ body {  /* stretch body to viewable area of the window or screen. */
     margin-bottom: 2%;
     cursor: pointer;
 }
+*/
 /*
 #show-height {
     font: 0.45rem sans-serif;
