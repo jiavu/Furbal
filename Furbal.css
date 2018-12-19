@@ -113,7 +113,7 @@ body {  /* stretch body to viewable area of the window or screen. */
     border: 1px solid red;
     padding: 0 0.2em;
     background-color: lightgrey;
-    z-index: 2;
+    z-index: 3;
 }
 .slider-container {
     position: fixed;
@@ -121,7 +121,7 @@ body {  /* stretch body to viewable area of the window or screen. */
     bottom: 0px;
     left: 20%;
     width: 60%;
-    z-index: 2;
+    z-index: 3;
     font: 0.45rem sans-serif;
     padding-top: 2%;
 }
@@ -157,7 +157,7 @@ body {  /* stretch body to viewable area of the window or screen. */
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
-    z-index: 1;
+    z-index: 2;
     background-color: var(--light1);
     text-align: left;
     font-size: 1rem;
@@ -256,9 +256,9 @@ body {  /* stretch body to viewable area of the window or screen. */
     width: 75%;
 }
 
-.settings-credits { font-size: 3rem; }
+.settings-credits { font-size: 0.8rem; }
 .settings-credits div {
-    font-size: 2rem;
+    font-size: 0.57rem;
 }
 
 .img-description {
