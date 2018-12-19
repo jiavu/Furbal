@@ -107,7 +107,7 @@ const furbalStates = {
 };
 
 
-export default furbalStates;
+//export default furbalStates; // unnecessary. I don't need to export them.
 
 /*
 *Jeweils in die feed() und die play()-Funktion:

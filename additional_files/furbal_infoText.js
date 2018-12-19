@@ -103,7 +103,7 @@ const infoText = {
         Bombay lynx, yet tomcat. Singapura. Cheetah bengal siberian and savannah norwegian forest. Balinese . <br>"
 };
 
-export default infoText;
+//export default infoText;  // unnecessary. I don't need to export them.
 
 /*
 Maximum health: endurance, capacity, fitness, stamina
