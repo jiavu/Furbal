@@ -1,3 +1,6 @@
+Play game on:
+https://jiavu.de/furball/
+
 A Furball is a small pet with big button-eyes and a thick and furry fur (colored in rainbow colors) living in a website.
 
 You have to feed your Furball (every day). If you forget to feed it, it will die.
